@@ -140,6 +140,33 @@ table.t th{background:#f4f3ec;font-weight:500}
 .statrow .pct{width:52px;text-align:right;font-weight:700}
 .statrow .bar{width:90px;margin:0}
 .syncline{font-size:13px;color:var(--sub);margin:8px 2px 0}
+.sheet{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin:12px 0;color:#111}
+.ws-head{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;border-bottom:2px solid #111;padding-bottom:8px;margin-bottom:12px}
+.ws-head b{font-family:'Jua';font-size:22px;font-weight:400}.ws-name{font-size:13px;text-align:right;line-height:1.9}
+.ws-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}
+.ws-item{display:flex;gap:8px;break-inside:avoid;page-break-inside:avoid;padding:8px 0 14px;border-bottom:1px dashed #ccc;font-size:15px}
+.ws-no{flex:none;width:24px;height:24px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700}
+.ws-q{flex:1;min-width:0}.ws-q .big{font-size:20px;margin:8px 0}.ws-q .fig svg{max-width:100%;height:auto}.ws-q .letter{font-size:44px}
+.ws-opts{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:14px}.ws-ans{margin-top:10px;font-size:14px;text-align:right}
+.ws-key{padding:6px 0;border-bottom:1px dashed #ddd;font-size:14px;break-inside:avoid;page-break-inside:avoid}.ws-keyans{font-weight:700}
+.ws-sol{font-size:13px;color:#444;margin-top:2px}.ws-sol ol{margin:2px 0;padding-left:18px}.ws-sol .fig,.ws-sol svg{display:none}
+.ws-code{text-align:right;font-size:11px;color:#999;margin-top:8px}
+@media (max-width:600px){.ws-grid{grid-template-columns:1fr}}
+@media print{@page{size:A4;margin:12mm}header.top,.noprint,.toast,#modal{display:none!important}body{background:#fff}.wrap{max-width:none;padding:0}
+ .sheet{border:0;border-radius:0;padding:0;margin:0}.anskey{break-before:page;page-break-before:always}.ws-grid{grid-template-columns:1fr 1fr!important}
+ .fr>.nu{border-bottom-color:#000}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+.pop{text-align:center}.pop-t{font-family:'Jua';font-size:24px;margin-bottom:4px}
+.minis{display:flex;flex-wrap:wrap;gap:2px;margin-top:4px}
+.room{display:block;border-radius:10px}
+.bob{animation:bob 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom;cursor:pointer}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.hop{display:inline-block;animation:hop .55s ease-in-out 3}@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.wob svg{animation:wob 1s ease-in-out infinite;transform-origin:center bottom}@keyframes wob{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.heart{animation:up 1.4s ease-out forwards}@keyframes up{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-26px)}}
+.petcard{display:flex;gap:12px;align-items:center}.petcard .t{font-weight:700;font-size:17px}.petcard.focus{border:2px solid var(--acc)}
+.btn.sm{padding:7px 12px;font-size:14px;flex:none!important}
+.snacks{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.snack{border:2px solid var(--line);background:#fff;border-radius:12px;padding:4px 10px;font-size:24px}.snack b{font-size:13px;margin-left:3px;color:var(--sub)}.snack.on{border-color:var(--acc);background:var(--accl)}
+.furn{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;margin:6px 0}.furn div{text-align:center;border:1px solid var(--line);border-radius:10px;padding:6px 4px}.furn span{font-size:28px;display:block}.furn small{font-size:11px;color:var(--sub);line-height:1.3;display:block}.furn .lock{opacity:.55}
 .mini-note{font-size:13px;color:var(--sub);margin-top:6px}
 @media (max-width:420px){.big{font-size:23px}.mc button{font-size:16px}.ansrow input{width:130px}}
 </style>
@@ -147,6 +174,7 @@ table.t th{background:#f4f3ec;font-weight:500}
 <body>
 <header class="top"><div class="in">
   <div class="logo" data-act="home">수학 <span>길잡이</span></div>
+  <button class="iconbtn" data-act="room">미니룸</button>
   <button class="iconbtn" data-act="wrongnote">오답노트</button>
   <button class="iconbtn" data-act="stats">기록</button>
   <button class="chip" data-act="learners" id="who">학생 선택</button>
@@ -154,6 +182,11 @@ table.t th{background:#f4f3ec;font-weight:500}
 <div class="wrap" id="app"></div>
 <div class="toast" id="toast"></div>
 <div id="modal"></div>
+<!-- Firebase: firebase-config.js에 내 프로젝트 값을 넣으면 기록이 Firebase에 저장돼요 -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script>
 /* ===================== 공통 도구 ===================== */
 let rnd=Math.random;
@@ -762,6 +795,77 @@ gen(lv){if(lv===1||rnd()<.5){const B=[['직각삼각형을 한 변을 기준으�
 ]);
 
 const LESSONS={};UNITS.forEach(u=>u.lessons.forEach((l,i)=>{l.unit=u;l.idx=i;LESSONS[l.id]=l}));
+/* ===================== 동물 친구들 ===================== */
+const OL='#3b2f2f';
+function eye(x,y,r){return `<circle cx="${x}" cy="${y}" r="${r}" fill="#2b2222"/><circle cx="${(x-r*.33).toFixed(1)}" cy="${(y-r*.38).toFixed(1)}" r="${(r*.36).toFixed(1)}" fill="#fff"/>`}
+function eyes(y,r,dx){dx=dx||17;return eye(100-dx,y,r)+eye(100+dx,y,r)}
+function cheeks(y,dx,c){dx=dx||30;return `<ellipse cx="${100-dx}" cy="${y}" rx="8" ry="5" fill="${c||'#ff8fa3'}" opacity=".55"/><ellipse cx="${100+dx}" cy="${y}" rx="8" ry="5" fill="${c||'#ff8fa3'}" opacity=".55"/>`}
+function mir(s){return s+`<g transform="translate(200 0) scale(-1 1)">${s}</g>`}
+const ST=`stroke="${OL}" stroke-width="3" stroke-linejoin="round"`;
+function bodyE(c,rx,ry){return `<ellipse cx="100" cy="122" rx="${rx||52}" ry="${ry||48}" fill="${c}" ${ST}/>`}
+function feet(c){return `<ellipse cx="80" cy="166" rx="12" ry="7" fill="${c}" ${ST}/><ellipse cx="120" cy="166" rx="12" ry="7" fill="${c}" ${ST}/>`}
+function smile(y){return `<path d="M93 ${y} q3.5 4 7 0 q3.5 4 7 0" fill="none" stroke="${OL}" stroke-width="2.5" stroke-linecap="round"/>`}
+const ANIMALS=[
+ {n:'우파루파',egg:['#ffb6c8','#ff6f9a'],d:e=>({b:`<path d="M146 140 Q 188 132 192 102 Q 172 120 148 122 Z" fill="#ffc9d6" ${ST}/>`+mir(`<ellipse cx="46" cy="88" rx="17" ry="6.5" transform="rotate(-35 46 88)" fill="#ff6f9a" ${ST}/><ellipse cx="40" cy="106" rx="17" ry="6.5" transform="rotate(-5 40 106)" fill="#ff6f9a" ${ST}/><ellipse cx="46" cy="124" rx="17" ry="6.5" transform="rotate(25 46 124)" fill="#ff6f9a" ${ST}/>`),
+   m:bodyE('#ffb6c8',54,46)+`<ellipse cx="100" cy="140" rx="30" ry="20" fill="#ffd9e3"/>`+feet('#ffb6c8')+eyes(112,5*e,24)+`<path d="M84 124 Q100 138 116 124" fill="none" stroke="${OL}" stroke-width="2.5" stroke-linecap="round"/>`+cheeks(124,34)})},
+ {n:'웰시코기',egg:['#f2a65a','#fff6ec'],d:e=>({b:mir(`<polygon points="58,98 54,38 94,74" fill="#f2a65a" ${ST}/><polygon points="64,88 61,52 86,74" fill="#ffd3b0"/>`),
+   m:bodyE('#f2a65a')+`<path d="M100 82 C 92 100 72 110 74 130 C 78 150 122 150 126 130 C 128 110 108 100 100 82 Z" fill="#fff6ec"/>`+feet('#fff6ec')+eyes(108,6*e,19)+`<ellipse cx="100" cy="121" rx="7" ry="5" fill="#2b2222"/><path d="M93 129 q3.5 4 7 0 q3.5 4 7 0" fill="none" stroke="${OL}" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="100" cy="135" rx="4" ry="3" fill="#ff7a8a"/>`+cheeks(126,32)})},
+ {n:'샴고양이',egg:['#f3e6cf','#6b4a3a'],d:e=>({b:`<path d="M146 150 Q 182 142 172 102" fill="none" stroke="#6b4a3a" stroke-width="11" stroke-linecap="round"/>`+mir(`<polygon points="60,96 66,48 94,76" fill="#6b4a3a" ${ST}/><polygon points="68,86 70,60 86,76" fill="#c49a86"/>`),
+   m:bodyE('#f3e6cf')+`<ellipse cx="100" cy="118" rx="27" ry="21" fill="#6b4a3a" opacity=".85"/>`+feet('#6b4a3a')+mir(`<ellipse cx="82" cy="111" rx="${6.5*e}" ry="${7*e}" fill="#6fc3f0" stroke="#2b2222" stroke-width="1.5"/><ellipse cx="82" cy="111" rx="${2.2*e}" ry="${5*e}" fill="#2b2222"/><circle cx="80" cy="108" r="1.8" fill="#fff"/>`)+`<path d="M96 121 L104 121 L100 126 Z" fill="#ffb3c1"/><path d="M100 126 q-3 4 -7 2 M100 126 q3 4 7 2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`+mir(`<line x1="70" y1="124" x2="52" y2="120" stroke="#fff" stroke-width="1.5"/><line x1="70" y1="128" x2="52" y2="130" stroke="#fff" stroke-width="1.5"/>`)})},
+ {n:'벨루가',egg:['#eef4fb','#9cc3e6'],d:e=>({b:`<path d="M100 164 L 80 188 Q 100 180 100 172 Q 100 180 120 188 Z" fill="#e3edf7" ${ST}/>`,
+   m:`<path d="M48 130 C 44 90 70 64 104 64 C 140 64 158 92 154 124 C 152 154 128 168 100 168 C 70 168 50 154 48 130 Z" fill="#eef4fb" ${ST}/>`+mir(`<ellipse cx="54" cy="146" rx="15" ry="7" transform="rotate(35 54 146)" fill="#e3edf7" ${ST}/>`)+eyes(118,5.5*e,22)+`<path d="M84 132 Q100 144 116 132" fill="none" stroke="${OL}" stroke-width="2.5" stroke-linecap="round"/>`+cheeks(130,32)})},
+ {n:'물범',egg:['#c9ced6','#8a929e'],d:e=>({b:'',
+   m:bodyE('#c9ced6')+`<circle cx="66" cy="100" r="5" fill="#8a929e"/><circle cx="138" cy="96" r="4" fill="#8a929e"/><circle cx="132" cy="146" r="5" fill="#8a929e"/><circle cx="72" cy="150" r="3.5" fill="#8a929e"/>`+mir(`<ellipse cx="62" cy="152" rx="15" ry="7" transform="rotate(40 62 152)" fill="#b5bcc6" ${ST}/>`)+eyes(108,8.5*e,21)+`<ellipse cx="92" cy="126" rx="9" ry="7" fill="#eef1f5"/><ellipse cx="108" cy="126" rx="9" ry="7" fill="#eef1f5"/><ellipse cx="100" cy="119" rx="5" ry="3.5" fill="#2b2222"/>`+mir(`<line x1="84" y1="126" x2="62" y2="122" stroke="${OL}" stroke-width="1.3"/><line x1="84" y1="129" x2="62" y2="132" stroke="${OL}" stroke-width="1.3"/>`)})},
+ {n:'레서판다',egg:['#d9692c','#fff7ee'],d:e=>({b:`<path d="M140 152 Q 188 152 182 104" fill="none" stroke="${OL}" stroke-width="27" stroke-linecap="round"/><path d="M140 152 Q 188 152 182 104" fill="none" stroke="#d9692c" stroke-width="21" stroke-linecap="round"/><path d="M140 152 Q 188 152 182 104" fill="none" stroke="#7a3a1a" stroke-width="21" stroke-dasharray="9 11"/>`+mir(`<ellipse cx="64" cy="82" rx="17" ry="15" fill="#d9692c" ${ST}/><ellipse cx="64" cy="84" rx="9" ry="8" fill="#fff7ee"/>`),
+   m:bodyE('#d9692c')+`<ellipse cx="100" cy="156" rx="34" ry="12" fill="#7a3a1a" opacity=".55"/>`+mir(`<ellipse cx="81" cy="97" rx="7" ry="4" fill="#fff7ee"/><ellipse cx="70" cy="120" rx="10" ry="11" fill="#fff7ee"/>`)+`<ellipse cx="100" cy="125" rx="17" ry="12" fill="#fff7ee"/>`+feet('#5a2d1a')+eyes(110,6*e,17)+`<ellipse cx="100" cy="120" rx="5" ry="3.5" fill="#2b2222"/>`+smile(126)})},
+ {n:'햄스터',egg:['#f3c27b','#fffaf0'],d:e=>({b:mir(`<circle cx="70" cy="80" r="12" fill="#f3c27b" ${ST}/><circle cx="70" cy="81" r="6" fill="#ffb7b7"/>`),
+   m:bodyE('#f3c27b')+`<ellipse cx="100" cy="140" rx="40" ry="27" fill="#fffaf0"/>`+mir(`<ellipse cx="68" cy="124" rx="16" ry="13" fill="#fffaf0"/>`)+feet('#ffd7c4')+eyes(108,5.5*e,16)+`<circle cx="100" cy="117" r="3.5" fill="#ff8fa3"/>`+smile(121)+`<ellipse cx="100" cy="142" rx="9" ry="6" fill="#8b5a2b" ${ST}/>`})},
+ {n:'사막여우',egg:['#f6dfb8','#ffc7b2'],d:e=>({b:`<ellipse cx="158" cy="132" rx="26" ry="14" transform="rotate(-40 158 132)" fill="#f6dfb8" ${ST}/><ellipse cx="172" cy="114" rx="9" ry="7" transform="rotate(-40 172 114)" fill="#8a6a4a"/>`+mir(`<polygon points="62,98 38,18 94,72" fill="#f6dfb8" ${ST}/><polygon points="63,86 47,34 84,72" fill="#ffc7b2"/>`),
+   m:bodyE('#f6dfb8')+`<ellipse cx="100" cy="125" rx="17" ry="12" fill="#fff8ee"/>`+feet('#f6dfb8')+eyes(109,6.5*e,17)+`<ellipse cx="100" cy="120" rx="5" ry="3.5" fill="#2b2222"/>`+smile(126)+cheeks(124,32)})},
+ {n:'수달',egg:['#8b6b4e','#e9d8c4'],d:e=>({b:`<path d="M144 152 Q 186 152 188 118" fill="none" stroke="${OL}" stroke-width="19" stroke-linecap="round"/><path d="M144 152 Q 186 152 188 118" fill="none" stroke="#8b6b4e" stroke-width="13" stroke-linecap="round"/>`+mir(`<circle cx="66" cy="82" r="8" fill="#8b6b4e" ${ST}/>`),
+   m:bodyE('#8b6b4e')+`<ellipse cx="100" cy="118" rx="31" ry="23" fill="#e9d8c4"/><ellipse cx="100" cy="150" rx="26" ry="16" fill="#e9d8c4"/>`+feet('#6e523a')+eyes(106,5.5*e,18)+`<ellipse cx="93" cy="123" rx="8" ry="6" fill="#f6ece0"/><ellipse cx="107" cy="123" rx="8" ry="6" fill="#f6ece0"/><ellipse cx="100" cy="116" rx="6" ry="4" fill="#3b2a20"/>`+mir(`<line x1="86" y1="123" x2="64" y2="119" stroke="${OL}" stroke-width="1.3"/><line x1="86" y1="126" x2="64" y2="129" stroke="${OL}" stroke-width="1.3"/>`)})},
+ {n:'펭귄',egg:['#2e3440','#ffffff'],d:e=>({b:mir(`<ellipse cx="52" cy="128" rx="10" ry="24" transform="rotate(22 52 128)" fill="#2e3440" ${ST}/>`),
+   m:bodyE('#2e3440')+`<path d="M100 92 C 88 80 66 86 68 110 C 62 130 70 162 100 164 C 130 162 138 130 132 110 C 134 86 112 80 100 92 Z" fill="#fff"/>`+`<ellipse cx="80" cy="166" rx="12" ry="6" fill="#ffa63d" ${ST}/><ellipse cx="120" cy="166" rx="12" ry="6" fill="#ffa63d" ${ST}/>`+eyes(106,5.5*e,13)+`<path d="M93 114 L107 114 L100 123 Z" fill="#ffa63d" stroke="${OL}" stroke-width="2" stroke-linejoin="round"/>`+cheeks(120,24)})},
+ {n:'토끼',egg:['#f7f7f7','#ffb7c9'],d:e=>({b:`<circle cx="152" cy="150" r="11" fill="#fff" ${ST}/>`+mir(`<ellipse cx="80" cy="46" rx="12" ry="32" transform="rotate(-10 80 46)" fill="#f7f7f7" ${ST}/><ellipse cx="80" cy="50" rx="5.5" ry="22" transform="rotate(-10 80 50)" fill="#ffb7c9"/>`),
+   m:bodyE('#f7f7f7')+feet('#f7f7f7')+eyes(110,6*e,17)+`<path d="M96 119 L104 119 L100 123 Z" fill="#ff8fa3"/><path d="M100 123 v4 M100 127 q-4 4 -7 1 M100 127 q4 4 7 1" fill="none" stroke="${OL}" stroke-width="2.2" stroke-linecap="round"/>`+cheeks(124,30)})},
+ {n:'판다',egg:['#fbfbfb','#2b2b2b'],d:e=>({b:mir(`<circle cx="66" cy="80" r="15" fill="#2b2b2b" ${ST}/>`),
+   m:bodyE('#fbfbfb')+mir(`<ellipse cx="81" cy="112" rx="11" ry="14" transform="rotate(28 81 112)" fill="#2b2b2b"/><circle cx="82" cy="110" r="${4.5*e}" fill="#fff"/><circle cx="82" cy="110" r="${2.6*e}" fill="#2b2b2b"/><ellipse cx="64" cy="150" rx="11" ry="15" fill="#2b2b2b" ${ST}/>`)+feet('#2b2b2b')+`<ellipse cx="100" cy="125" rx="6" ry="4" fill="#2b2b2b"/>`+smile(131)+cheeks(130,30)})},
+ {n:'아기 공룡',egg:['#8cd17d','#f2a65a'],d:e=>({b:`<polygon points="68,86 74,58 90,76" fill="#f2a65a" ${ST}/><polygon points="88,74 100,46 112,74" fill="#f2a65a" ${ST}/><polygon points="110,76 126,58 132,86" fill="#f2a65a" ${ST}/><path d="M140 140 Q 184 150 192 116 Q 176 136 146 126 Z" fill="#8cd17d" ${ST}/>`,
+   m:bodyE('#8cd17d')+`<ellipse cx="100" cy="142" rx="30" ry="22" fill="#f2f7d0"/>`+mir(`<ellipse cx="62" cy="138" rx="8" ry="5" transform="rotate(-20 62 138)" fill="#8cd17d" ${ST}/>`)+feet('#8cd17d')+eyes(108,7*e,18)+`<circle cx="95" cy="121" r="1.8" fill="${OL}"/><circle cx="105" cy="121" r="1.8" fill="${OL}"/>`+smile(127)+cheeks(124,32)})},
+];
+const PSTAGE=['비밀 알','아기','꼬마','어엿한','전설의'];
+function eggSVG(sp,p,px){const [a,b]=ANIMALS[sp].egg;const cc=a==='#2e3440'?'#fff':OL;const cr=p>=.66?`<path d="M62 100 l12 8 l8 -10 l10 10 l8 -8 l10 10 l10 -8 l12 6" fill="none" stroke="${cc}" stroke-width="3" stroke-linejoin="round"/>`:p>=.33?`<path d="M80 92 l8 8 l8 -8 l8 8" fill="none" stroke="${cc}" stroke-width="3" stroke-linejoin="round"/>`:'';
+  return `<svg viewBox="0 0 200 200" width="${px}" height="${px}"><ellipse cx="100" cy="178" rx="40" ry="7" fill="#000" opacity=".08"/><ellipse cx="100" cy="112" rx="50" ry="62" fill="${a}" ${ST}/><circle cx="76" cy="90" r="9" fill="${b}" opacity=".8"/><circle cx="120" cy="128" r="12" fill="${b}" opacity=".8"/><circle cx="84" cy="146" r="6" fill="${b}" opacity=".8"/><circle cx="124" cy="80" r="6" fill="${b}" opacity=".8"/>${cr}<text x="100" y="122" text-anchor="middle" font-size="30" font-weight="700" fill="${OL}" opacity=".35">?</text></svg>`}
+function petSVG(sp,stage,px,p){if(stage===0)return eggSVG(sp,p||0,px);const sc=[0,.62,.76,.9,1][stage],er=[0,1.3,1.15,1,1][stage];const a=ANIMALS[sp].d(er);
+  let aura='',spk='';if(stage>=4){aura=`<defs><radialGradient id="au${sp}"><stop offset="0" stop-color="#ffe27a" stop-opacity=".75"/><stop offset="1" stop-color="#ffe27a" stop-opacity="0"/></radialGradient></defs><circle cx="100" cy="118" r="96" fill="url(#au${sp})"/>`}
+  if(stage>=3){const pts=stage>=4?[[28,44],[172,40],[182,150],[18,150],[100,14]]:[[30,60],[172,58]];spk=pts.map(([x,y])=>`<path d="M${x} ${y-9} L${x+3} ${y-3} L${x+9} ${y} L${x+3} ${y+3} L${x} ${y+9} L${x-3} ${y+3} L${x-9} ${y} L${x-3} ${y-3} Z" fill="#ffcc33"/>`).join('')}
+  return `<svg viewBox="0 0 200 200" width="${px}" height="${px}">${aura}<ellipse cx="100" cy="178" rx="${46*sc}" ry="${7*sc}" fill="#000" opacity=".1"/><g transform="translate(100 172) scale(${sc}) translate(-100 -172)">${a.b}${a.m}</g>${spk}</svg>`}
+
+/* 챕터: 학습 내용이 크게 바뀌는 묶음 (같은 내용이 다음 학기에 이어지면 한 챕터) */
+const CHAPTERS=[
+ {id:'ch1',n:'5-1 기초',u:['pre_1']},{id:'ch2',n:'수의 범위와 어림',u:['s52_1']},{id:'ch3',n:'분수의 곱셈',u:['s52_2']},{id:'ch4',n:'합동과 대칭',u:['s52_3']},
+ {id:'ch5',n:'소수의 곱셈',u:['s52_4']},{id:'ch6',n:'직육면체와 부피',u:['s52_5','s61_6']},{id:'ch7',n:'평균·가능성·그래프',u:['s52_6','s61_5']},
+ {id:'ch8',n:'분수의 나눗셈',u:['s61_1','s62_1']},{id:'ch9',n:'입체도형',u:['s61_2','s62_3']},{id:'ch10',n:'소수의 나눗셈',u:['s61_3','s62_2']},
+ {id:'ch11',n:'비와 비율·비례식',u:['s61_4','s62_4']},{id:'ch12',n:'원의 넓이',u:['s62_5']},{id:'ch13',n:'원기둥·원뿔·구',u:['s62_6']}];
+const CH_OF={};CHAPTERS.forEach(c=>c.u.forEach(u=>CH_OF[u]=c.id));
+const SNACKS=[['🍪','쿠키'],['🍩','도넛'],['🍓','딸기'],['🍙','주먹밥'],['🧁','컵케이크'],['🍦','아이스크림'],['🍡','경단'],['🍫','초콜릿'],['🍬','사탕'],['🍉','수박'],['🥞','팬케이크'],['🍰','조각 케이크']];
+const FURN={pre_1:['📚','책 더미'],s52_1:['🧮','주판'],s52_2:['🥧','파이'],s52_3:['🦋','나비 액자'],s52_4:['🕰️','괘종시계'],s52_5:['🎁','선물 상자'],s52_6:['🎲','주사위'],
+ s61_1:['🍕','피자'],s61_2:['⛺','텐트'],s61_3:['🔭','망원경'],s61_4:['🎨','팔레트'],s61_5:['📊','그래프 액자'],s61_6:['📦','보물 상자'],
+ s62_1:['🎂','케이크'],s62_2:['🪀','요요'],s62_3:['🧱','블록'],s62_4:['⚖️','저울'],s62_5:['🪞','둥근 거울'],s62_6:['⚽','축구공']};
+
+/* ----- 성장 규칙 ----- */
+function starN(st){if(!st||!st.t)return 0;const acc=st.c/st.t;return st.lv>=3&&acc>=.8?3:st.lv>=2&&acc>=.6?2:acc>=.5?1:0}
+const CHL={};CHAPTERS.forEach(c=>{CHL[c.id]=c.u.flatMap(u=>UNITS.find(x=>x.id===u).lessons)});
+function chStat(d,ch){let c=0,s=0;CHL[ch].forEach(l=>{const x=d.ls[l.id];if(x){c+=x.c||0;s+=starN(x)}});return {c,s,max:CHL[ch].length*3}}
+const HATCH=5,STAGE_FR=[0,0,.3,.6,.85];
+function petStage(d,pet){const t=chStat(d,pet.ch);if(t.c<HATCH)return 0;for(let i=4;i>=2;i--)if(t.s>=Math.ceil(t.max*STAGE_FR[i]))return i;return 1}
+function petNext(d,pet){const t=chStat(d,pet.ch),g=petStage(d,pet);if(g===0)return {p:t.c/HATCH,txt:`이 챕터 문제를 ${HATCH-t.c}개 더 맞히면 알이 깨져요`};if(g===4)return {p:1,txt:'최고 단계! 전설의 친구가 되었어요'};
+  const need=Math.ceil(t.max*STAGE_FR[g+1]),prev=g===1?0:Math.ceil(t.max*STAGE_FR[g]);return {p:Math.max(0,(t.s-prev)/Math.max(1,need-prev)),txt:`이 챕터에서 별을 ${need-t.s}개 더 모으면 '${PSTAGE[g+1]}' 단계로 자라요`}}
+function chName(ch){return CHAPTERS.find(c=>c.id===ch).n}
+function petTitle(d,pet){const g=petStage(d,pet);if(g===0)return '비밀 알';const base=ANIMALS[pet.sp].n;return pet.name?`${pet.name} <span class="muted small">(${PSTAGE[g]} ${base})</span>`:`${PSTAGE[g]} ${base}`}
+function totalCorrect(d){let c=0;Object.entries(d.ls).forEach(([id,x])=>{if(LESSONS[id])c+=x.c||0});return c}
+function gameInit(d){if(!d.pets)d.pets=[];if(!d.snacks)d.snacks={};if(!d.room)d.room={};if(d.snackGiven==null)d.snackGiven=Math.floor(totalCorrect(d)/5);return d}
+
 
 /* ===================== 채점 ===================== */
 function parseNum(s){s=String(s||'').replace(/[,\s]/g,'').replace(/[^\d.\-]/g,'');if(s===''||s==='.'||s==='-')return NaN;return Number(s)}
@@ -785,7 +889,7 @@ let S=load();
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 let pushHook=null;
 function save(){S.updatedAt=Date.now();saveLocal();if(pushHook)pushHook()}
-function me(){if(!S.cur)return null;return S.data[S.cur]||(S.data[S.cur]={ls:{},wrong:[],sem:'s52'})}
+function me(){if(!S.cur)return null;return gameInit(S.data[S.cur]||(S.data[S.cur]={ls:{},wrong:[],sem:'s52'}))}
 function lst(id){const d=me();if(!d)return {t:0,c:0,lv:1,s:0,w:0};return d.ls[id]||(d.ls[id]={t:0,c:0,lv:1,s:0,w:0})}
 function curName(){const l=S.learners.find(x=>x.id===S.cur);return l?l.name:null}
 
@@ -798,6 +902,9 @@ function stars(st){if(!st.t)return '<span class="muted small">아직 안 풀었�
 function unitProg(u){const done=u.lessons.filter(l=>{const s=lst(l.id);return s.t>=5&&s.c/s.t>=.7}).length;return done/u.lessons.length}
 function go(v){V=v;window.scrollTo(0,0);render()}
 function render(){document.getElementById('who').textContent=curName()?'👤 '+curName():'학생 선택';
+  if(FB.on&&FB.user===undefined){app.innerHTML='<div class="empty">불러오는 중…</div>';return}
+  if(FB.on&&!FB.user)return renderLogin();
+  if(V.view==='sheet')return renderSheet();if(V.view==='room'&&S.cur)return renderRoom();if(V.view==='sheetset')return renderSheetSet();
   if(!S.cur&&V.view!=='learners'){return renderLearners(true)}
   ({home:renderHome,unit:renderUnit,lesson:renderLesson,practice:renderPractice,wrong:renderWrong,stats:renderStats,learners:()=>renderLearners(false)})[V.view]()}
 
@@ -806,15 +913,16 @@ function recommend(){const d=me();const arr=[];Object.entries(d.ls).forEach(([id
 function renderHome(){const d=me();setAcc(d.sem);const rc=recommend();
   app.innerHTML=`<div class="tabs">${SEMS.map(s=>`<button class="tab ${s.cls} ${d.sem===s.id?'on':''}" data-act="sem" data-id="${s.id}">${s.name}</button>`).join('')}</div>
   <div class="syncline" id="syncline">${syncText()}</div>
+  ${homePetCard()}
   ${rc?`<div class="card rec unit" data-act="lesson" data-id="${rc.l.id}"><div class="unum">✦</div><div style="flex:1"><div class="small muted">오늘의 추천 · ${rc.l.unit.title}</div><div class="t">${rc.l.title}</div><div class="small">${rc.why}</div></div></div>`:''}
   ${d.wrong.length?`<div class="card unit" data-act="wrongnote"><div class="unum" style="background:var(--no)">${d.wrong.length}</div><div style="flex:1"><div class="t">오답노트 다시 풀기</div><div class="small muted">틀린 문제를 다시 맞히면 목록에서 빠져요</div></div></div>`:''}
   ${UNITS.filter(u=>u.sem===d.sem).map(u=>`<div class="card unit" data-act="unit" data-id="${u.id}"><div class="unum">${u.sem==='pre'?'★':u.no}</div><div style="flex:1"><div class="t">${u.title}</div><div class="small muted">${u.lessons.map(l=>l.title).join(' · ')}</div><div class="bar"><i style="width:${Math.round(unitProg(u)*100)}%"></i></div></div></div>`).join('')}
   <p class="mini-note">문제는 풀 때마다 숫자가 새로 만들어져요. 연속으로 맞히면 레벨이 올라가고, 연속으로 틀리면 쉬운 문제로 돌아가요. 단원 순서는 출판사 교과서마다 조금 다를 수 있어요.</p>`}
-function renderUnit(){const u=UNITS.find(x=>x.id===V.id);setAcc(u.sem);
+function renderUnit(){const u=UNITS.find(x=>x.id===V.id);setAcc(u.sem);setTimeout(()=>ensureEgg(u.id),250);
   app.innerHTML=`<button class="back" data-act="home">← 단원 목록</button><h2 style="margin-top:6px">${u.sem==='pre'?'':u.no+'. '}${u.title}</h2><div class="small muted">${SEMS.find(s=>s.id===u.sem).name}</div>
   <div class="card">${u.lessons.map((l,i)=>{const s=lst(l.id);return `<div class="lesson" data-act="lesson" data-id="${l.id}"><div class="n">${i+1}</div><div class="t">${l.title}<div>${l.book?`<span class="badge acc">계산 교재 ${l.book}</span> `:''}${s.t?`<span class="badge">${s.c}/${s.t} · 레벨 ${s.lv}</span>`:''}</div></div>${stars(s)}</div>`}).join('')}</div>
-  <button class="btn block" data-act="test" data-id="${u.id}">단원평가 10문제 풀기</button>`}
-function renderLesson(){const l=LESSONS[V.id];setAcc(l.unit.sem);const tab=V.tab||'ex';
+  <div class="row"><button class="btn" data-act="test" data-id="${u.id}">단원평가 10문제 풀기</button><button class="btn ghost" data-act="sheetset" data-id="${u.id}">종이 학습지 만들기</button></div>`}
+function renderLesson(){const l=LESSONS[V.id];setAcc(l.unit.sem);setTimeout(()=>ensureEgg(l.unit.id),250);const tab=V.tab||'ex';
   let body='';if(tab==='ex'){body=`<div class="card ex">${typeof l.ex==='function'?l.ex():l.ex}<div class="key">핵심: ${l.key}</div></div><button class="btn block" data-act="practice" data-id="${l.id}">문제 풀러 가기 →</button>`}
   else{const p=V.sample||(V.sample=l.gen(1));body=`<div class="card"><div class="pq">${p.q}</div><div class="sol"><div class="h">정답: ${ansHTML(p.ans)}</div>${p.sol}</div></div><div class="row"><button class="btn ghost" data-act="sample">다른 예제</button><button class="btn" data-act="practice" data-id="${l.id}">직접 풀기 →</button></div>`}
   app.innerHTML=`<button class="back" data-act="unit" data-id="${l.unit.id}">← ${l.unit.title}</button><h2 style="margin-top:6px">${l.title}</h2>${l.book?`<span class="badge acc">계산 교재 ${l.book}</span>`:''}
@@ -842,11 +950,11 @@ function renderPractice(){const l=LESSONS[P.lid];setAcc(l.unit.sem);const p=P.pr
 function submit(){if(P.done)return;const a=P.prob.ans,inp=getInput(a);const r=check(a,inp);const fb=document.getElementById('fb');
   if(r.empty){fb.innerHTML=`<div class="fb mid">${r.msg||'답을 입력해 주세요.'}</div>`;return}
   if(r.retry&&P.tries<1){P.tries++;fb.innerHTML=`<div class="fb mid">${r.retry}</div>`;return}
-  const ok=!!r.ok;P.done=true;P.t++;if(ok)P.c++;const s=lst(P.lid);s.t++;s.at=Date.now();if(ok)s.c++;let msg='';
+  const ok=!!r.ok;P.done=true;P.t++;if(ok)P.c++;const dd=me(),chId=CH_OF[LESSONS[P.lid].unit.id];ensureEgg(LESSONS[P.lid].unit.id);const pet0=dd.pets.find(p=>p.ch===chId),stg0=pet0?petStage(dd,pet0):0;const s=lst(P.lid);s.t++;s.at=Date.now();if(ok)s.c++;let msg='';
   if(P.mode==='practice'){if(ok){s.s++;s.w=0;if(s.s>=3&&s.lv<3){s.lv++;s.s=0;P.lv=s.lv;msg=' 🎉 레벨 업!'}}else{s.s=0;s.w++;if(s.w>=2&&s.lv>1){s.lv--;s.w=0;P.lv=s.lv;msg=' 쉬운 문제로 다시 연습해요.'}}}
   const d=me();if(!ok&&P.mode!=='wrong'){d.wrong.unshift({lid:P.lid,lv:P.plv,seed:P.seed,at:Date.now()});d.wrong=d.wrong.slice(0,80)}
   if(ok&&P.mode==='wrong'){const k=d.wrong.findIndex(w=>w.seed===P.seed&&w.lid===P.lid);if(k>=0)d.wrong.splice(k,1)}
-  if(P.mode==='test')P.res.push({lid:P.lid,ok,p:P.prob});save();
+  if(P.mode==='test')P.res.push({lid:P.lid,ok,p:P.prob});if(ok)giveSnacks(dd);save();if(pet0)setTimeout(()=>petEvents(dd,chId,stg0),600);
   if(a.t==='mc')app.querySelectorAll('.mc button').forEach((b,i)=>{b.disabled=true;if(i===a.a)b.classList.add('right');else if(i===P.sel)b.classList.add('wrong')});
   app.querySelectorAll('.ansrow input').forEach(i=>i.readOnly=true);
   fb.innerHTML=`<div class="fb ${ok?'ok':'no'}">${ok?'정답이에요!':'아쉬워요. 정답은 '+ansHTML(a)+'예요.'}${msg}</div><div class="sol"><div class="h">풀이</div>${P.prob.sol}</div>`;
@@ -854,10 +962,68 @@ function submit(){if(P.done)return;const a=P.prob.ans,inp=getInput(a);const r=ch
   const sc=document.getElementById('score');if(sc)sc.innerHTML=`<div>푼 문제<b>${P.t}</b></div><div>맞힌 문제<b>${P.c}</b></div><div>연속 정답<b>${s.s}</b></div>`;
   if(msg.includes('레벨 업'))toast('레벨 업! 이제 레벨 '+P.lv)}
 function advance(){if(P.mode==='wrong')return go({view:'wrong'});if(P.mode==='test'){if(P.idx<P.list.length-1){P.idx++;loadTest();return go({view:'practice'})}return showResult()}nextProblem();go({view:'practice'})}
-function showResult(){const u=UNITS.find(x=>x.id===P.uid);const sc=P.res.filter(r=>r.ok).length;
+function showResult(){const u=UNITS.find(x=>x.id===P.uid);const sc=P.res.filter(r=>r.ok).length;{const d=me();if(sc===P.res.length&&FURN[u.id]&&!d.room[u.id]){d.room[u.id]=Date.now();save();setTimeout(()=>popup(`<div class="pop-t">🏆 100점! 새 가구를 받았어요</div><div style="font-size:84px;text-align:center" class="hop">${FURN[u.id][0]}</div><p><b>${FURN[u.id][1]}</b>이(가) 미니룸에 놓였어요.</p>`),400)}}
   app.innerHTML=`<button class="back" data-act="unit" data-id="${u.id}">← ${u.title}</button><div class="card" style="text-align:center"><h2>단원평가 결과</h2><div style="font-family:Jua;font-size:54px;color:var(--acc)">${sc*10}점</div><div class="muted">${P.res.length}문제 중 ${sc}문제 정답</div></div>
   ${P.res.filter(r=>!r.ok).length?`<h3>틀린 문제 다시 보기</h3>${P.res.filter(r=>!r.ok).map(r=>`<div class="card"><div class="small muted">${LESSONS[r.lid].title}</div><div class="pq">${r.p.q}</div><div class="sol"><div class="h">정답: ${ansHTML(r.p.ans)}</div>${r.p.sol}</div></div>`).join('')}`:'<div class="card empty">모두 맞혔어요! 다음 단원으로 가 볼까요?</div>'}
   <div class="row"><button class="btn ghost" data-act="test" data-id="${u.id}">다시 풀기</button><button class="btn" data-act="home">단원 목록</button></div>`;window.scrollTo(0,0)}
+
+/* ----- 종이 학습지 ----- */
+const CIRC=['①','②','③','④','⑤'];
+function renderSheetSet(){const u=UNITS.find(x=>x.id===V.id);setAcc(u.sem);const o=V.opt||(V.opt={ls:u.lessons.map(l=>l.id),n:10,lv:'mix',sol:true,name:true});
+  app.innerHTML=`<button class="back" data-act="unit" data-id="${u.id}">← ${u.title}</button><h2 style="margin-top:6px">종이 학습지 만들기</h2><p class="small muted">문제지와 정답·풀이지를 만들어 인쇄하거나 PDF로 저장해요. 만들 때마다 숫자가 달라지니, 학생마다 다른 문제지를 줄 수 있어요.</p>
+  <div class="card"><h3>범위</h3>${u.lessons.map(l=>`<label class="lesson" style="cursor:pointer"><input type="checkbox" data-ls="${l.id}" ${o.ls.includes(l.id)?'checked':''} style="width:20px;height:20px"><span class="t">${l.title}</span></label>`).join('')}</div>
+  <div class="card"><h3>문제 수</h3><div class="seg">${[10,15,20].map(n=>`<button class="${o.n===n?'on':''}" data-act="wsopt" data-k="n" data-v="${n}">${n}문제</button>`).join('')}</div>
+  <h3>난이도</h3><div class="seg">${[['1','기본'],['mix','기본→심화'],['3','심화']].map(([v,t])=>`<button class="${o.lv===v?'on':''}" data-act="wsopt" data-k="lv" data-v="${v}">${t}</button>`).join('')}</div>
+  <label style="display:flex;gap:8px;align-items:center;margin-top:8px"><input type="checkbox" id="wssol" ${o.sol?'checked':''} style="width:20px;height:20px"> 정답지에 풀이도 함께 넣기</label></div>
+  <button class="btn block" data-act="wsmake" data-id="${u.id}">학습지 만들기</button>`}
+function makeSheet(uid){const u=UNITS.find(x=>x.id===uid),o=V.opt;const ls=o.ls.length?o.ls:u.lessons.map(l=>l.id);const seed=newSeed();const rg=mulberry(seed);const items=[];
+  for(let i=0;i<o.n;i++){const lid=ls[i%ls.length];const lv=o.lv==='mix'?(i<o.n*.4?1:i<o.n*.8?2:3):+o.lv;items.push({lid,lv,seed:Math.floor(rg()*2147483646)+1})}
+  items.sort((a,b)=>a.lv-b.lv||ls.indexOf(a.lid)-ls.indexOf(b.lid));return {uid,seed,sol:o.sol,items:items.map(it=>({...it,p:genS(it.lid,it.lv,it.seed)}))}}
+function wsAnswerLine(a){if(a.t==='mc')return `<div class="ws-opts">${a.opts.map((x,i)=>`<span>${CIRC[i]} ${x}</span>`).join('')}</div><div class="ws-ans">답: ________</div>`;
+  if(a.t==='ratio')return `<div class="ws-ans">답: ______ : ______</div>`;return `<div class="ws-ans">답: ______________ ${a.unit||''}</div>`}
+function wsAnsText(a){return a.t==='mc'?CIRC[a.a]+' '+a.opts[a.a]:ansHTML(a)}
+function renderSheet(){const W=V.ws,u=UNITS.find(x=>x.id===W.uid);setAcc(u.sem);const sem=SEMS.find(s=>s.id===u.sem).name;const code=String(W.seed).slice(-6);
+  const head=(t)=>`<div class="ws-head"><div><b>${t}</b><div class="small">${sem} · ${u.sem==='pre'?'':u.no+'. '}${u.title}</div></div><div class="ws-name">이름 ____________<br>날짜 ______ · 점수 ______</div></div>`;
+  app.innerHTML=`<div class="noprint"><button class="back" data-act="sheetset" data-id="${u.id}">← 학습지 설정</button><div class="row" style="margin:10px 0"><button class="btn" data-act="wsprint">인쇄 / PDF 저장</button><button class="btn ghost" data-act="wsmake" data-id="${u.id}">다른 숫자로 다시 만들기</button></div><p class="small muted">인쇄 화면에서 프린터를 고르거나, PDF로 저장할 수 있어요.</p></div>
+  <div class="sheet">${head('수학 학습지')}<div class="ws-grid">${W.items.map((it,i)=>`<div class="ws-item"><div class="ws-no">${i+1}</div><div class="ws-q">${it.p.q}${wsAnswerLine(it.p.ans)}</div></div>`).join('')}</div><div class="ws-code">학습지 번호 ${code}</div></div>
+  <div class="sheet anskey">${head('정답과 풀이')}${W.items.map((it,i)=>`<div class="ws-key"><b>${i+1}.</b> <span class="ws-keyans">${wsAnsText(it.p.ans)}</span>${W.sol?`<div class="ws-sol">${it.p.sol}</div>`:''}</div>`).join('')}<div class="ws-code">학습지 번호 ${code}</div></div>`}
+
+
+/* ----- 동물 친구 · 미니룸 ----- */
+const QUEUE=[];
+function popup(html){QUEUE.push(html);if(QUEUE.length===1)showPop()}
+function showPop(){const m=document.getElementById('modal');if(!QUEUE.length){m.innerHTML='';return}m.innerHTML=`<div class="modal"><div class="card pop">${QUEUE[0]}<button class="btn block" id="popOk" style="margin-top:12px">좋아요!</button></div></div>`;document.getElementById('popOk').onclick=()=>{QUEUE.shift();showPop()}}
+function ensureEgg(uid){const ch=CH_OF[uid];if(!ch||!S.cur)return;const d=me();if(d.pets.some(p=>p.ch===ch))return;const used=new Set(d.pets.map(p=>p.sp));let pool=ANIMALS.map((_,i)=>i).filter(i=>!used.has(i));if(!pool.length)pool=ANIMALS.map((_,i)=>i);
+  const pet={ch,sp:pool[Math.floor(Math.random()*pool.length)],at:Date.now(),fed:0};d.pets.push(pet);save();
+  popup(`<div class="pop-t">🎉 새로운 알이 도착했어요!</div><div class="fig wob">${petSVG(pet.sp,0,150,0)}</div><p><b>'${chName(ch)}'</b> 챕터의 비밀 알이에요.<br>이 챕터 문제를 <b>${HATCH}개</b> 맞히면 누가 나올지 알 수 있어요!</p>`)}
+function petEvents(d,ch,before){const pet=d.pets.find(p=>p.ch===ch);if(!pet)return;const after=petStage(d,pet);if(after<=before)return;
+  if(before===0)popup(`<div class="pop-t">🥚 알이 깨졌어요!</div><div class="fig hop">${petSVG(pet.sp,1,170)}</div><p><b>아기 ${ANIMALS[pet.sp].n}</b>(이)가 태어났어요!<br>미니룸에서 함께 살아요. 이름도 지어 줄 수 있어요.</p>`);
+  else popup(`<div class="pop-t">✨ 쑥쑥 자랐어요!</div><div class="fig" style="display:flex;align-items:center;justify-content:center;gap:4px">${petSVG(pet.sp,before,90)}<span style="font-size:26px">➜</span><span class="hop">${petSVG(pet.sp,after,160)}</span></div><p><b>${pet.name?pet.name+'(이)가':ANIMALS[pet.sp].n+'(이)가'}</b> '${PSTAGE[after]}' 단계가 되었어요!</p>`)}
+function giveSnacks(d){const due=Math.floor(totalCorrect(d)/5);let got=[];while(d.snackGiven<due){const k=Math.floor(Math.random()*SNACKS.length);d.snacks[k]=(d.snacks[k]||0)+1;d.snackGiven++;got.push(SNACKS[k][0])}if(got.length)toast(`${got.join('')} 간식을 받았어요!`)}
+const WALL_SPOTS=[[25,42],[65,42],[105,42],[295,42],[335,42],[375,42],[25,88],[65,88],[105,88],[295,88],[335,88],[375,88],[25,134],[65,134],[105,134],[295,134],[335,134],[375,134],[200,136]];
+const PET_SPOTS=[[200,232],[128,232],[272,232],[56,232],[344,232],[164,280],[236,280],[92,280],[308,280],[24,280],[376,280],[160,188],[240,188]];
+function roomSVG(d,interactive){const units=Object.keys(FURN);let s=`<svg viewBox="0 0 400 300" class="room" width="100%"><rect width="400" height="168" fill="#fdf1dc"/>`;
+  for(let x=10;x<400;x+=30)for(let y=12;y<168;y+=30)s+=`<circle cx="${x}" cy="${y}" r="2" fill="#f3dcb5"/>`;
+  s+=`<rect x="160" y="22" width="80" height="82" rx="8" fill="#bfe4ff" stroke="#c49a6c" stroke-width="5"/><line x1="200" y1="22" x2="200" y2="104" stroke="#c49a6c" stroke-width="4"/><line x1="160" y1="63" x2="240" y2="63" stroke="#c49a6c" stroke-width="4"/><circle cx="222" cy="40" r="8" fill="#fff6b0"/>`;
+  [60,106,152].forEach(y=>{s+=`<rect x="4" y="${y}" width="124" height="6" rx="2" fill="#c49a6c"/><rect x="272" y="${y}" width="124" height="6" rx="2" fill="#c49a6c"/>`});s+=`<rect x="176" y="152" width="48" height="5" rx="2" fill="#c49a6c"/>`;
+  s+=`<rect y="166" width="400" height="134" fill="#e8c69a"/>`;for(let y=190;y<300;y+=26)s+=`<line x1="0" y1="${y}" x2="400" y2="${y}" stroke="#d9b483" stroke-width="2"/>`;s+=`<rect y="164" width="400" height="5" fill="#c49a6c"/><ellipse cx="200" cy="250" rx="150" ry="40" fill="#f6b8c8" opacity=".55"/>`;
+  units.forEach((u,i)=>{if(d.room[u]){const [x,y]=WALL_SPOTS[i];s+=`<text x="${x}" y="${y+6}" font-size="30" text-anchor="middle">${FURN[u][0]}</text>`}});
+  const order=d.pets.map((p,i)=>({p,i,g:petStage(d,p)}));
+  order.map((o,k)=>({...o,spot:PET_SPOTS[k%PET_SPOTS.length]})).sort((a,b)=>a.spot[1]-b.spot[1]).forEach(({p,i,g,spot})=>{const sz=[50,62,72,84,98][g];const [x,y]=spot;
+    s+=`<g class="bob" style="animation-delay:${(i*0.37)%2}s" ${interactive?`data-act="petsel" data-i="${i}"`:''}><svg x="${x-sz/2}" y="${y-sz*.9}" width="${sz}" height="${sz}" viewBox="0 0 200 200">${petSVG(p.sp,g,200,petNext(d,p).p).replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'')}</svg>${V.eat===i?`<text x="${x}" y="${y-sz*.9}" font-size="22" text-anchor="middle" class="heart">💕</text>`:''}</g>`});
+  return s+`</svg>`}
+function renderRoom(){const d=me();setAcc(d.sem);const nf=Object.keys(FURN).filter(u=>d.room[u]).length,ns=Object.values(d.snacks).reduce((a,b)=>a+b,0);
+  const sel=V.pet!=null&&d.pets[V.pet]?V.pet:null;
+  app.innerHTML=`<button class="back" data-act="home">← 처음으로</button><h2 style="margin-top:6px">${curName()}의 미니룸</h2>
+  <div class="small muted">동물 친구 ${d.pets.filter(p=>petStage(d,p)>0).length}/${ANIMALS.length} · 알 ${d.pets.filter(p=>petStage(d,p)===0).length}개 · 가구 ${nf}/${Object.keys(FURN).length} · 간식 ${ns}개</div>
+  <div class="card" style="padding:8px">${roomSVG(d,true)}<div class="small muted" style="text-align:center">친구를 누르면 자세히 볼 수 있어요</div></div>
+  <div class="card"><h3>간식 가방</h3>${ns?`<div class="snacks">${SNACKS.map((sn,k)=>d.snacks[k]?`<button class="snack ${V.snack===k?'on':''}" data-act="snack" data-k="${k}">${sn[0]}<b>${d.snacks[k]}</b></button>`:'').join('')}</div><div class="small muted">간식을 고른 뒤 친구에게 '간식 주기'를 눌러요.</div>`:'<div class="small muted">문제를 5개 맞힐 때마다 간식을 1개 받아요.</div>'}</div>
+  ${d.pets.length?d.pets.map((p,i)=>{const g=petStage(d,p),nx=petNext(d,p);return `<div class="card petcard ${sel===i?'focus':''}" id="pet${i}"><div class="pc-img ${V.eat===i?'hop':''}">${petSVG(p.sp,g,96,nx.p)}</div><div style="flex:1;min-width:0"><div class="t">${petTitle(d,p)}</div><div class="small muted">챕터: ${chName(p.ch)}${p.fed?` · 받은 간식 ${p.fed}개`:''}</div><div class="bar"><i style="width:${Math.round(Math.min(1,nx.p)*100)}%"></i></div><div class="small">${nx.txt}</div>
+    ${g>0?`<div class="row" style="margin-top:6px"><button class="btn ghost sm" data-act="feed" data-i="${i}">간식 주기</button><button class="btn ghost sm" data-act="rename" data-i="${i}">이름 짓기</button></div>`:''}</div></div>`}).join(''):'<div class="card empty">아직 친구가 없어요. 단원에 들어가면 그 챕터의 알을 받아요!</div>'}
+  <div class="card"><h3>가구 모음</h3><div class="furn">${Object.entries(FURN).map(([u,f])=>{const un=UNITS.find(x=>x.id===u);return `<div class="${d.room[u]?'':'lock'}"><span>${d.room[u]?f[0]:'🔒'}</span><small>${d.room[u]?f[1]:(un.sem==='pre'?'기초':SEMS.find(x=>x.id===un.sem).name.replace('학년 ','-').replace('학기',''))+' '+un.title}</small></div>`}).join('')}</div><div class="small muted">단원평가에서 100점을 받으면 그 단원의 가구를 받아요.</div></div>`;
+  if(sel!=null){const e=document.getElementById('pet'+sel);if(e)e.scrollIntoView({block:'center'})}}
+function homePetCard(){const d=me();const hatched=d.pets.length;const mini=d.pets.slice(0,7).map(p=>petSVG(p.sp,petStage(d,p),54,petNext(d,p).p)).join('');
+  return `<div class="card unit" data-act="room" style="background:linear-gradient(0deg,#fff,#fdf1dc)"><div style="flex:1"><div class="t">🏠 미니룸</div><div class="small muted">${hatched?`친구 ${d.pets.filter(p=>petStage(d,p)>0).length}명 · 알 ${d.pets.filter(p=>petStage(d,p)===0).length}개 · 간식 ${Object.values(d.snacks).reduce((a,b)=>a+b,0)}개`:'단원에 들어가면 그 챕터의 비밀 알을 받아요!'}</div><div class="minis">${mini}</div></div></div>`}
 
 /* ----- 오답노트 / 기록 / 학생 ----- */
 function wprob(w){if(w.p)return w.p;if(!w._p)Object.defineProperty(w,'_p',{value:genS(w.lid,w.lv,w.seed),enumerable:false});return w._p}
@@ -869,15 +1035,19 @@ function renderStats(){const d=me();setAcc(d.sem);let tt=0,cc=0;Object.values(d.
   <div class="card"><h3>기록 백업</h3><p class="small muted">모든 학생의 기록·오답노트를 파일 하나로 저장하고, 다른 기기나 브라우저에서 불러올 수 있어요. 불러오면 지금 기록과 합쳐져요.</p>
   <div class="row"><button class="btn" data-act="backup">백업 파일 저장</button><button class="btn ghost" data-act="restore">백업 불러오기</button></div><input type="file" id="restoreFile" accept=".json,application/json" style="display:none"></div>
   ${SEMS.map(sm=>{const us=UNITS.filter(u=>u.sem===sm.id);return `<div class="card"><h3>${sm.name}</h3>${us.map(u=>u.lessons.map(l=>{const s=lst(l.id);const p=s.t?Math.round(s.c/s.t*100):0;return `<div class="statrow" data-act="lesson" data-id="${l.id}" style="cursor:pointer"><span class="nm">${u.sem==='pre'?'':u.no+'-'}${l.idx+1} ${l.title}</span><span class="small muted">${s.t?s.c+'/'+s.t:'-'}</span><div class="bar"><i style="width:${p}%;background:${!s.t?'#ddd':p>=80?'var(--ok)':p>=60?'#e3a521':'var(--no)'}"></i></div><span class="pct">${s.t?p+'%':''}</span></div>`}).join('')).join('')}</div>`}).join('')}
-  <button class="btn ghost block" data-act="reset">이 학생의 기록 모두 지우기</button><p class="mini-note" id="syncline2">${syncText()}</p>`}
+  <button class="btn ghost block" data-act="reset">이 학생의 기록 모두 지우기</button>${FB.on&&FB.user?`<button class="btn ghost block" style="margin-top:8px" data-act="logout">로그아웃 (${FB.user.email})</button>`:''}<p class="mini-note" id="syncline2">${syncText()}</p>`}
 function renderLearners(first){app.innerHTML=`<div class="card" style="margin-top:20px"><h2>${first?'누가 공부하나요?':'학생 관리'}</h2><p class="small muted">학생마다 기록·레벨·오답노트가 따로 저장돼요.</p>
   ${S.learners.map(l=>`<div class="lrn"><span class="nm">${l.name}</span><button class="btn ${l.id===S.cur?'':'ghost'}" style="padding:8px 14px" data-act="sel" data-id="${l.id}">${l.id===S.cur?'공부 중':'선택'}</button><button class="iconbtn" data-act="delL" data-id="${l.id}">삭제</button></div>`).join('')}
   <input class="namein" id="newname" placeholder="이름 입력 (예: 조카 이름)" maxlength="12"><button class="btn block" data-act="addL">학생 추가하기</button></div>${S.cur?'<button class="back" data-act="home">← 돌아가기</button>':''}`}
 
+function readWsChecks(){const cs=app.querySelectorAll('[data-ls]');if(cs.length)V.opt.ls=[...cs].filter(c=>c.checked).map(c=>c.dataset.ls);const sl=document.getElementById('wssol');if(sl)V.opt.sol=sl.checked}
 function modalConfirm(msg,onOk){const m=document.getElementById('modal');m.innerHTML=`<div class="modal"><div class="card"><p>${msg}</p><div class="row"><button class="btn ghost" id="mNo">취소</button><button class="btn" id="mOk" style="background:var(--no)">확인</button></div></div></div>`;
   document.getElementById('mNo').onclick=()=>m.innerHTML='';document.getElementById('mOk').onclick=()=>{m.innerHTML='';onOk()}}
 
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const act=b.dataset.act,id=b.dataset.id;
+  if(act==='login'||act==='signup'){const [em,pw]=fbCred();if(!em||!pw){FB.msg='이메일과 비밀번호를 입력해 주세요.';return render()}
+    (act==='login'?FB.auth.signInWithEmailAndPassword(em,pw):FB.auth.createUserWithEmailAndPassword(em,pw)).catch(e=>{FB.msg=fbErr(e);render();const x=document.getElementById('em');if(x)x.value=em});return}
+  if(act==='logout'){return modalConfirm('로그아웃할까요? 기록은 Firebase에 그대로 남아 있어요.',()=>FB.auth.signOut())}
   if(act!=='learners'&&act!=='addL'&&act!=='sel'&&act!=='delL'&&!S.cur)return render();
   switch(act){
     case 'home':return go({view:'home'});
@@ -904,11 +1074,22 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(
       try{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nm;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);toast('백업 파일을 저장했어요')}catch(e){toast('이 화면에서는 파일을 저장할 수 없어요')}return}
     case 'restore':{const f=document.getElementById('restoreFile');f.value='';f.onchange=()=>{const file=f.files[0];if(!file)return;const rd=new FileReader();rd.onload=()=>{try{const r=JSON.parse(rd.result);if(r.app!=='mathgil'||!Array.isArray(r.learners))throw 0;
       S.synced=false;mergeInto(r);S.synced=true;if(!S.cur&&S.learners[0])S.cur=S.learners[0].id;save();toast('백업을 불러왔어요');go({view:'stats'})}catch(e){toast('수학 길잡이 백업 파일이 아니에요')}};rd.readAsText(file)};f.click();return}
+    case 'sheetset':{if(!V.opt||V.optU!==id){V={view:'sheetset',id,optU:id}}else V={...V,view:'sheetset',id};window.scrollTo(0,0);return render()}
+    case 'wsopt':{V.opt[b.dataset.k]=b.dataset.k==='n'?+b.dataset.v:b.dataset.v;readWsChecks();return render()}
+    case 'wsmake':{if(V.view==='sheetset')readWsChecks();if(!V.opt.ls.length)return toast('범위를 하나 이상 골라 주세요');const ws=makeSheet(id);V={...V,view:'sheet',ws};window.scrollTo(0,0);return render()}
+    case 'wsprint':{try{window.print()}catch(e){toast('이 화면에서는 인쇄할 수 없어요')}return}
+    case 'room':V={view:'room'};window.scrollTo(0,0);return render();
+    case 'petsel':V.pet=+b.dataset.i;return render();
+    case 'snack':V.snack=+b.dataset.k;return render();
+    case 'feed':{const d=me(),i=+b.dataset.i,pet=d.pets[i];let k=V.snack!=null&&d.snacks[V.snack]?V.snack:+Object.keys(d.snacks).find(x=>d.snacks[x]>0);if(isNaN(k))return toast('간식이 없어요. 문제를 맞히면 받아요!');
+      d.snacks[k]--;if(!d.snacks[k]){delete d.snacks[k];if(V.snack===k)V.snack=null}pet.fed=(pet.fed||0)+1;save();V.eat=i;V.pet=i;render();toast(`${SNACKS[k][0]} 냠냠! ${pet.name||ANIMALS[pet.sp].n}(이)가 좋아해요 💕`);setTimeout(()=>{if(V.eat===i){V.eat=null;if(V.view==='room')render()}},1600);return}
+    case 'rename':{const i=+b.dataset.i,pet=me().pets[i];const m=document.getElementById('modal');m.innerHTML=`<div class="modal"><div class="card"><h3>이름 짓기</h3><input class="namein" id="pn" maxlength="8" value="${pet.name||''}" placeholder="${ANIMALS[pet.sp].n}"><div class="row"><button class="btn ghost" id="pnNo">취소</button><button class="btn" id="pnOk">저장</button></div></div></div>`;
+      document.getElementById('pnNo').onclick=()=>m.innerHTML='';document.getElementById('pnOk').onclick=()=>{pet.name=document.getElementById('pn').value.trim().replace(/[<>&"]/g,'');save();m.innerHTML='';render()};return}
     case 'reset':return modalConfirm('이 학생의 학습 기록과 오답노트를 모두 지울까요?',()=>{const s=me().sem;S.data[S.cur]={ls:{},wrong:[],sem:s};save();go({view:'stats'})});
   }});
 /* ----- 클라우드 동기화 ----- */
 const SY={ref:null,st:'wait',writing:false,pending:false,timer:null};
-function syncText(){return SY.st==='ok'?'☁ 기록이 Claude 계정에 저장돼요. 같은 계정으로 로그인하면 어느 브라우저·기기에서든 이어서 할 수 있어요.':SY.st==='wait'?'☁ 저장소에 연결하는 중…':SY.st==='err'?'⚠ 지금은 서버에 저장하지 못했어요. 이 브라우저에 임시로 저장하고, 연결되면 다시 올려요.':'💾 기록은 이 기기에 저장돼요. 혹시 모를 상황에 대비해 가끔 \'기록\' 화면에서 백업 파일을 저장해 두세요.'}
+function syncText(){return SY.st==='ok'?(FB.on&&FB.user?`☁ 기록이 Firebase에 저장돼요 (${FB.user.email}). 어느 브라우저·기기에서든 같은 계정으로 로그인하면 이어져요.`:'☁ 기록이 Claude 계정에 저장돼요. 같은 계정으로 로그인하면 어느 브라우저·기기에서든 이어서 할 수 있어요.'):SY.st==='wait'?'☁ 저장소에 연결하는 중…':SY.st==='err'?'⚠ 지금은 서버에 저장하지 못했어요. 이 브라우저에 임시로 저장하고, 연결되면 다시 올려요.':'💾 기록은 이 기기에 저장돼요. 혹시 모를 상황에 대비해 가끔 \'기록\' 화면에서 백업 파일을 저장해 두세요.'}
 function setSync(st){SY.st=st;['syncline','syncline2'].forEach(i=>{const e=document.getElementById(i);if(e)e.textContent=syncText()})}
 function payload(){return {v:1,updatedAt:S.updatedAt||Date.now(),learners:S.learners,data:S.data}}
 pushHook=()=>schedulePush();
@@ -920,21 +1101,36 @@ function mergeInto(r){ // 처음 동기화하는 브라우저: 양쪽 기록을 
   const ids=new Set(S.learners.map(l=>l.id));(r.learners||[]).forEach(l=>{if(!ids.has(l.id))S.learners.push(l)});
   Object.entries(r.data||{}).forEach(([id,rd])=>{const ld=S.data[id];if(!ld){S.data[id]=rd;return}
     Object.entries(rd.ls||{}).forEach(([k,v])=>{if(!ld.ls[k]||(v.t||0)>(ld.ls[k].t||0))ld.ls[k]=v});
+    gameInit(ld);gameInit(rd);rd.pets.forEach(p=>{if(!ld.pets.some(x=>x.ch===p.ch))ld.pets.push(p)});Object.entries(rd.snacks).forEach(([k,v])=>{ld.snacks[k]=Math.max(ld.snacks[k]||0,v)});Object.assign(ld.room,rd.room);ld.snackGiven=Math.max(ld.snackGiven,rd.snackGiven);
     const seen=new Set((ld.wrong||[]).map(w=>w.lid+':'+(w.seed||w.at)));(rd.wrong||[]).forEach(w=>{if(!seen.has(w.lid+':'+(w.seed||w.at)))ld.wrong.push(w)});ld.wrong.sort((a,b)=>(b.at||0)-(a.at||0));ld.wrong=ld.wrong.slice(0,80)})}
 function adopt(r){const cur=S.cur;S.learners=r.learners||[];S.data=r.data||{};S.updatedAt=r.updatedAt||0;S.cur=S.learners.some(l=>l.id===cur)?cur:(S.learners[0]?S.learners[0].id:null);S.synced=true;saveLocal()}
 function softRender(){if(V.view==='practice')return;render()}
 async function initSync(){try{if(!window.claude||!window.claude.use)return setSync('local');
   const [db,user]=await Promise.all([claude.use('db'),claude.use('user')]);if(!db||!user)return setSync('local');
-  const uid=await user.id();if(!uid)return setSync('local');SY.ref=db.doc('data/users/'+uid+'/state');
+  const uid=await user.id();if(!uid)return setSync('local');await connect(db.doc('data/users/'+uid+'/state'));
+ }catch(e){setSync(SY.ref?'err':'local')}}
+async function connect(ref){try{SY.ref=ref;
   let snap;try{snap=await SY.ref.get()}catch(e){await new Promise(r=>setTimeout(r,1500));snap=await SY.ref.get()}
   const r=snap.exists?snap.data():null;
   if(r&&r.v===1){if(!S.synced){mergeInto(r);if(!S.cur&&S.learners[0])S.cur=S.learners[0].id;S.updatedAt=Date.now();saveLocal();await pushNow()}
     else if((r.updatedAt||0)>(S.updatedAt||0))adopt(r);else if((S.updatedAt||0)>(r.updatedAt||0))await pushNow()}
   else if(S.learners.length)await pushNow();
   if(SY.st!=='err')setSync('ok');softRender();
-  SY.ref.onSnapshot(sn=>{if(!sn.exists||sn.metadata.hasPendingWrites)return;const d=sn.data();if(d&&d.v===1&&(d.updatedAt||0)>(S.updatedAt||0)){adopt(d);softRender()}},()=>{});
- }catch(e){setSync(SY.ref?'err':'local')}}
-render();initSync();
+  SY.unsub=SY.ref.onSnapshot(sn=>{if(!sn.exists||sn.metadata.hasPendingWrites)return;const d=sn.data();if(d&&d.v===1&&(d.updatedAt||0)>(S.updatedAt||0)){adopt(d);softRender()}},()=>{});
+ }catch(e){setSync('err')}}
+function disconnect(){if(SY.unsub)SY.unsub();SY.unsub=null;SY.ref=null}
+
+/* ----- Firebase (GitHub 버전) ----- */
+const FB={on:false,auth:null,fs:null,user:undefined,msg:''};
+function fbConfigured(){const c=window.FIREBASE_CONFIG;return !!(window.firebase&&c&&c.apiKey&&c.projectId)}
+function fbErr(e){const c=(e&&e.code)||'';return c.includes('invalid-credential')||c.includes('wrong-password')||c.includes('user-not-found')?'이메일 또는 비밀번호가 맞지 않아요.':c.includes('email-already-in-use')?'이미 가입된 이메일이에요. 로그인을 눌러 주세요.':c.includes('weak-password')?'비밀번호는 6자 이상으로 해 주세요.':c.includes('invalid-email')?'이메일 형식이 맞지 않아요.':c.includes('network')?'인터넷 연결을 확인해 주세요.':c.includes('operation-not-allowed')?'Firebase 콘솔에서 이메일/비밀번호 로그인을 켜 주세요.':c.includes('too-many-requests')?'시도가 너무 많아요. 잠시 후 다시 해 주세요.':'로그인하지 못했어요. ('+c+')'}
+function renderLogin(){app.innerHTML=`<div class="card" style="margin-top:20px"><h2>로그인</h2><p class="small muted">선생님 계정 하나로 로그인하면 학생들 기록이 모두 Firebase에 저장돼요. 다른 브라우저나 기기에서도 같은 계정으로 로그인하면 이어서 할 수 있어요.</p>
+  <input class="namein" id="em" type="email" placeholder="이메일" autocomplete="username"><input class="namein" id="pw" type="password" placeholder="비밀번호 (6자 이상)" autocomplete="current-password">
+  ${FB.msg?`<div class="fb no">${FB.msg}</div>`:''}<div class="row"><button class="btn" data-act="login">로그인</button><button class="btn ghost" data-act="signup">처음이면 계정 만들기</button></div></div>`}
+function fbCred(){return [document.getElementById('em').value.trim(),document.getElementById('pw').value]}
+function startFirebase(){FB.on=true;try{firebase.initializeApp(window.FIREBASE_CONFIG);FB.auth=firebase.auth();FB.fs=firebase.firestore();}catch(e){FB.on=false;return false}
+  FB.auth.onAuthStateChanged(u=>{FB.user=u||null;FB.msg='';if(u){if(S.owner&&S.owner!==u.uid){S={learners:[],cur:null,data:{},updatedAt:0}}S.owner=u.uid;saveLocal();setSync('wait');render();connect(FB.fs.collection('mathgil').doc(u.uid))}else{disconnect();render()}});return true}
+if(fbConfigured()&&startFirebase()){render()}else{FB.on=false;render();initSync()}
 }
 </script>
 </body>
