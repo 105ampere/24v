@@ -1111,22 +1111,52 @@ function roomSVG(d,interactive){const units=Object.keys(FURN);const T=WALLS[d.wa
   s+=`<g transform="matrix(1,0.5,-1,0.5,200,170)"><rect width="160" height="160" fill="${T.fl}"/>`;
   for(let y=0,r=0;y<160;y+=16,r++){if(r%2)s+=`<rect x="0" y="${y}" width="160" height="16" fill="#000" opacity=".03"/>`;s+=`<line x1="0" y1="${y}" x2="160" y2="${y}" stroke="${T.pl}" stroke-width="1.2"/>`;for(let x=(r%3)*22+10;x<160;x+=66)s+=`<line x1="${x}" y1="${y}" x2="${x}" y2="${y+16}" stroke="${T.pl}" stroke-width="1.2"/>`}
   s+=`<polygon points="45,0 115,0 140,95 70,95" fill="#fff6d8" opacity="${T.night?.08:.28}"/><ellipse cx="92" cy="92" rx="60" ry="60" fill="${T.rug}"/><ellipse cx="92" cy="92" rx="52" ry="52" fill="none" stroke="${T.rug2}" stroke-width="2.5" stroke-dasharray="2 6" stroke-linecap="round"/><ellipse cx="92" cy="92" rx="36" ry="36" fill="none" stroke="${T.rug2}" stroke-width="1.6" opacity=".6"/><rect width="160" height="160" fill="url(#fg)"/></g>`;
-  // 선반 (벽에서 튀어나온 원목판)
-  const shelfL=(x1,x2,y)=>{const a=pL(x1,y),b=pL(x2,y),dx=10,dy=5;return `<polygon points="${a} ${b} ${b[0]+dx},${b[1]+dy} ${a[0]+dx},${a[1]+dy}" fill="${W3}"/><polygon points="${a[0]+dx},${a[1]+dy} ${b[0]+dx},${b[1]+dy} ${b[0]+dx},${b[1]+dy+4} ${a[0]+dx},${a[1]+dy+4}" fill="${W2}"/>`};
-  const shelfR=(x1,x2,y)=>{const a=pR(x1,y),b=pR(x2,y),dx=-10,dy=5;return `<polygon points="${a} ${b} ${b[0]+dx},${b[1]+dy} ${a[0]+dx},${a[1]+dy}" fill="${W3}"/><polygon points="${a[0]+dx},${a[1]+dy} ${b[0]+dx},${b[1]+dy} ${b[0]+dx},${b[1]+dy+4} ${a[0]+dx},${a[1]+dy+4}" fill="${W}"/>`};
-  s+=shelfL(8,152,58)+shelfL(8,152,104)+shelfR(6,38,58)+shelfR(122,154,58)+shelfR(6,38,104)+shelfR(122,154,104)+shelfR(36,124,126);
-  const ws=[];[58,104].forEach(y=>[22,50,78,106,134].forEach(x=>ws.push(['L',x,y])));[58,104].forEach(y=>{ws.push(['R',22,y]);ws.push(['R',138,y])});[50,72,94,116].forEach(x=>ws.push(['R',x,126]));ws.push(['R',80,97]);
-  units.forEach((u,i)=>{if(d.room[u]){const [w,x,y]=ws[i];const [px,py]=w==='L'?pL(x,y):pR(x,y);const ox=w==='L'?5:-5;s+=`<text x="${px+ox}" y="${py+4}" font-size="20" text-anchor="middle">${FURN[u][0]}</text>`}});
-  // 바닥 위 물건들 (뒤에서 앞으로 정렬)
-  const objs=[];
-  {const [x,y]=pF(16,16);objs.push({z:32,h:`<ellipse cx="${x}" cy="${y}" rx="14" ry="6" fill="#000" opacity=".1"/><path d="M${x-11} ${y-18} L${x+11} ${y-18} L${x+8} ${y} L${x-8} ${y} Z" fill="#f2a07b"/><rect x="${x-12}" y="${y-21}" width="24" height="5" rx="2" fill="#e88b66"/>`+[[-10,-36,10],[8,-40,11],[0,-52,12],[-14,-50,8],[13,-55,8]].map(([a,b,r])=>`<ellipse cx="${x+a}" cy="${y+b}" rx="${r}" ry="${r*.7}" fill="${r>10?'#5aa95e':'#7cc47a'}" transform="rotate(${a*2} ${x+a} ${y+b})"/>`).join('')})}
-  const LS=[[12,42],[12,76],[12,110],[12,144],[42,12],[76,12],[110,12],[144,12],[150,150]];
-  Object.keys(LIMF).forEach((u,k)=>{if(d.lim&&d.lim[u]){const [fx,fy]=LS[k];const [x,y]=pF(fx,fy);objs.push({z:fx+fy,h:`<ellipse cx="${x}" cy="${y}" rx="18" ry="8" fill="url(#glw)"/><text x="${x}" y="${y+2}" font-size="32" text-anchor="middle">${LIMF[u][0]}</text><text x="${x+14}" y="${y-28}" font-size="11" class="twinkle">✨</text>`})}});
-  const PS=[[92,92],[58,126],[126,58],[128,128],[58,58],[156,94],[94,156],[30,94],[94,30],[154,154],[34,152],[152,34],[94,124]];
-  d.pets.forEach((p,i)=>{const g=petStage(d,p),sz=[64,76,82,88,96][g],[fx,fy]=PS[i%PS.length],[x,y]=pF(fx,fy);const cu=['#ffb3c7','#ffe08a','#b8e6cf','#c9b8f5','#a8d4ff'][i%5];
-    objs.push({z:fx+fy+.5,h:`<ellipse cx="${x}" cy="${y-2}" rx="${sz*.36}" ry="${sz*.16}" fill="${cu}" stroke="#6b5049" stroke-opacity=".3" stroke-width="1.2"/><ellipse cx="${x}" cy="${y-4}" rx="${sz*.26}" ry="${sz*.1}" fill="#fff" opacity=".35"/><g class="bob" style="animation-delay:${(i*0.37)%2}s" ${interactive?`data-act="petsel" data-i="${i}"`:''}><svg x="${x-sz/2}" y="${y-sz*.9}" width="${sz}" height="${sz}" viewBox="0 0 200 200">${petSVG(p.sp,g,200,petNext(d,p).p).replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'')}</svg>${V.eat===i?`<text x="${x}" y="${y-sz*.9}" font-size="20" text-anchor="middle" class="heart">💕</text>`:''}</g>`})});
+  // ---------- 입체 상자 그리기 ----------
+  const sh=(c,k)=>{const n=parseInt(c.slice(1),16);let r=n>>16,g=(n>>8)&255,b=n&255;r=Math.max(0,Math.min(255,Math.round(r*k)));g=Math.max(0,Math.min(255,Math.round(g*k)));b=Math.max(0,Math.min(255,Math.round(b*k)));return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1)};
+  const P=(x,y,z)=>{const [a,b]=pF(x,y);return [a,b-z]};const pt=a=>a.map(v=>v.toFixed(1)).join(',');
+  const box=(x,y,w,dp,h,c,z)=>{z=z||0;const t=[P(x,y,z+h),P(x+w,y,z+h),P(x+w,y+dp,z+h),P(x,y+dp,z+h)],fy=[P(x,y+dp,z),P(x+w,y+dp,z),P(x+w,y+dp,z+h),P(x,y+dp,z+h)],fx=[P(x+w,y,z),P(x+w,y+dp,z),P(x+w,y+dp,z+h),P(x+w,y,z+h)];
+    const L=`stroke="${sh(c,.72)}" stroke-width="1" stroke-linejoin="round"`;return `<polygon points="${fy.map(pt).join(' ')}" fill="${sh(c,.9)}" ${L}/><polygon points="${fx.map(pt).join(' ')}" fill="${sh(c,.78)}" ${L}/><polygon points="${t.map(pt).join(' ')}" fill="${sh(c,1.04)}" ${L}/>`};
+  const objs=[];const add=(z,h)=>objs.push({z,h});
+  const CUR=T.night?'#f7a8c4':T.cur,SOFA=T.night?'#8e9bd6':'#f6a9bd',WOOD='#e2b07e',WHITE='#fbf7f2';
+  // 벽 장식: 알전구 (양쪽 벽 위쪽)
+  const lights=(w)=>{let o=`<path d="M4 12 Q 42 30 80 12 Q 118 30 156 12" fill="none" stroke="#6b5049" stroke-width="1"/>`;for(let x=10,k=0;x<156;x+=12,k++){const t=(x%76)/76,y=12+36*t*(1-t)*(x>80?1:1);o+=`<circle cx="${x}" cy="${y+5}" r="6" fill="url(#glw)"/><ellipse cx="${x}" cy="${y+5}" rx="2.4" ry="3.2" fill="${['#ffd36b','#ff9fbe','#9fe0c8','#a8c8ff'][k%4]}"/>`}return o};
+  s+=`<g transform="matrix(1,-0.5,0,1,40,110)">${lights()}</g><g transform="matrix(1,0.5,0,1,200,30)">${lights()}</g>`;
+  // 벽 액자 (왼쪽 벽, 소파 위)
+  s+=`<g transform="matrix(1,-0.5,0,1,40,110)"><rect x="18" y="14" width="22" height="18" rx="2" fill="#fff" stroke="${WOOD}" stroke-width="2.5"/><path d="M29 27 c-6 -5 -7 -9 -3 -10 c2 0 3 1 3 3 c0 -2 1 -3 3 -3 c4 1 3 5 -3 10z" fill="#ff8fb1"/><rect x="118" y="12" width="26" height="20" rx="2" fill="#fff" stroke="${WOOD}" stroke-width="2.5"/><path d="M122 30 l7 -9 l5 6 l3 -3 l5 6z" fill="#7cc47a"/><circle cx="138" cy="18" r="2.5" fill="#ffd36b"/></g>`;
+  // 선반: 왼쪽 벽 3줄, 오른쪽 벽 창문 양옆 1줄씩, 창턱
+  const shelfL=(x1,x2,y)=>{const a=pL(x1,y),b=pL(x2,y),dx=9,dy=4.5;return `<polygon points="${pt(a)} ${pt(b)} ${b[0]+dx},${b[1]+dy} ${a[0]+dx},${a[1]+dy}" fill="${W3}"/><polygon points="${a[0]+dx},${a[1]+dy} ${b[0]+dx},${b[1]+dy} ${b[0]+dx},${b[1]+dy+4} ${a[0]+dx},${a[1]+dy+4}" fill="${W2}"/>`};
+  const shelfR=(x1,x2,y)=>{const a=pR(x1,y),b=pR(x2,y),dx=-9,dy=4.5;return `<polygon points="${pt(a)} ${pt(b)} ${b[0]+dx},${b[1]+dy} ${a[0]+dx},${a[1]+dy}" fill="${W3}"/><polygon points="${a[0]+dx},${a[1]+dy} ${b[0]+dx},${b[1]+dy} ${b[0]+dx},${b[1]+dy+4} ${a[0]+dx},${a[1]+dy+4}" fill="${W}"/>`};
+  s+=shelfL(54,154,44)+shelfL(54,154,80)+shelfL(54,154,112)+shelfR(4,40,46)+shelfR(120,156,46);
+  const ws=[];[44,80,112].forEach(y=>[66,88,110,132,150].forEach(x=>ws.push(['L',x,y])));ws.push(['R',22,46]);ws.push(['R',138,46]);ws.push(['R',62,97]);ws.push(['R',98,97]);
+  const deco=(k,x,y)=>{const t=k%4;if(t===0)return `<path d="M${x-4} ${y-7} h8 l-1 7 h-6z" fill="#f2a07b"/><circle cx="${x-2}" cy="${y-10}" r="3" fill="#6cc070"/><circle cx="${x+2}" cy="${y-11}" r="3.2" fill="#5aa95e"/>`;
+    if(t===1)return `<rect x="${x-6}" y="${y-4}" width="12" height="4" fill="#8fc8ff"/><rect x="${x-5}" y="${y-8}" width="10" height="4" fill="#ffb3c7"/><rect x="${x-6}" y="${y-12}" width="11" height="4" fill="#ffe08a"/>`;
+    if(t===2)return `<rect x="${x-3.5}" y="${y-10}" width="7" height="10" rx="1.5" fill="#fff4e0" stroke="#e6cfa8"/><ellipse cx="${x}" cy="${y-13}" rx="1.6" ry="2.6" fill="#ffb84d"/>`;
+    return `<path d="M${x-5} ${y} q-1 -9 5 -10 q6 1 5 10z" fill="#cfe8ff" stroke="#a9c8ea"/><rect x="${x-2.5}" y="${y-13}" width="5" height="3" fill="#a9c8ea"/>`};
+  units.forEach((u,i)=>{const [w,x,y]=ws[i];const [px,py]=w==='L'?pL(x,y):pR(x,y);const ox=w==='L'?4.5:-4.5;const bx=px+ox,by=py+3;s+=d.room[u]?`<text x="${bx}" y="${by+1}" font-size="17" text-anchor="middle">${FURN[u][0]}</text>`:deco(i,bx,by)});
+  // ---------- 기본 가구 ----------
+  // 캣타워 (안쪽 구석)
+  add(10,box(4,4,30,30,6,WOOD)+box(15,15,8,8,58,'#e9d6b6',6)+box(2,2,34,34,5,WOOD,30)+box(6,6,26,26,6,WOOD,64)+box(9,9,20,20,5,CUR,70)+`<circle cx="${P(30,30,46)[0]}" cy="${P(30,30,46)[1]}" r="4" fill="#ff8fb1"/><line x1="${P(30,30,46)[0]}" y1="${P(30,30,46)[1]-4}" x2="${P(30,30,30)[0]}" y2="${P(30,30,30)[1]}" stroke="#6b5049" stroke-width="1"/>`);
+  // 창가 벤치 + 쿠션
+  add(30,box(44,2,78,22,16,WHITE)+box(48,4,70,18,6,CUR,16)+box(52,4,16,7,10,'#ffffff',22)+box(98,4,16,7,10,'#ffe08a',22));
+  // 스탠드 조명 (오른쪽)
+  {const [x,y]=P(148,8,0),[tx,ty]=P(148,8,78);add(160,`<ellipse cx="${x}" cy="${y}" rx="8" ry="4" fill="#c99260"/><line x1="${x}" y1="${y}" x2="${tx}" y2="${ty}" stroke="#a87a50" stroke-width="2.5"/><circle cx="${tx}" cy="${ty+8}" r="${T.night?34:22}" fill="url(#glw)" opacity="${T.night?1:.7}"/><path d="M${tx-12} ${ty+6} L${tx+12} ${ty+6} L${tx+7} ${ty-10} L${tx-7} ${ty-10} Z" fill="#fff3d6" stroke="#e8c99a"/>`)}
+  // 소파 (왼쪽 벽)
+  add(60,box(2,52,24,74,12,SOFA)+box(2,52,8,74,30,SOFA)+box(2,48,24,8,22,SOFA)+box(2,122,24,8,22,SOFA)+box(10,58,14,30,6,sh(SOFA,1.08),12)+box(10,90,14,30,6,sh(SOFA,1.08),12)+box(11,62,5,12,12,'#ffffff',18)+box(11,106,5,12,12,'#ffe08a',18));
+  // 사이드 테이블 + 화분
+  {add(140,box(4,134,20,20,20,WHITE));const [x,y]=P(14,144,20);add(141,`<path d="M${x-6} ${y-10} h12 l-2 10 h-8z" fill="#f2a07b"/>`+[[-6,-16,6],[5,-18,6],[0,-24,6]].map(([a,b,r])=>`<ellipse cx="${x+a}" cy="${y+b}" rx="${r}" ry="${r*.7}" fill="#6cc070"/>`).join(''))}
+  // 장난감 공·실뭉치
+  {const [x,y]=P(60,150,0);add(150,`<circle cx="${x}" cy="${y-5}" r="5.5" fill="#ff8fa3"/><path d="M${x-5} ${y-6} q5 -4 10 0" stroke="#fff" fill="none"/>`);const [a,b]=P(150,60,0);add(150,`<circle cx="${a}" cy="${b-5}" r="5.5" fill="#8fc8ff"/><path d="M${a-4} ${b-8} q4 4 8 0 M${a-5} ${b-4} q5 4 10 0" stroke="#fff" fill="none"/>`)}
+  // 리미티드 가구
+  const LS=[[40,40],[36,74],[36,108],[36,146],[76,34],[110,34],[146,34],[154,154],[74,154]];
+  Object.keys(LIMF).forEach((u,k)=>{if(d.lim&&d.lim[u]){const [fx,fy]=LS[k];const [x,y]=pF(fx,fy);add(fx+fy,`<ellipse cx="${x}" cy="${y}" rx="16" ry="7" fill="url(#glw)"/><text x="${x}" y="${y+2}" font-size="28" text-anchor="middle">${LIMF[u][0]}</text><text x="${x+12}" y="${y-24}" font-size="10" class="twinkle">✨</text>`)}});
+  // 친구들
+  const PS=[[98,98],[68,128],[128,68],[130,130],[72,72],[158,100],[100,158],[66,100],[100,66],[158,132],[132,158],[102,128],[128,102]];
+  d.pets.forEach((p,i)=>{const g=petStage(d,p),sz=[60,70,76,82,90][g],[fx,fy]=PS[i%PS.length],[x,y]=pF(fx,fy);const cu=['#ffb3c7','#ffe08a','#b8e6cf','#c9b8f5','#a8d4ff'][i%5];
+    add(fx+fy+.5,`<ellipse cx="${x}" cy="${y-2}" rx="${sz*.34}" ry="${sz*.15}" fill="${cu}" stroke="#6b5049" stroke-opacity=".3" stroke-width="1.2"/><ellipse cx="${x}" cy="${y-4}" rx="${sz*.24}" ry="${sz*.09}" fill="#fff" opacity=".35"/><g class="bob" style="animation-delay:${(i*0.37)%2}s" ${interactive?`data-act="petsel" data-i="${i}"`:''}><svg x="${x-sz/2}" y="${y-sz*.9}" width="${sz}" height="${sz}" viewBox="0 0 200 200">${petSVG(p.sp,g,200,petNext(d,p).p).replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'')}</svg>${V.eat===i?`<text x="${x}" y="${y-sz*.9}" font-size="20" text-anchor="middle" class="heart">💕</text>`:''}</g>`)});
   objs.sort((a,b)=>a.z-b.z).forEach(o=>s+=o.h);
+  if(T.night)s+=`<rect x="14" y="10" width="372" height="374" fill="#1a1f4a" opacity=".12" pointer-events="none"/>`;
   return s+`</svg>`}
+
 function renderRoom(){const d=me();setAcc(d.sem);const nl=Object.keys(d.lim).length,nf=Object.keys(FURN).filter(u=>d.room[u]).length,ns=Object.values(d.snacks).reduce((a,b)=>a+b,0);
   const sel=V.pet!=null&&d.pets[V.pet]?V.pet:null;
   app.innerHTML=`<button class="back" data-act="home">← 처음으로</button><h2 style="margin-top:6px">${curName()}의 미니룸</h2>
