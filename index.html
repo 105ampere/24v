@@ -830,9 +830,9 @@ const KEY='sjpt-review-v1';
 // Firebase는 빈 배열·객체를 지우고, 숫자 키 객체를 배열로 바꿔서 돌려줘요 → 불러올 때 모양을 다시 맞춰요
 const arr=v=>Array.isArray(v)?v.filter(x=>x!==null&&x!==undefined):(v&&typeof v==='object'?Object.values(v):[]);
 function normalizeS(o){
-  o=Object.assign({known:{},best:null,check:{},days:[],log:{},songs:[],learned:{}},o||{});
+  o=Object.assign({known:{},best:null,check:{},days:[],log:{},songs:[],learned:{},noteLyrics:{}},o||{});
   if(Array.isArray(o.check)){const c={};o.check.forEach((v,i)=>{if(v)c[i]=v});o.check=c}
-  ['known','learned','log','check'].forEach(k=>{if(!o[k]||typeof o[k]!=='object')o[k]={}});
+  ['known','learned','log','check','noteLyrics'].forEach(k=>{if(!o[k]||typeof o[k]!=='object')o[k]={}});
   o.days=arr(o.days); o.songs=arr(o.songs);
   o.songs.forEach(sg=>{sg.lines=arr(sg.lines)});
   Object.keys(o.log).forEach(d=>{const l=o.log[d]||{};['known','again','quiz','checks','learn'].forEach(k=>{l[k]=arr(l[k])});l.quiz.forEach(q=>{q.wrong=arr(q.wrong)});l.sec=l.sec||0;l.listen=l.listen||0;o.log[d]=l});
@@ -847,13 +847,17 @@ S.days=[...new Set((S.days||[]).map(k=>{const p=k.split('-');return p[0]+'-'+pad
 function saveRaw(){try{localStorage.setItem(KEY, JSON.stringify(S));}catch(e){} pushRemote();}
 
 /* ================= FIREBASE 동기화 ================= */
-let fbRef=null, lastSync='', firstSnap=true;
+let fbRef=null, lastSync='', firstSnap=true, syncState='', fbDenied=false;
 function setSync(st){const el=document.getElementById('syncPill'); if(!el) return;
-  const M={local:'💾 이 기기에만 저장 중',loading:'☁️ 불러오는 중…',saving:'☁️ 저장 중…',ok:'☁️ Firebase에 저장됨',offline:'⚠️ 오프라인 · 연결되면 저장',err:'⚠️ 저장 실패 · 이 기기에만 저장',nosdk:'⚠️ Firebase 못 불러옴 · 이 기기에만 저장',slow:'⚠️ Firebase 연결 안 됨 · 이 기기에만 저장'};
-  el.textContent=M[st]||st; el.classList.toggle('err',['err','offline','nosdk','slow'].includes(st));}
-function pushRemote(){ if(!fbRef) return; clearTimeout(pushRemote._t);
+  if(st==='saving') return;                       // 저장할 때마다 깜빡이지 않게 '저장 중'은 표시하지 않아요
+  if(fbDenied && st!=='denied') return;           // 권한 문제는 고칠 때까지 그대로 보여 줘요
+  if(st===syncState) return; syncState=st;
+  const M={local:'💾 이 기기에만 저장 중',loading:'☁️ 불러오는 중…',saving:'☁️ 저장 중…',ok:'☁️ Firebase에 저장됨',offline:'⚠️ 오프라인 · 연결되면 저장',err:'⚠️ 저장 실패 · 이 기기에만 저장',nosdk:'⚠️ Firebase 못 불러옴 · 이 기기에만 저장',slow:'⚠️ Firebase 연결 안 됨 · 이 기기에만 저장',denied:'⚠️ Firebase 권한 없음 · 이 기기에만 저장'};
+  el.textContent=M[st]||st; el.classList.toggle('err',['err','offline','nosdk','slow','denied'].includes(st));}
+function fbFail(e){ const c=String((e&&(e.code||e.message))||''); console.warn('[sjpt] Firebase 오류:',c); if(/permission/i.test(c)){ fbDenied=true; setSync('denied'); } else setSync('err'); }
+function pushRemote(){ if(!fbRef||fbDenied) return; clearTimeout(pushRemote._t);
   pushRemote._t=setTimeout(()=>{ const data=JSON.parse(JSON.stringify(S)); const k=stable(normalizeS(JSON.parse(JSON.stringify(S)))); if(k===lastSync) return;
-    lastSync=k; setSync('saving'); fbRef.set(data).then(()=>setSync('ok')).catch(()=>setSync('err')); },500); }
+    lastSync=k; setSync('saving'); fbRef.set(data).then(()=>setSync('ok')).catch(e=>{ lastSync=''; fbFail(e); }); },1500); }
 function mergeS(r,l){ // 처음 연결할 때만: 두 기록을 합쳐서 어느 쪽도 잃지 않게
   const o=normalizeS(JSON.parse(JSON.stringify(r)));
   Object.keys(l.known).forEach(k=>{if(!(k in o.known))o.known[k]=l.known[k]; else if(l.known[k])o.known[k]=1});
@@ -863,6 +867,7 @@ function mergeS(r,l){ // 처음 연결할 때만: 두 기록을 합쳐서 어느
   if(l.best!=null&&(o.best==null||l.best>o.best))o.best=l.best;
   Object.keys(l.log).forEach(d=>{ if(!o.log[d]||JSON.stringify(l.log[d]).length>JSON.stringify(o.log[d]).length) o.log[d]=l.log[d]; });
   l.songs.forEach(ls=>{const rs=o.songs.find(x=>x.id===ls.id); if(!rs) o.songs.push(ls); else ls.lines.forEach(ln=>{if(!rs.lines.some(x=>x.id===ln.id)) rs.lines.push(ln)})});
+  Object.keys(l.noteLyrics||{}).forEach(k=>{ if((l.noteLyrics[k]||'').length>(o.noteLyrics[k]||'').length) o.noteLyrics[k]=l.noteLyrics[k]; });
   return o; }
 function refreshAll(){ try{ renderStats(); renderCal(); drawDay(); drawCheck();
   const on=document.querySelector('section.page.on'); const id=on&&on.id;
@@ -886,7 +891,7 @@ function initFirebase(){
     S=next; lastSync=k; try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
     const t=dkey(new Date()); if(!S.days.includes(t)){S.days.push(t)}
     refreshAll(); setSync('ok');
-  }, ()=>setSync('err'));
+  }, e=>fbFail(e));
   firebase.database().ref('.info/connected').on('value',s=>{ if(s.val()===true){ if(!firstSnap) setSync('ok'); } else if(!firstSnap) setSync('offline'); });
 }
 function save(){saveRaw(); renderStats(); if(typeof renderCal==='function') renderCal();}
@@ -2314,6 +2319,28 @@ function lineForm(sid,ln){
     <div class="row" style="margin-top:10px"><button class="btn" style="background:var(--purple);padding:9px 16px" id="fSave">${ln?'수정 저장':'구절 저장'}</button><button class="btn ghost" style="padding:9px 14px" id="fCancel">취소</button></div>
   </div>`;
 }
+function lyricsOf(key){
+  if(key.startsWith('n:')){ const id=key.slice(2); if(S.noteLyrics&&S.noteLyrics[id]) return S.noteLyrics[id];
+    const nt=SONG_NOTES.find(n=>n.id===id); const sg=nt&&S.songs.find(x=>nt.match.some(m=>x.title.toLowerCase().includes(m.toLowerCase()))&&x.lyrics); return sg?sg.lyrics:''; }
+  const sg=findSong(key.slice(2)); return sg?(sg.lyrics||''):'';
+}
+function setLyrics(key,v){
+  if(key.startsWith('n:')){ S.noteLyrics=S.noteLyrics||{}; S.noteLyrics[key.slice(2)]=v; }
+  else { const sg=findSong(key.slice(2)); if(sg) sg.lyrics=v; }
+}
+function lyricsCard(key,title,text){
+  const ly=(text||'').replace(/\r/g,''), ed=SG.lyEdit===key;
+  let h=`<div class="card ly-card"><div class="ly-head"><b>📝 전체 가사</b><span class="muted">${esc(title)}</span>${ed?'':`<button class="btn ghost ly-btn" data-lyedit="${esc(key)}">${ly.trim()?'✎ 수정':'＋ 입력'}</button>`}</div>`;
+  if(ed){
+    h+=`<textarea id="lyText" class="ly-ta ja" placeholder="가사를 직접 붙여 넣거나 입력하세요.&#10;일본어 줄과 한국어 해석 줄을 번갈아 넣으면 보기 좋게 나눠서 보여 줘요.">${esc(ly)}</textarea>
+      <div class="row" style="margin-top:8px"><button class="btn" style="background:var(--purple);padding:9px 16px" id="lySave">저장</button><button class="btn ghost" style="padding:9px 14px" id="lyCancel">취소</button></div>`;
+  } else if(ly.trim()){
+    h+=`<div class="ly-body">${ly.split('\n').map(t=>{const x=t.trim(); if(!x) return '<div class="ly-gap"></div>'; const ko=/[가-힣]/.test(x)&&!/[ぁ-んァ-ン一-龯]/.test(x); return ko?`<div class="ly-ko">${esc(x)}</div>`:`<div class="ly-ja ja" data-say="${esc(x)}">${esc(x)}</div>`}).join('')}</div><div class="muted" style="font-size:12px;margin-top:6px">일본어 줄을 누르면 발음을 들을 수 있어요.</div>`;
+  } else {
+    h+=`<div class="muted" style="font-size:13.5px">아직 입력한 가사가 없어요. '＋ 입력'을 눌러 직접 넣어 주세요.</div>`;
+  }
+  return h+`</div>`;
+}
 function drawSongs(){
   const box=$('#songBox'); let h='';
   const tot=allLines(null).length, all=S.songs.reduce((a,sg)=>a+sg.lines.length,0), kn=S.songs.reduce((a,sg)=>a+sg.lines.filter(l=>l.known).length,0);
@@ -2369,17 +2396,9 @@ function drawSongs(){
       </div></div>`;
   }
   if(S.songs.length){
-    const sg=findSong(SG.open), ly=(sg.lyrics||'').replace(/\r/g,'');
-    h+=`<div class="card ly-card"><div class="ly-head"><b>📝 전체 가사</b><span class="muted">${esc(sg.title)}</span>${SG.lyEdit===sg.id?'':`<button class="btn ghost ly-btn" data-lyedit="${sg.id}">${ly.trim()?'✎ 수정':'＋ 입력'}</button>`}</div>`;
-    if(SG.lyEdit===sg.id){
-      h+=`<textarea id="lyText" class="ly-ta ja" placeholder="가사를 직접 붙여 넣거나 입력하세요.&#10;일본어 줄과 한국어 해석 줄을 번갈아 넣으면 보기 좋게 나눠서 보여 줘요.">${esc(ly)}</textarea>
-        <div class="row" style="margin-top:8px"><button class="btn" style="background:var(--purple);padding:9px 16px" id="lySave">저장</button><button class="btn ghost" style="padding:9px 14px" id="lyCancel">취소</button></div>`;
-    } else if(ly.trim()){
-      h+=`<div class="ly-body">${ly.split('\n').map(t=>{const x=t.trim(); if(!x) return '<div class="ly-gap"></div>'; const ko=/[가-힣]/.test(x)&&!/[ぁ-んァ-ン一-龯]/.test(x); return ko?`<div class="ly-ko">${esc(x)}</div>`:`<div class="ly-ja ja" data-say="${esc(x)}">${esc(x)}</div>`}).join('')}</div><div class="muted" style="font-size:12px;margin-top:6px">일본어 줄을 누르면 발음을 들을 수 있어요.</div>`;
-    } else {
-      h+=`<div class="muted" style="font-size:13.5px">아직 입력한 가사가 없어요. '＋ 입력'을 눌러 직접 넣어 주세요.</div>`;
-    }
-    h+=`</div>`;
+    const sg=findSong(SG.open);
+    const matched=SONG_NOTES.some(n=>n.match.some(m=>sg.title.toLowerCase().includes(m.toLowerCase())));
+    if(!matched) h+=lyricsCard('s:'+sg.id, sg.title, sg.lyrics||'');   // 핵심 표현이 있는 곡은 그 아래에서 보여 줘요
   }
   if(SONG_NOTES.length){
     const cur=SG.open&&findSong(SG.open);
@@ -2388,14 +2407,16 @@ function drawSongs(){
     if(auto) SN_OPEN=auto.id;
     h+=`<div class="cat" style="color:var(--purple);margin-top:18px">📚 가사 핵심 표현</div>
       <div class="lchips stags">${SONG_NOTES.map(n=>`<button class="lchip stag ${n.id===SN_OPEN?'on':''}" data-sn="${n.id}"># ${esc(n.title)} <span class="cnt">${esc(n.artist)}</span></button>`).join('')}</div>`;
-    h+=songNoteHtml(SONG_NOTES.find(n=>n.id===SN_OPEN));
+    const nt=SONG_NOTES.find(n=>n.id===SN_OPEN);
+    h+=lyricsCard('n:'+nt.id, nt.title+' · '+nt.artist, lyricsOf('n:'+nt.id));
+    h+=songNoteHtml(nt);
   }
   box.innerHTML=h;
   bindSongs();
   box.querySelectorAll('[data-sn]').forEach(b=>b.onclick=()=>{SN_OPEN=b.dataset.sn;drawSongs()});
   box.querySelectorAll('[data-lyedit]').forEach(b=>b.onclick=()=>{SG.lyEdit=b.dataset.lyedit;drawSongs();const t=$('#lyText');if(t){t.focus();t.scrollIntoView({block:'center'})}});
   const lc=$('#lyCancel'); if(lc) lc.onclick=()=>{SG.lyEdit=null;drawSongs()};
-  const ls=$('#lySave'); if(ls) ls.onclick=()=>{const sg=findSong(SG.lyEdit); if(sg){sg.lyrics=$('#lyText').value; SG.lyEdit=null; save(); toast('📝 가사를 저장했어요');} drawSongs()};
+  const ls=$('#lySave'); if(ls) ls.onclick=()=>{ setLyrics(SG.lyEdit,$('#lyText').value); SG.lyEdit=null; save(); toast('📝 가사를 저장했어요'); drawSongs(); };
 }
 function bindSongs(){
   const box=$('#songBox'), on=(sel,fn)=>box.querySelectorAll(sel).forEach(b=>b.onclick=e=>{e.stopPropagation();fn(b,e)});
