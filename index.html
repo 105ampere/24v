@@ -1044,7 +1044,7 @@ function endQuiz(){
 
 /* ================= NOTES ================= */
 let note='fix';
-let noteDate=null;
+let noteDate=SESSIONS.map(x=>x.d).sort().pop()||null;   // 기본값: 가장 최근에 학습한 날
 const inDate=x=>!noteDate||x.d===noteDate;
 function drawNoteDates(){
   const el=$('#noteDates'); if(!el) return;
