@@ -24,6 +24,8 @@ header .tag{display:inline-block;background:rgba(255,255,255,.28);padding:2px 10
 header h1{margin:6px 0 2px;font-size:23px;font-weight:900;letter-spacing:-.5px}
 header p{margin:0;font-size:13px;opacity:.95}
 .head-in{max-width:760px;margin:0 auto;position:relative;z-index:1}
+.sync{display:inline-block;margin-top:8px;background:rgba(255,255,255,.92);color:var(--ink);padding:3px 11px;border-radius:20px;font-size:12px;font-weight:700}
+.sync.err{background:#fff0f4;color:var(--red)}
 
 /* nav */
 nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;z-index:20;padding-bottom:env(safe-area-inset-bottom)}
@@ -194,8 +196,8 @@ mark{background:linear-gradient(transparent 55%,#ffe066 55%);color:inherit}
 .blk.lesson h4{color:var(--blue)}
 .blk.log{background:#fff5f8;border:2px solid #ffd0dc}
 .blk.log h4{color:var(--pink)}
-.blk.memo{background:#fffbea;border:2px solid #ffe8a3}
-.blk.memo h4{color:#a07800}
+.blk.song{background:#f7f4ff;border:2px solid #d8ccf7}
+.blk.song h4{color:var(--purple)}
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 6px}
 .chip{background:#fff;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:600}
 .kv{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:6px}
@@ -211,10 +213,74 @@ details[open] summary:before{content:"▾ "}
 .li .tx{flex:1;min-width:0;font-size:14px}
 .li .tx small{display:block;color:var(--muted);font-size:12px}
 .li .spk{width:30px;height:30px;font-size:13px}
-.memo textarea{width:100%;min-height:80px;border:0;border-radius:10px;padding:9px 11px;font-family:inherit;font-size:14px;resize:vertical;background:#fff}
 .sess-chip{display:none;align-items:center;gap:8px;background:#f0f9fd;border:2px solid #bfe3f1;color:var(--blue);border-radius:12px;padding:7px 12px;font-size:13px;font-weight:700;margin-bottom:10px}
 .sess-chip.on{display:flex}
 .sess-chip button{margin-left:auto;background:#fff;border-radius:8px;padding:3px 9px;font-size:12px;color:var(--ink)}
+/* learn */
+.lchips{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 10px;margin:0 -2px;scrollbar-width:none}
+.lchips::-webkit-scrollbar{display:none}
+.lchip{flex:none;background:#fff;border:2px solid #e3eef4;border-radius:22px;padding:6px 12px;font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap}
+.lchip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.lchip.done:not(.on){border-color:#9fe0c9;background:#effbf7}
+.lhead{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.lhead .em{font-size:30px}
+.lhead h3{margin:0;font-size:19px}
+.lsec{border-radius:14px;padding:10px 12px;margin-top:10px}
+.lsec h4{margin:0 0 4px;font-size:14.5px}
+.lsec.ls{background:#f0f9fd} .lsec.ls h4{color:var(--blue)}
+.lsec.sy{background:#fff5f8} .lsec.sy h4{color:var(--pink)}
+.lsec.wd{background:#f7f4ff} .lsec.wd h4{color:var(--purple)}
+.lsec.tp{background:#fffbea} .lsec.tp h4{color:#a07800}
+.lrow{display:flex;gap:8px;align-items:center;padding:7px 0;border-top:1px dashed rgba(0,0,0,.08)}
+.lrow:first-of-type{border-top:0}
+.lrow .tx{flex:1;min-width:0}
+.lrow .j{font-size:16px;font-weight:700;line-height:1.5}
+.lrow .k{font-size:13px;color:var(--muted)}
+.hide-k .lsec.ls .k:not(.rv){filter:blur(5px);cursor:pointer}
+.wgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.wd-i{background:#fff;border-radius:10px;padding:7px 9px;text-align:left;color:var(--ink)}
+.wd-i b{display:block;font-size:15.5px}
+.wd-i .y{font-size:11.5px;color:var(--blue)}
+.wd-i .m{font-size:12.5px;color:var(--muted)}
+.lsec.tp ul{margin:0;padding-left:18px;font-size:13.8px}
+.lsec.tp li{margin:3px 0}
+.lnav{display:flex;gap:8px;margin-top:12px}
+.lnav button{flex:1}
+/* songs */
+.song-card{background:#fff;border-radius:18px;margin-bottom:12px;overflow:hidden;box-shadow:0 2px 0 rgba(0,0,0,.04),0 6px 18px rgba(123,92,214,.08)}
+.song-head{display:flex;align-items:center;gap:10px;padding:13px 15px;cursor:pointer;background:linear-gradient(135deg,#f3eeff,#fff0f7)}
+.song-head .ic{width:38px;height:38px;border-radius:12px;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;flex:none}
+.song-head .tt{flex:1;min-width:0}
+.song-head b{display:block;font-size:16px;line-height:1.3}
+.song-head small{color:var(--muted);font-size:12.5px}
+.song-head .pg{font-size:12px;font-weight:800;color:var(--purple);background:#fff;border-radius:20px;padding:2px 9px;flex:none}
+.song-body{padding:8px 13px 13px;display:none}
+.song-card.open .song-body{display:block}
+.ln{border-top:1px dashed #e8e2f3;padding:10px 0;display:flex;gap:8px;align-items:flex-start}
+.ln:first-child{border-top:0}
+.ln .tx{flex:1;min-width:0}
+.ln .ja-l{font-size:17px;font-weight:700;line-height:1.55;cursor:pointer;word-break:break-all}
+.ln .yo{font-size:12.5px;color:var(--blue)}
+.ln .ko-l{font-size:13.5px;color:#55586b;cursor:pointer}
+.ln .nt{font-size:12.5px;background:#fffbea;border-radius:8px;padding:4px 8px;margin-top:4px;white-space:pre-wrap}
+.ln.known .ja-l{color:var(--green)}
+.ln .acts{display:flex;flex-direction:column;gap:5px;flex:none}
+.mini{background:#f4f1fa;border-radius:9px;width:32px;height:32px;font-size:14px;color:var(--ink)}
+.mini.on{background:var(--green);color:#fff}
+.hide-ja .ja-l:not(.rv){filter:blur(7px)}
+.hide-ko .ko-l:not(.rv){filter:blur(5px)}
+.song-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.song-tools button{font-size:12.5px;padding:6px 10px;border-radius:10px;background:#f4f1fa;color:var(--ink);font-weight:700}
+.fm{background:#f7f4ff;border-radius:14px;padding:11px;margin-top:8px}
+.fm label{display:block;font-size:12.5px;font-weight:700;color:var(--purple);margin:7px 0 3px}
+.fm label:first-child{margin-top:0}
+.fm input,.fm textarea{width:100%;border:2px solid #e3dbf7;border-radius:10px;padding:8px 10px;font-family:inherit;font-size:15px;background:#fff}
+.fm textarea{resize:vertical;min-height:62px}
+.fm .ja-in{font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic","Meiryo",sans-serif}
+.pr{text-align:center;padding:22px 16px;min-height:200px;display:flex;flex-direction:column;justify-content:center;align-items:center;cursor:pointer;border-radius:20px;background:#fff;border:3px solid #d8ccf7;margin-bottom:10px}
+.pr .q{font-size:18px;font-weight:800;line-height:1.5}
+.pr .a{font-size:21px;font-weight:800;color:var(--purple);margin-top:12px;line-height:1.5}
+.pr .s{font-size:12px;color:var(--muted);margin-top:8px}
 @media (min-width:600px){.stats{grid-template-columns:repeat(4,1fr)} .vgrid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
@@ -223,7 +289,8 @@ details[open] summary:before{content:"▾ "}
 <header><div class="head-in">
   <span class="tag">SJPT 대비 · 개인 공부방</span>
   <h1>日本語 회화 복습 ✨</h1>
-  <p>틀렸던 표현을 고치고, 소리 내어 말하고, 퀴즈로 굳히기</p>
+  <p>틀렸던 표현을 고치고, 소리 내어 말하고, 상황별로 익히기</p>
+  <span class="sync" id="syncPill">💾 준비 중…</span>
 </div></header>
 
 <div class="wrap">
@@ -232,7 +299,7 @@ details[open] summary:before{content:"▾ "}
 <section class="page on" id="home">
   <div class="stats">
     <div class="stat" style="--c:var(--pink)"><b id="stKnown">0</b><span>외운 카드</span><div class="bar"><i id="barKnown" style="width:0"></i></div></div>
-    <div class="stat" style="--c:var(--purple)"><b id="stBest">-</b><span>퀴즈 최고 점수</span><div class="bar"><i id="barBest" style="width:0"></i></div></div>
+    <div class="stat" style="--c:var(--purple)"><b id="stBest">0</b><span>학습한 상황</span><div class="bar"><i id="barBest" style="width:0"></i></div></div>
     <div class="stat" style="--c:var(--green)"><b id="stCheck">0</b><span>체크리스트</span><div class="bar"><i id="barCheck" style="width:0"></i></div></div>
     <div class="stat" style="--c:var(--orange)"><b id="stDays">0</b><span>공부한 날</span><div class="bar"><i id="barDays" style="width:0"></i></div></div>
   </div>
@@ -325,15 +392,16 @@ details[open] summary:before{content:"▾ "}
   </div>
 </section>
 
-<!-- QUIZ -->
-<section class="page" id="quiz">
-  <h2 class="t"><span class="dot" style="background:var(--purple)">🎯</span>퀴즈</h2>
-  <div id="quizBox"></div>
+<!-- LEARN -->
+<section class="page" id="learn">
+  <h2 class="t"><span class="dot" style="background:var(--blue)">📖</span>상황별 학습</h2>
+  <div id="learnBox"></div>
 </section>
 
 <!-- STUDY (notes) -->
 <section class="page" id="notes">
   <h2 class="t"><span class="dot" style="background:var(--orange)">📒</span>노트</h2>
+  <div class="lchips" id="noteDates"></div>
   <div class="seg" id="noteSeg">
     <button data-n="fix" class="on">교정</button>
     <button data-n="verb">자타동사</button>
@@ -346,6 +414,12 @@ details[open] summary:before{content:"▾ "}
   <div id="noteBox"></div>
 </section>
 
+<!-- SONGS -->
+<section class="page" id="songs">
+  <h2 class="t"><span class="dot" style="background:var(--purple)">🎵</span>가사로 외우기</h2>
+  <div id="songBox"></div>
+</section>
+
 <!-- CHECKLIST -->
 <section class="page" id="check">
   <h2 class="t"><span class="dot" style="background:var(--green)">✓</span>복습 체크리스트</h2>
@@ -354,19 +428,37 @@ details[open] summary:before{content:"▾ "}
   <div class="row" style="justify-content:center;margin-top:8px"><button class="btn ghost" id="ckReset" style="font-size:13px;padding:7px 12px">체크 모두 해제</button></div>
 </section>
 
-<div class="foot">頑張ってください！ 💪 · 진도는 이 브라우저에 저장돼요</div>
+<div class="foot">頑張ってください！ 💪 · 기록은 Firebase에 자동 저장돼요</div>
 </div>
 
 <nav><div class="in">
   <button data-p="home" class="on"><span class="ic">🏠</span>홈</button>
   <button data-p="cards"><span class="ic">🃏</span>카드</button>
-  <button data-p="quiz"><span class="ic">🎯</span>퀴즈</button>
+  <button data-p="learn"><span class="ic">📖</span>학습</button>
   <button data-p="notes"><span class="ic">📒</span>노트</button>
+  <button data-p="songs"><span class="ic">🎵</span>가사</button>
   <button data-p="check"><span class="ic">✅</span>체크</button>
 </div></nav>
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script>
+/* ================= FIREBASE 설정 =================
+   Firebase 콘솔 → 프로젝트 설정 → 내 앱(웹)의 firebaseConfig 값을 아래에 붙여 넣으세요.
+   databaseURL이 비어 있으면 기록은 이 브라우저에만 저장돼요. */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAG63PsvEk-nMOV1Ql1ULQYTQyM2eCEAOE",
+  authDomain: "ampere-41ac2.firebaseapp.com",
+  databaseURL: "https://ampere-41ac2-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "ampere-41ac2",
+  storageBucket: "ampere-41ac2.firebasestorage.app",
+  messagingSenderId: "237255963258",
+  appId: "1:237255963258:web:dc67ca62e064279875c1c3",
+  measurementId: "G-4N1WMCZ7MC"
+};
+const FIREBASE_PATH = "sjpt-review";   // Realtime Database 안에서 이 사이트 기록이 들어갈 위치
+
 /* ================= DATA ================= */
 // 교정 표현: w=말한 것, r=자연스러운 표현, k=뜻, n=설명, cat, c=Claude 보충
 const FIX = [
@@ -414,6 +506,27 @@ const FIX = [
   {cat:'문법', w:'試着してもいいです', r:'試着してもいいですか', k:'입어 봐도 돼요?', n:'～てもいいですか = ~해도 돼요?', d:'2026-11-14'},
   {cat:'문법', w:'いろんな言葉の練習したいだ', r:'いろんな言葉の練習がしたいです', k:'여러 단어를 연습하고 싶어요', n:'～がしたいです / ～をしたいです', c:1, d:'2026-11-14'},
   {cat:'문법', w:'音声が切れました', r:'音声が途切れました', k:'소리가 끊겼어요', n:'통화·음성이 끊길 때는 途切れる', c:1, d:'2026-11-14'},
+  {"cat": "문법", "w": "財布を落としたみたいんです", "r": "財布を落としたみたいなんです", "k": "지갑을 잃어버린 것 같아요", "n": "～みたいなんです — な를 빼먹는 실수가 이날 3번 나옴", "d": "2026-11-16", "c": 1},
+  {"cat": "문법", "w": "うちの部屋がエアコンが壊れたみたいんです", "r": "部屋のエアコンが壊れたみたいなんです", "k": "방 에어컨이 고장 난 것 같아요", "n": "が를 두 번 쓰지 않기 + みたいなんです", "d": "2026-11-16", "c": 1},
+  {"cat": "문법", "w": "レストランが営業してないみたいんです", "r": "レストランが営業していないみたいなんです", "k": "식당이 영업을 안 하는 것 같아요", "n": "", "d": "2026-11-16", "c": 1},
+  {"cat": "문법", "w": "道を迷ったみたいなんです", "r": "道に迷ったみたいなんです", "k": "길을 잃은 것 같아요", "n": "道に迷う — 조사는 に", "d": "2026-11-16", "c": 1},
+  {"cat": "문법", "w": "一言も言ったことがないんです", "r": "一度も行ったことがないんです", "k": "한 번도 가 본 적이 없어요", "n": "一度(한 번) / 一言(한마디), 行った(갔다) / 言った(말했다)", "d": "2026-11-16"},
+  {"cat": "문법", "w": "六名様です", "r": "六名です", "k": "6명이에요", "n": "様는 상대에게 붙이는 말 — 내 쪽에는 안 붙여요", "d": "2026-11-16"},
+  {"cat": "문법", "w": "空の色をシャツを探しています", "r": "空色のシャツを探しています", "k": "하늘색 셔츠를 찾고 있어요", "n": "水色のシャツ라고도 해요", "d": "2026-11-16", "c": 1},
+  {"cat": "문법", "w": "注文したのはオムライスですが、カレーライスが出たんです", "r": "オムライスを注文したんですが、カレーライスが来ました", "k": "오므라이스를 시켰는데 카레라이스가 나왔어요", "n": "", "d": "2026-11-16"},
+  {"cat": "문법", "w": "全員で、同じ定食にお願いします", "r": "全員同じ定食でお願いします", "k": "모두 같은 정식으로 주세요", "n": "～でお願いします", "d": "2026-11-16", "c": 1},
+  {"cat": "문법", "w": "（荷物について）預けてください", "r": "はい、お願いします", "k": "(짐 맡기시겠어요?) 네, 부탁해요", "n": "손님이 대답할 때는 お願いします — 預けてください는 직원에게 시키는 말", "d": "2026-11-16", "c": 1},
+  {"cat": "자타동사", "w": "時間を増えて、もっと練習したい", "r": "時間を延ばして、もっと練習したい", "k": "시간을 늘려서 더 연습하고 싶어요", "n": "延びる(늘어나다) / 延ばす(늘리다)", "d": "2026-11-16"},
+  {"cat": "문법", "w": "荷物は預けたいです", "r": "荷物を預けたいです", "k": "짐을 맡기고 싶어요", "n": "は는 「다른 건 몰라도 짐은」처럼 대비하는 느낌. 그냥 부탁할 때는 を — ChatGPT가 놓친 부분", "d": "2026-11-16", "c": 1},
+  {"cat": "한국어식", "w": "浅いビール / アサイービール", "r": "アサヒ（スーパードライ）", "k": "아사히 맥주", "n": "상표명은 アサヒ(a-sa-hi). 浅い(あさい)는 \"얕다\"", "d": "2026-11-16"},
+  {"cat": "한국어식", "w": "妹の子", "r": "姪（めい）", "k": "조카딸", "n": "남자 조카는 甥(おい)", "d": "2026-11-16"},
+  {"cat": "한국어식", "w": "海産物は全部好きです", "r": "魚介類は何でも好きです", "k": "해산물은 다 좋아해요", "n": "음식으로서 해산물은 魚介類(ぎょかいるい)·シーフード", "d": "2026-11-16", "c": 1},
+  {"cat": "한국어식", "w": "宝石みたいなことがついています", "r": "金色の飾りがついています", "k": "금색 장식이 달려 있어요", "n": "飾り(かざり) = 장식", "d": "2026-11-16", "c": 1},
+  {"cat": "한국어식", "w": "とても期待しています（택시에서）", "r": "ワクワクします / 楽しみです", "k": "설레요 / 기대돼요", "n": "期待しています는 상대에게 거는 기대 느낌", "d": "2026-11-16"},
+  {"cat": "한국어식", "w": "記憶に臨場に残っています", "r": "印象に残っています", "k": "인상에 남아 있어요", "n": "心に残っています도 OK", "d": "2026-11-16"},
+  {"cat": "한국어식", "w": "探すのは難しくないんですか", "r": "わかりやすいですか / 遠いですか", "k": "찾기 쉬워요? / 멀어요?", "n": "", "d": "2026-11-16"},
+  {"cat": "한국어식", "w": "三十分も以内にはできないんですか", "r": "もう少し早く入れますか", "k": "좀 더 빨리 들어갈 수 있어요?", "n": "", "d": "2026-11-16"},
+  {"cat": "한국어식", "w": "話しかけてよろしいんですか", "r": "少しお話ししてもいいですか", "k": "잠깐 이야기해도 될까요?", "n": "", "d": "2026-11-16"},
 ];
 
 // 실전 문장
@@ -468,6 +581,80 @@ const PH = [
   {cat:'🗣 연습할 때 쓰는 말', jp:'同じ言葉は繰り返さないでください。', ko:'같은 말은 반복하지 말아 주세요.', d:'2026-11-14'},
   {cat:'🗣 연습할 때 쓰는 말', jp:'できるだけたくさんの単語を練習したいです。', ko:'최대한 많은 단어를 연습하고 싶어요.', d:'2026-11-14'},
   {cat:'🗣 연습할 때 쓰는 말', jp:'音声が途切れました。もう一度お願いします。', ko:'소리가 끊겼어요. 한 번 더 부탁해요.', d:'2026-11-14'},
+  {"cat": "✈️ 공항", "jp": "入国の目的は観光です。", "ko": "입국 목적은 관광이에요", "d": "2026-11-16"},
+  {"cat": "✈️ 공항", "jp": "家族6人で4泊します。", "ko": "가족 6명이 4박해요", "d": "2026-11-16", "y": "4泊(よんはく)"},
+  {"cat": "✈️ 공항", "jp": "Suicaを6枚買いたいんですが。", "ko": "스이카 6장 사고 싶은데요", "d": "2026-11-16"},
+  {"cat": "✈️ 공항", "jp": "子ども用のSuicaもありますか。", "ko": "어린이용 스이카도 있나요?", "d": "2026-11-16"},
+  {"cat": "✈️ 공항", "jp": "綾瀬駅まで、どう行けばいいですか。", "ko": "아야세역까지 어떻게 가면 되나요?", "d": "2026-11-16"},
+  {"cat": "✈️ 공항", "jp": "子どもの切符はいくらですか。", "ko": "아이 표는 얼마예요?", "d": "2026-11-16"},
+  {"cat": "🚃 전철·이동", "jp": "この電車は綾瀬に止まりますか。", "ko": "이 전철 아야세에 서나요?", "d": "2026-11-16"},
+  {"cat": "🚃 전철·이동", "jp": "どこで乗り換えればいいですか。", "ko": "어디서 갈아타면 돼요?", "d": "2026-11-16"},
+  {"cat": "🚃 전철·이동", "jp": "エレベーターはどこですか。", "ko": "엘리베이터 어디 있어요?", "d": "2026-11-16"},
+  {"cat": "🚃 전철·이동", "jp": "次は何駅ですか。", "ko": "다음은 무슨 역이에요?", "d": "2026-11-16"},
+  {"cat": "🚃 전철·이동", "jp": "すみません、降ります。", "ko": "죄송해요, 내릴게요", "d": "2026-11-16"},
+  {"cat": "🚃 전철·이동", "jp": "道に迷ったみたいなんです。", "ko": "길을 잃은 것 같아요", "d": "2026-11-16"},
+  {"cat": "🚃 전철·이동", "jp": "そこで乗り換えます。", "ko": "거기서 갈아탈게요", "d": "2026-11-16"},
+  {"cat": "🏠 에어비앤비", "jp": "予約したキムです。チェックインをお願いします。", "ko": "예약한 김인데요, 체크인 부탁해요", "d": "2026-11-16"},
+  {"cat": "🏠 에어비앤비", "jp": "鍵の受け取り方を教えてください。", "ko": "열쇠 받는 방법 알려주세요", "d": "2026-11-16"},
+  {"cat": "🏠 에어비앤비", "jp": "ゴミの出し方はどうすればいいですか。", "ko": "쓰레기는 어떻게 버리면 돼요?", "d": "2026-11-16"},
+  {"cat": "🏠 에어비앤비", "jp": "お湯が出ないんですが。", "ko": "뜨거운 물이 안 나와요", "d": "2026-11-16"},
+  {"cat": "🏠 에어비앤비", "jp": "何時までにチェックアウトすればいいですか。", "ko": "몇 시까지 체크아웃하면 돼요?", "d": "2026-11-16"},
+  {"cat": "⛩️ 센소지", "jp": "初詣はすごく混んでいますね。", "ko": "하츠모데 엄청 붐비네요", "d": "2026-11-16", "y": "初詣(はつもうで)"},
+  {"cat": "⛩️ 센소지", "jp": "おみくじはどこで引けますか。", "ko": "오미쿠지는 어디서 뽑아요?", "d": "2026-11-16", "y": "引けます(ひけます) — 行けます ✗"},
+  {"cat": "⛩️ 센소지", "jp": "大吉が出た！", "ko": "대길 나왔다!", "d": "2026-11-16", "y": "大吉(だいきち)"},
+  {"cat": "⛩️ 센소지", "jp": "お守りを一つください。", "ko": "부적 하나 주세요", "d": "2026-11-16", "y": "お守り(おまもり)"},
+  {"cat": "⛩️ 센소지", "jp": "写真を撮っていただけますか。", "ko": "사진 좀 찍어 주시겠어요?", "d": "2026-11-16"},
+  {"cat": "🎬 오차노미즈", "jp": "聖橋はどちらですか。", "ko": "히지리바시는 어느 쪽이에요?", "d": "2026-11-16", "y": "聖橋(ひじりばし)"},
+  {"cat": "🎬 오차노미즈", "jp": "『すずめの戸締まり』のロケ地を見に来ました。", "ko": "스즈메의 문단속 배경 보러 왔어요", "d": "2026-11-16", "y": "ロケ地(ロケち) · 현장에 와서 말하니까 来ました"},
+  {"cat": "🎬 오차노미즈", "jp": "ここから湯島聖堂まで歩いて行けますか。", "ko": "여기서 유시마 성당까지 걸어갈 수 있어요?", "d": "2026-11-16", "y": "湯島聖堂(ゆしませいどう)"},
+  {"cat": "🍜 식당", "jp": "6人ですが、入れますか。", "ko": "6명인데 들어갈 수 있나요?", "d": "2026-11-16"},
+  {"cat": "🍜 식당", "jp": "大人3人、子ども3人です。", "ko": "어른 3명, 아이 3명이에요", "d": "2026-11-16"},
+  {"cat": "🍜 식당", "jp": "どのくらい待ちますか。", "ko": "얼마나 기다려요?", "d": "2026-11-16"},
+  {"cat": "🍜 식당", "jp": "子ども用のいすはありますか。", "ko": "어린이 의자 있나요?", "d": "2026-11-16"},
+  {"cat": "🍜 식당", "jp": "取り皿をもらえますか。", "ko": "앞접시 주시겠어요?", "d": "2026-11-16", "y": "取り皿(とりざら)"},
+  {"cat": "🍜 식당", "jp": "辛くないものはどれですか。", "ko": "안 매운 건 어느 거예요?", "d": "2026-11-16"},
+  {"cat": "🍜 식당", "jp": "お会計は別々でお願いします。", "ko": "계산은 따로 해 주세요", "d": "2026-11-16", "y": "別々に도 OK"},
+  {"cat": "🍜 식당", "jp": "ジュースを2つ、ビールを2つ、お水を1杯ください。", "ko": "주스 2개, 맥주 2개, 물 한 잔 주세요", "d": "2026-11-16", "y": "～を～つ"},
+  {"cat": "🍜 식당", "jp": "おすすめの料理はありますか。", "ko": "추천 요리 있어요?", "d": "2026-11-16"},
+  {"cat": "🍜 식당", "jp": "急いでいるので、もう少し早く入れますか。", "ko": "급해서 그런데 좀 더 빨리 들어갈 수 있어요?", "d": "2026-11-16"},
+  {"cat": "🍜 식당", "jp": "じゃあ、待ちます。", "ko": "그럼 기다릴게요", "d": "2026-11-16"},
+  {"cat": "🍜 식당", "jp": "すみません、オムライスを注文したんですが、カレーライスが来ました。", "ko": "저기요, 오므라이스를 시켰는데 카레라이스가 나왔어요", "d": "2026-11-16"},
+  {"cat": "🏪 편의점", "jp": "これ、免税になりますか。", "ko": "이거 면세 되나요?", "d": "2026-11-16", "y": "免税(めんぜい)"},
+  {"cat": "🏪 편의점", "jp": "袋はいりません。／袋をください。", "ko": "봉투 필요 없어요 / 봉투 주세요", "d": "2026-11-16"},
+  {"cat": "🏪 편의점", "jp": "温めてください。", "ko": "데워 주세요", "d": "2026-11-16"},
+  {"cat": "🏪 편의점", "jp": "これとこれを温めていただけますか。", "ko": "이거랑 이거 데워 주시겠어요?", "d": "2026-11-16"},
+  {"cat": "🏪 편의점", "jp": "お正月は何時まで開いていますか。", "ko": "설날엔 몇 시까지 열어요?", "d": "2026-11-16"},
+  {"cat": "🏪 편의점", "jp": "ミルク味のプリンはどこにありますか。", "ko": "우유 맛 푸딩은 어디 있어요?", "d": "2026-11-16"},
+  {"cat": "🏪 편의점", "jp": "泡が細かくて、苦みのあるビールはありますか。", "ko": "거품이 곱고 쓴맛 있는 맥주 있어요?", "d": "2026-11-16", "y": "苦み(にがみ)"},
+  {"cat": "🏪 편의점", "jp": "苦めがいいです。それにします。", "ko": "쓴 게 좋아요. 그걸로 할게요", "d": "2026-11-16"},
+  {"cat": "🏪 편의점", "jp": "定食みたいな、しっかりしたお弁当はありますか。", "ko": "정식 같은 든든한 도시락 있어요?", "d": "2026-11-16"},
+  {"cat": "🏪 편의점", "jp": "ポイントカードは持っていません。", "ko": "포인트카드는 없어요", "d": "2026-11-16"},
+  {"cat": "🛍 옷 가게", "jp": "空色のシャツを探しています。", "ko": "하늘색 셔츠를 찾고 있어요", "d": "2026-11-16"},
+  {"cat": "🛍 옷 가게", "jp": "Lサイズでお願いします。", "ko": "L사이즈로 주세요", "d": "2026-11-16", "y": "エルサイズ"},
+  {"cat": "🛍 옷 가게", "jp": "試着は結構です。", "ko": "입어 보는 건 괜찮아요", "d": "2026-11-16"},
+  {"cat": "🚕 택시", "jp": "東京タワーまでお願いします。", "ko": "도쿄타워까지 가 주세요", "d": "2026-11-16"},
+  {"cat": "🚕 택시", "jp": "道は混んでいますか。", "ko": "길 막혀요?", "d": "2026-11-16"},
+  {"cat": "🚕 택시", "jp": "二十分ほどありますので、少しお話ししてもいいですか。", "ko": "20분 정도 있으니까 잠깐 이야기해도 될까요?", "d": "2026-11-16"},
+  {"cat": "🚕 택시", "jp": "実は、東京タワーには一度も行ったことがないんです。", "ko": "사실 도쿄타워에 한 번도 가 본 적이 없어요", "d": "2026-11-16"},
+  {"cat": "🚕 택시", "jp": "小説が最初でした。それから映画を見ました。", "ko": "소설이 먼저였어요. 그다음에 영화를 봤어요", "d": "2026-11-16"},
+  {"cat": "🚕 택시", "jp": "小説のほうが想像できて、もっと面白かったです。", "ko": "소설 쪽이 상상할 수 있어서 더 재미있었어요", "d": "2026-11-16"},
+  {"cat": "🚕 택시", "jp": "東京タワーに行けると思うと、ワクワクします。", "ko": "도쿄타워에 간다고 생각하니 설레요", "d": "2026-11-16"},
+  {"cat": "🆘 곤란할 때", "jp": "子どもが迷子になりました。", "ko": "아이를 잃어버렸어요", "d": "2026-11-16", "y": "迷子(まいご)"},
+  {"cat": "🆘 곤란할 때", "jp": "姪が迷子になりました。三十分前に、電車の中でいなくなりました。", "ko": "조카가 미아가 됐어요. 30분 전에 전철 안에서 없어졌어요", "d": "2026-11-16", "y": "姪(めい)"},
+  {"cat": "🆘 곤란할 때", "jp": "姪は六歳ですが、背が高いので七歳くらいに見えます。", "ko": "조카는 6살인데 키가 커서 7살쯤으로 보여요", "d": "2026-11-16"},
+  {"cat": "🆘 곤란할 때", "jp": "髪は長くて、一つに結んでいます。", "ko": "머리는 길고 하나로 묶었어요", "d": "2026-11-16", "y": "結ぶ(むすぶ)"},
+  {"cat": "🆘 곤란할 때", "jp": "白い襟のついた黒いワンピースに、リネンのベストを着ています。", "ko": "흰 칼라가 달린 검은 원피스에 린넨 조끼를 입었어요", "d": "2026-11-16", "y": "襟(えり)"},
+  {"cat": "🆘 곤란할 때", "jp": "名前はキム・スエです。日本語はあまり話せません。", "ko": "이름은 김수애예요. 일본어는 잘 못해요", "d": "2026-11-16"},
+  {"cat": "🆘 곤란할 때", "jp": "この子です。", "ko": "이 아이예요", "d": "2026-11-16"},
+  {"cat": "🆘 곤란할 때", "jp": "この近くに薬局はありますか。", "ko": "이 근처에 약국 있나요?", "d": "2026-11-16", "y": "薬局(やっきょく)"},
+  {"cat": "🆘 곤란할 때", "jp": "子どもが昨日の夜から熱を出しています。38度くらいです。", "ko": "아이가 어젯밤부터 열이 나요. 38도 정도예요", "d": "2026-11-16"},
+  {"cat": "🆘 곤란할 때", "jp": "子ども用の解熱剤はありますか。", "ko": "어린이용 해열제 있나요?", "d": "2026-11-16", "y": "解熱剤(げねつざい)"},
+  {"cat": "🆘 곤란할 때", "jp": "財布を落としたみたいなんです。", "ko": "지갑을 잃어버린 것 같아요", "d": "2026-11-16"},
+  {"cat": "🆘 곤란할 때", "jp": "クリーム色で四角くて、金色の飾りがついています。", "ko": "크림색이고 네모나고 금색 장식이 달려 있어요", "d": "2026-11-16"},
+  {"cat": "🆘 곤란할 때", "jp": "部屋のエアコンが壊れたみたいなんです。電源を入れても反応がありません。", "ko": "방 에어컨이 고장 난 것 같아요. 전원을 켜도 반응이 없어요", "d": "2026-11-16"},
+  {"cat": "🆘 곤란할 때", "jp": "すぐ来ていただけますか。", "ko": "바로 와 주시겠어요?", "d": "2026-11-16"},
+  {"cat": "🛫 귀국", "jp": "成田空港まで何分くらいかかりますか。", "ko": "나리타공항까지 몇 분쯤 걸려요?", "d": "2026-11-16"},
+  {"cat": "🛫 귀국", "jp": "荷物を預けたいです。", "ko": "짐을 맡기고 싶어요", "d": "2026-11-16"},
 ];
 
 // 자타동사 (i=자동사, t=타동사) + 예문
@@ -481,7 +668,8 @@ const VERBS = [
   {i:'流れる', t:'流す', k:'흐르다 / 흘리다', ei:'音楽が流れる', et:'汗を流す'},
   {i:'含まれる', t:'含む', k:'포함되다 / 포함하다', ei:'糖分が含まれる', et:'税金を含む'},
   {i:'決まる', t:'決める', k:'정해지다 / 정하다', ei:'転勤が決まる', et:'ルールを決める'},
-  {i:'続く', t:'続ける', k:'계속되다 / 계속하다', ei:'練習が続く', et:'練習を続ける'},
+  {i:'続く', t:'続ける', k:'계속되다 / 계속하다', ei:'練習が続く', et:'練習を続ける', d:'2026-11-14'},
+  {"i": "延びる", "t": "延ばす", "k": "늘어나다 / 늘리다", "ei": "時間が延びる", "et": "時間を延ばす", "d": "2026-11-16"},
 ];
 // 빈칸 문제: s=문장(＿＿), a=정답, b=오답
 const VQ = [
@@ -501,6 +689,7 @@ const VQ = [
   {s:'ゼロ飲料は一日二本までとルールを＿＿ました', a:'決め', b:'決まり', k:'제로 음료는 하루 두 병까지로 규칙을 정했어요'},
   {s:'私が「終わり」と言うまで＿＿てください', a:'続け', b:'続い', k:'제가 끝이라고 할 때까지 계속해 주세요'},
   {s:'練習は毎日＿＿ています', a:'続い', b:'続け', k:'연습은 매일 계속되고 있어요'},
+  {"s": "もう少し時間を＿＿て、練習したいです", "a": "延ばし", "b": "延び", "k": "시간을 좀 더 늘려서 연습하고 싶어요"},
 ];
 
 // 발음
@@ -517,7 +706,7 @@ const PRON = [
   {h:'④ 같은 3박, 다른 소리', pairs:[
     {w:'切手', b:['き','っ','て'], hl:[1], l:'멈춤 · 우표'},
     {w:'聞いて', b:['き','い','て'], hl:[1], l:'길게 · 묻고'}]},
-  {h:'⑤ 요음 — りょ・しゃ는 한 박', pairs:[
+  {h:'⑤ 요음 — りょ・しゃ는 한 박', d:'2026-11-14', pairs:[
     {w:'料理', b:['りょ','う','り'], hl:[0], l:'3박 · りお ✗'},
     {w:'日本', b:['に','ほ','ん'], hl:[], l:'3박 · に를 가볍게'}]},
 ];
@@ -527,8 +716,8 @@ const PRON_S = [
   {jp:'昨日、新しいシャツを買ったんですが、肩のサイズが合いませんでした。', ko:'買った / 肩'},
   {jp:'切手を買いたいので、郵便局の場所を聞いてみました。', ko:'切手 / 聞いて'},
   {jp:'そうなんですか？知りませんでした。', ko:'억양: 놀랄 때는 「そう」에 힘을 줘요'},
-  {jp:'料理が好きです。日本の料理は特に好きです。', ko:'りょ를 한 박으로, 日本의 に는 가볍게'},
-  {jp:'いらっしゃいませ。ポイントカードはお持ちですか？', ko:'しゃ를 서두르지 않기 · ポイント는 짧게'},
+  {jp:'料理が好きです。日本の料理は特に好きです。', ko:'りょ를 한 박으로, 日本의 に는 가볍게', d:'2026-11-14'},
+  {jp:'いらっしゃいませ。ポイントカードはお持ちですか？', ko:'しゃ를 서두르지 않기 · ポイント는 짧게', d:'2026-11-14'},
 ];
 
 const CHECK = [
@@ -547,6 +736,9 @@ const CHECK = [
   {t:'가게에서 쓰는 질문 5개 막힘없이 말하기', e:'カード使えますか / 試着してもいいですか / サイズありますか / 返品できますか / おすすめはどれですか'},
   {t:'"계속해 주세요"를 바르게 말하기', e:'続けてください (続いてください ✗)'},
   {t:'料理・日本을 박 맞춰 발음하기', e:'りょ・う・り / に・ほ・ん'},
+  {"t": "미아 신고: 나이·옷·특징을 이어서 말하기", "e": "姪は六歳です。白い襟のついた黒いワンピースを着ています…"},
+  {"t": "～みたいなんです 문장 3개 만들기", "e": "財布を落としたみたいなんです"},
+  {"t": "택시 기사님과 1분 잡담하기", "e": "二十分ほどありますので、少しお話ししてもいいですか"},
 ];
 
 /* ================= 배운 날 (회화 연습 세션) =================
@@ -560,18 +752,73 @@ const SESSIONS = [
   {d:'2026-11-14', title:'ChatGPT 음성 회화 연습 #2 (이어서)', level:'',
    topics:['발음: り・りょ・日本','외래어(外来語)','가게·계산 표현 연습','쇼핑·결제·반품'],
    points:['続いてください → 続けてください: 자타동사 실수가 또 나옴 (続く/続ける)','カードを伝えますか → カード使えますか: 使える(쓸 수 있다)와 伝える(전하다) 혼동','의문문 끝의 か를 자주 빠뜨림: おすすめはどれですか / 試着してもいいですか','りょ・しゃ는 한 박으로: りょうり = りょ・う・り (3박)','ChatGPT 음성 모드의 발음 칭찬은 참고만 하세요. 녹음해서 원어민 음성과 비교하는 게 더 정확해요 (Claude 보충)']},
+  {"d": "2026-11-16", "title": "ChatGPT 회화 연습 #3 · 여행 문장 + 실전 롤플레이", "level": "", "topics": ["여행 문장 따라 읽기", "식당·길 묻기·편의점", "호텔·에어비앤비", "미아 신고·약국·분실물", "택시 잡담", "옷 가게"], "points": ["～みたいんです → ～みたいなんです: な를 빼먹는 실수가 3번 나옴", "アサヒ를 浅い(あさい)로 발음함 — 상표명은 アサヒ", "道を迷う → 道に迷う / 一言も言った → 一度も行った", "내 쪽에는 様를 붙이지 않기: 六名様です → 六名です", "ChatGPT가 \"綾瀬는 北千住의 다음다음 역\"이라고 했는데, 지하철 지요다선에서 綾瀬는 北千住 바로 다음 역이에요 (Claude 보충)"]},
 ];
-FIX.forEach(x=>{x.d=x.d||SESSIONS[0].d}); PH.forEach(x=>{x.d=x.d||SESSIONS[0].d});
+[FIX,PH,VERBS,PRON,PRON_S].forEach(a=>a.forEach(x=>{x.d=x.d||SESSIONS[0].d}));
 
 /* ================= STORAGE ================= */
 const KEY='sjpt-review-v1';
-let S={known:{}, best:null, check:{}, days:[], log:{}};
-try{const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S, JSON.parse(raw));}catch(e){}
-if(!S.log) S.log={};
+// Firebase는 빈 배열·객체를 지우고, 숫자 키 객체를 배열로 바꿔서 돌려줘요 → 불러올 때 모양을 다시 맞춰요
+const arr=v=>Array.isArray(v)?v.filter(x=>x!==null&&x!==undefined):(v&&typeof v==='object'?Object.values(v):[]);
+function normalizeS(o){
+  o=Object.assign({known:{},best:null,check:{},days:[],log:{},songs:[],learned:{}},o||{});
+  if(Array.isArray(o.check)){const c={};o.check.forEach((v,i)=>{if(v)c[i]=v});o.check=c}
+  ['known','learned','log','check'].forEach(k=>{if(!o[k]||typeof o[k]!=='object')o[k]={}});
+  o.days=arr(o.days); o.songs=arr(o.songs);
+  o.songs.forEach(sg=>{sg.lines=arr(sg.lines)});
+  Object.keys(o.log).forEach(d=>{const l=o.log[d]||{};['known','again','quiz','checks','learn'].forEach(k=>{l[k]=arr(l[k])});l.quiz.forEach(q=>{q.wrong=arr(q.wrong)});l.sec=l.sec||0;l.listen=l.listen||0;o.log[d]=l});
+  return o;
+}
+function stable(v){if(Array.isArray(v))return '['+v.map(stable).join(',')+']';if(v&&typeof v==='object')return '{'+Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>JSON.stringify(k)+':'+stable(v[k])).join(',')+'}';return JSON.stringify(v===undefined?null:v)}
+let S=normalizeS(null);
+try{const raw=localStorage.getItem(KEY); if(raw) S=normalizeS(JSON.parse(raw));}catch(e){}
 const pad=n=>String(n).padStart(2,'0');
 const dkey=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 S.days=[...new Set((S.days||[]).map(k=>{const p=k.split('-');return p[0]+'-'+pad(p[1])+'-'+pad(p[2])}))];
-function saveRaw(){try{localStorage.setItem(KEY, JSON.stringify(S));}catch(e){}}
+function saveRaw(){try{localStorage.setItem(KEY, JSON.stringify(S));}catch(e){} pushRemote();}
+
+/* ================= FIREBASE 동기화 ================= */
+let fbRef=null, lastSync='', firstSnap=true;
+function setSync(st){const el=document.getElementById('syncPill'); if(!el) return;
+  const M={local:'💾 이 브라우저에만 저장 중 (Firebase 설정 전)',loading:'☁️ 불러오는 중…',saving:'☁️ 저장 중…',ok:'☁️ Firebase에 저장됨',offline:'⚠️ 오프라인 — 연결되면 저장돼요',err:'⚠️ Firebase 저장 실패 — 이 기기에는 저장됨'};
+  el.textContent=M[st]||st; el.classList.toggle('err',st==='err'||st==='offline');}
+function pushRemote(){ if(!fbRef) return; clearTimeout(pushRemote._t);
+  pushRemote._t=setTimeout(()=>{ const data=JSON.parse(JSON.stringify(S)); const k=stable(normalizeS(JSON.parse(JSON.stringify(S)))); if(k===lastSync) return;
+    lastSync=k; setSync('saving'); fbRef.set(data).then(()=>setSync('ok')).catch(()=>setSync('err')); },500); }
+function mergeS(r,l){ // 처음 연결할 때만: 두 기록을 합쳐서 어느 쪽도 잃지 않게
+  const o=normalizeS(JSON.parse(JSON.stringify(r)));
+  Object.keys(l.known).forEach(k=>{if(!(k in o.known))o.known[k]=l.known[k]; else if(l.known[k])o.known[k]=1});
+  Object.keys(l.learned).forEach(k=>{if(!o.learned[k])o.learned[k]=l.learned[k]});
+  Object.keys(l.check).forEach(k=>{if(l.check[k])o.check[k]=l.check[k]});
+  o.days=[...new Set([...o.days,...l.days])].sort();
+  if(l.best!=null&&(o.best==null||l.best>o.best))o.best=l.best;
+  Object.keys(l.log).forEach(d=>{ if(!o.log[d]||JSON.stringify(l.log[d]).length>JSON.stringify(o.log[d]).length) o.log[d]=l.log[d]; });
+  l.songs.forEach(ls=>{const rs=o.songs.find(x=>x.id===ls.id); if(!rs) o.songs.push(ls); else ls.lines.forEach(ln=>{if(!rs.lines.some(x=>x.id===ln.id)) rs.lines.push(ln)})});
+  return o; }
+function refreshAll(){ try{ renderStats(); renderCal(); drawDay(); drawCheck();
+  const on=document.querySelector('section.page.on'); const id=on&&on.id;
+  if(id==='learn') drawLearn();
+  if(id==='songs' && !SG.form && !SG.newSong) drawSongs();
+  if(id==='notes') drawNotes();
+  if(id==='cards') drawCard();
+}catch(e){} }
+function initFirebase(){
+  if(!FIREBASE_CONFIG.databaseURL){ setSync('local'); return; }
+  if(!window.firebase){ setSync('offline'); return; }
+  try{ firebase.initializeApp(FIREBASE_CONFIG); fbRef=firebase.database().ref(FIREBASE_PATH); }catch(e){ setSync('err'); return; }
+  setSync('loading');
+  fbRef.on('value', snap=>{
+    const v=snap.val();
+    if(v===null){ firstSnap=false; lastSync=''; pushRemote(); return; }   // 처음 쓰는 경우: 이 기기 기록을 올려요
+    let next=normalizeS(v);
+    if(firstSnap){ firstSnap=false; const merged=mergeS(next,S); if(stable(merged)!==stable(next)){ S=merged; lastSync=''; try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){} refreshAll(); pushRemote(); return; } }
+    const k=stable(next); if(k===stable(normalizeS(JSON.parse(JSON.stringify(S))))){ lastSync=k; setSync('ok'); return; }
+    S=next; lastSync=k; try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+    const t=dkey(new Date()); if(!S.days.includes(t)){S.days.push(t)}
+    refreshAll(); setSync('ok');
+  }, ()=>setSync('err'));
+  firebase.database().ref('.info/connected').on('value',s=>{ if(s.val()===true){ if(!firstSnap) setSync('ok'); } else if(!firstSnap) setSync('offline'); });
+}
 function save(){saveRaw(); renderStats(); if(typeof renderCal==='function') renderCal();}
 function L(){const k=dkey(new Date()); if(!S.log[k]) S.log[k]={sec:0,known:[],again:[],quiz:[],checks:[],listen:0,memo:''}; return S.log[k];}
 function logSet(list,id,on){const l=L(); l[list]=l[list]||[]; const i=l[list].indexOf(id); if(on&&i<0)l[list].push(id); if(!on&&i>=0)l[list].splice(i,1);}
@@ -603,7 +850,6 @@ document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('section.page').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p));
   window.scrollTo({top:0,behavior:'smooth'});
-  if(b.dataset.p==='quiz' && !Q.started) quizIntro();
 });
 
 /* ================= STATS ================= */
@@ -611,10 +857,10 @@ function totalCards(){return FIX.length+PH.length}
 function renderStats(){
   const kn=Object.values(S.known).filter(Boolean).length, tot=totalCards();
   $('#stKnown').textContent=kn+' / '+tot; $('#barKnown').style.width=(kn/tot*100)+'%';
-  $('#stBest').textContent=S.best==null?'-':S.best+'점'; $('#barBest').style.width=(S.best||0)+'%';
+  const lc=LEARN.filter(x=>S.learned&&S.learned[x.id]).length; $('#stBest').textContent=lc+' / '+LEARN.length; $('#barBest').style.width=(lc/LEARN.length*100)+'%';
   const ck=Object.values(S.check).filter(Boolean).length;
   $('#stCheck').textContent=ck+' / '+CHECK.length; $('#barCheck').style.width=(ck/CHECK.length*100)+'%';
-  const ad=Object.keys(S.log).filter(k=>actLevel(k)>0).length; $('#stDays').textContent=ad+'일'; $('#barDays').style.width=Math.min(100,ad/20*100)+'%';
+  const dk=new Set(Object.keys(S.log)); (S.songs||[]).forEach(sg=>sg.lines.forEach(l=>{if(l.d)dk.add(l.d);if(l.kd)dk.add(l.kd)})); const ad=[...dk].filter(k=>actLevel(k)>0).length; $('#stDays').textContent=ad+'일'; $('#barDays').style.width=Math.min(100,ad/20*100)+'%';
 }
 
 /* ================= TIMER ================= */
@@ -723,39 +969,55 @@ function endQuiz(){
 
 /* ================= NOTES ================= */
 let note='fix';
+let noteDate=null;
+const inDate=x=>!noteDate||x.d===noteDate;
+function drawNoteDates(){
+  const el=$('#noteDates'); if(!el) return;
+  const chips=[`<button class="lchip ${!noteDate?'on':''}" data-nd="">📚 전체</button>`].concat(SESSIONS.map(s=>{const [y,m,d]=s.d.split('-').map(Number);const w=DOW[new Date(y,m-1,d).getDay()];return `<button class="lchip ${noteDate===s.d?'on':''}" data-nd="${s.d}">📅 ${m}/${d} (${w})</button>`}));
+  el.innerHTML=chips.join('');
+  el.querySelectorAll('[data-nd]').forEach(b=>b.onclick=()=>{noteDate=b.dataset.nd||null;drawNotes()});
+  const on=el.querySelector('.lchip.on'); if(on) on.scrollIntoView({inline:'center',block:'nearest'});
+}
+const emptyNote=()=>`<div class="card muted" style="text-align:center">이 날은 이 칸에 들어간 내용이 없어요.</div>`;
 function drawNotes(){
+  drawNoteDates();
   const box=$('#noteBox'); let h='';
+  if(noteDate){const ss=SESSIONS.find(x=>x.d===noteDate); if(ss) h+=`<div class="card" style="padding:10px 14px;background:#f0f9fd;font-size:14px"><b style="color:var(--blue)">📘 ${esc(ss.title)}</b><div class="muted">${ss.topics.map(esc).join(' · ')}</div></div>`;}
   if(note==='fix'){
     const cats=[['자타동사','var(--pink)','🔥 자동사·타동사 혼동'],['한국어식','var(--orange)','🇰🇷 한국어를 그대로 옮긴 표현'],['문법','var(--purple)','📐 문법·활용']];
     cats.forEach(([c,col,title])=>{
+      const items=FIX.filter(x=>x.cat===c&&inDate(x)); if(!items.length) return;
       h+=`<div class="cat" style="color:${col}">${title}</div>`;
-      FIX.filter(x=>x.cat===c).forEach(x=>{
+      items.forEach(x=>{
         h+=`<div class="cx"><div class="row" style="flex-wrap:nowrap;align-items:flex-start"><div style="flex:1;min-width:0">
           <div class="w ja wrong">${esc(x.w)}</div><div class="r ja right"><mark>${esc(x.r)}</mark></div>
           <div class="n">${x.c?'<span class="badge">Claude 보충</span>':''}${esc(x.k)}${x.n?' · '+esc(x.n):''}</div></div>
           <button class="spk" data-say="${esc(x.r)}">🔊</button></div></div>`});
     });
-    h+=`<div class="card" style="margin-top:12px;font-size:14px"><b style="color:var(--green)">✅ 둘 다 OK</b><br><span class="ja">夕食は8時<mark>に</mark>/<mark>で</mark>お願いします</span> — 여러 시간 중에서 고르는 느낌이면 で를 써요.<br><br><b style="color:var(--green)">✅ 써도 돼요</b><br><span class="ja">お待ちいただけますでしょうか</span> — 비즈니스에서 관용적으로 널리 써요. 짧게는 <span class="ja">お待ちいただけますか</span>.</div>`;
+    if(!FIX.some(inDate)) h+=emptyNote();
+    if(inDate({d:SESSIONS[0].d})) h+=`<div class="card" style="margin-top:12px;font-size:14px"><b style="color:var(--green)">✅ 둘 다 OK</b><br><span class="ja">夕食は8時<mark>に</mark>/<mark>で</mark>お願いします</span> — 여러 시간 중에서 고르는 느낌이면 で를 써요.<br><br><b style="color:var(--green)">✅ 써도 돼요</b><br><span class="ja">お待ちいただけますでしょうか</span> — 비즈니스에서 관용적으로 널리 써요. 짧게는 <span class="ja">お待ちいただけますか</span>.</div>`;
   }
   if(note==='verb'){
     h+=`<div class="legend"><b style="color:var(--pink)">■ 자동사</b> 저절로 ~하다 (が) &nbsp; <b style="color:var(--blue)">■ 타동사</b> ~을 ~하다 (を)</div><div class="vgrid">`;
-    VERBS.forEach(v=>{h+=`<div class="vcard"><div class="v ja"><span class="i">${v.i}</span> / <span class="t">${v.t}</span></div><small>${v.k}</small>
+    const vs=VERBS.filter(inDate); if(!vs.length) h+='</div>'+emptyNote()+'<div>';
+    vs.forEach(v=>{h+=`<div class="vcard"><div class="v ja"><span class="i">${v.i}</span> / <span class="t">${v.t}</span></div><small>${v.k}</small>
       <div class="ex ja"><span style="color:var(--pink)">●</span> ${v.ei} <button class="spk" style="width:26px;height:26px;font-size:12px" data-say="${v.ei}">🔊</button><br><span style="color:var(--blue)">●</span> ${v.et} <button class="spk" style="width:26px;height:26px;font-size:12px" data-say="${v.et}">🔊</button></div></div>`});
     h+=`</div><div class="card" style="margin-top:12px;font-size:14px">💡 <b>요령</b> 말하기 전에 「を」를 붙일지 먼저 정하세요. 「を」가 오면 타동사(<span class="ja">増やす・下げる・変える</span>)를 써요.</div>`;
   }
   if(note==='ph'){
     h+=`<div class="card" style="padding:10px 14px"><label class="toggle" id="hideT"><span class="sw ${hideJp?'on':''}"></span>일본어 가리기 (보고 말한 뒤 탭해서 확인)</label></div><div id="phList" class="${hideJp?'hide-jp':''}">`;
-    let last='';
-    PH.forEach((x,i)=>{ if(x.cat!==last){h+=`<div class="cat" style="color:var(--blue)">${x.cat}</div>`;last=x.cat}
+    let last=''; if(!PH.some(inDate)) h+=emptyNote();
+    PH.forEach((x,i)=>{ if(!inDate(x)) return; if(x.cat!==last){h+=`<div class="cat" style="color:var(--blue)">${x.cat}</div>`;last=x.cat}
       h+=`<div class="ph" data-i="${i}"><div class="tx"><div class="jp ja">${esc(x.jp)}</div><div class="ko">${esc(x.ko)}</div>${x.y?`<div class="yomi ja">${esc(x.y)}</div>`:''}</div><button class="spk" data-say="${esc(x.jp)}">🔊</button></div>`});
     h+='</div>';
   }
   if(note==='pron'){
-    PRON.forEach(p=>{h+=`<div class="pc"><h4>${p.h}</h4>`;
+    const pr=PRON.filter(inDate), prs=PRON_S.filter(inDate); if(!pr.length&&!prs.length) h+=emptyNote();
+    pr.forEach(p=>{h+=`<div class="pc"><h4>${p.h}</h4>`;
       p.pairs.forEach(w=>{h+=`<div class="beats"><span class="w ja">${w.w}</span>${w.b.map((c,k)=>`<span class="beat ja ${w.hl.includes(k)?'hl':''}">${c}</span>`).join('')}<span class="lbl">${w.l}</span><button class="spk beatplay" data-say="${w.w}" data-n="${w.b.length}">🔊</button></div>`});
       h+='</div>'});
-    h+=`<div class="cat" style="color:var(--green)">🎙 문장으로 연습</div>`;
-    PRON_S.forEach(x=>{h+=`<div class="ph"><div class="tx"><div class="jp ja">${esc(x.jp)}</div><div class="ko">${esc(x.ko)}</div></div><button class="spk" data-say="${esc(x.jp)}">🔊</button></div>`});
+    if(prs.length) h+=`<div class="cat" style="color:var(--green)">🎙 문장으로 연습</div>`;
+    prs.forEach(x=>{h+=`<div class="ph"><div class="tx"><div class="jp ja">${esc(x.jp)}</div><div class="ko">${esc(x.ko)}</div></div><button class="spk" data-say="${esc(x.jp)}">🔊</button></div>`});
     h+=`<div class="card" style="font-size:14px">🎙 <b>억양</b> 「<span class="ja">申し訳ありません</span>」은 서두르지 말고 또박또박. <span class="ja">気づかう</span>는 <b>きづかう</b>로 읽어요.<br>🔁 틀리면 처음부터 다시 말하지 말고, 틀린 곳만 고쳐서 이어가세요.</div>`;
   }
   box.innerHTML=h;
@@ -775,12 +1037,1299 @@ function drawCheck(){
 }
 $('#ckReset').onclick=()=>{if(!confirmBox('체크를 모두 해제할까요?'))return;S.check={};save();drawCheck()};
 
+/* ================= LEARN (상황별 학습) ================= */
+const LEARN = [
+{
+"id": "airport",
+"e": "✈️",
+"t": "공항 입국·출국",
+"d": "입국심사와 세관에서 듣는 질문은 거의 정해져 있어요.",
+"listen": [
+{
+"jp": "パスポートを見せてください。",
+"ko": "여권 보여 주세요."
+},
+{
+"jp": "入国の目的は何ですか。",
+"ko": "입국 목적이 뭐예요?"
+},
+{
+"jp": "何日間滞在しますか。",
+"ko": "며칠 머무르세요?"
+},
+{
+"jp": "どちらに泊まりますか。",
+"ko": "어디에서 묵으세요?"
+},
+{
+"jp": "申告するものはありますか。",
+"ko": "신고할 물건 있어요?"
+},
+{
+"jp": "カメラを見てください。",
+"ko": "카메라를 봐 주세요."
+}
+],
+"say": [
+{
+"jp": "観光です。",
+"ko": "관광이에요."
+},
+{
+"jp": "4泊5日です。",
+"ko": "4박 5일이에요."
+},
+{
+"jp": "綾瀬の民泊に泊まります。",
+"ko": "아야세 민박에 묵어요."
+},
+{
+"jp": "家族と一緒です。",
+"ko": "가족이랑 같이 왔어요."
+},
+{
+"jp": "申告するものはありません。",
+"ko": "신고할 건 없어요."
+}
+],
+"words": [
+{
+"jp": "入国審査",
+"yo": "にゅうこくしんさ",
+"ko": "입국심사"
+},
+{
+"jp": "税関",
+"yo": "ぜいかん",
+"ko": "세관"
+},
+{
+"jp": "申告",
+"yo": "しんこく",
+"ko": "신고"
+},
+{
+"jp": "滞在",
+"yo": "たいざい",
+"ko": "체류"
+},
+{
+"jp": "手荷物",
+"yo": "てにもつ",
+"ko": "수하물"
+},
+{
+"jp": "到着ロビー",
+"yo": "とうちゃくロビー",
+"ko": "도착 로비"
+},
+{
+"jp": "出発",
+"yo": "しゅっぱつ",
+"ko": "출발"
+},
+{
+"jp": "搭乗口",
+"yo": "とうじょうぐち",
+"ko": "탑승구"
+}
+],
+"tips": [
+"Visit Japan Web에 입국·세관 정보를 미리 등록해 두면 QR 코드로 수속할 수 있어요.",
+"면세로 산 물건이 있으면 출국할 때 짐을 부치기 전에 공항 세관에서 확인을 받아야 해요(쇼핑 상황 참고)."
+]
+},
+{
+"id": "train",
+"e": "🚃",
+"t": "전철·Suica",
+"d": "안내 방송은 같은 문장이 반복돼요. 들리면 반은 성공이에요.",
+"listen": [
+{
+"jp": "次は北千住、北千住です。",
+"ko": "다음은 기타센주, 기타센주입니다."
+},
+{
+"jp": "お出口は右側です。",
+"ko": "내리실 문은 오른쪽입니다."
+},
+{
+"jp": "千代田線はお乗り換えです。",
+"ko": "지요다선은 갈아타세요."
+},
+{
+"jp": "ドアが閉まります。ご注意ください。",
+"ko": "문이 닫힙니다. 주의하세요."
+},
+{
+"jp": "黄色い線の内側までお下がりください。",
+"ko": "노란 선 안쪽으로 물러나 주세요."
+},
+{
+"jp": "残高が不足しています。",
+"ko": "잔액이 부족합니다."
+}
+],
+"say": [
+{
+"jp": "Suicaにチャージしたいです。",
+"ko": "스이카를 충전하고 싶어요."
+},
+{
+"jp": "この電車は綾瀬に止まりますか。",
+"ko": "이 전철 아야세에 서요?"
+},
+{
+"jp": "どこで乗り換えればいいですか。",
+"ko": "어디서 갈아타면 돼요?"
+},
+{
+"jp": "浅草まで何分くらいですか。",
+"ko": "아사쿠사까지 몇 분쯤 걸려요?"
+},
+{
+"jp": "すみません、降ります。",
+"ko": "죄송해요, 내릴게요."
+}
+],
+"words": [
+{
+"jp": "改札",
+"yo": "かいさつ",
+"ko": "개찰구"
+},
+{
+"jp": "乗り換え",
+"yo": "のりかえ",
+"ko": "환승"
+},
+{
+"jp": "〜行き",
+"yo": "〜ゆき",
+"ko": "~행"
+},
+{
+"jp": "各駅停車",
+"yo": "かくえきていしゃ",
+"ko": "각 역 정차(완행)"
+},
+{
+"jp": "快速",
+"yo": "かいそく",
+"ko": "쾌속"
+},
+{
+"jp": "出口",
+"yo": "でぐち",
+"ko": "출구"
+},
+{
+"jp": "ホーム",
+"yo": "ホーム",
+"ko": "승강장"
+},
+{
+"jp": "残高",
+"yo": "ざんだか",
+"ko": "잔액"
+}
+],
+"tips": [
+"쾌속·급행은 작은 역을 그냥 지나칠 수 있어요. 타기 전에 「〇〇に止まりますか」로 확인하세요.",
+"카드 잔액이 모자라면 개찰구가 닫혀요. 개찰구 옆 정산기(精算機)에서 충전하면 돼요."
+]
+},
+{
+"id": "stay",
+"e": "🏠",
+"t": "숙소 체크인",
+"d": "호텔·에어비앤비에서 처음 도착했을 때와 문제가 생겼을 때.",
+"listen": [
+{
+"jp": "ご予約のお名前をお願いします。",
+"ko": "예약하신 분 성함을 알려 주세요."
+},
+{
+"jp": "チェックインは午後4時からです。",
+"ko": "체크인은 오후 4시부터예요."
+},
+{
+"jp": "鍵はキーボックスに入っています。",
+"ko": "열쇠는 키박스에 들어 있어요."
+},
+{
+"jp": "ゴミは分別してください。",
+"ko": "쓰레기는 분리해서 버려 주세요."
+},
+{
+"jp": "チェックアウトは10時までにお願いします。",
+"ko": "체크아웃은 10시까지 부탁드려요."
+},
+{
+"jp": "何かあったら連絡してください。",
+"ko": "무슨 일 있으면 연락 주세요."
+}
+],
+"say": [
+{
+"jp": "予約したキムです。",
+"ko": "예약한 김이에요."
+},
+{
+"jp": "荷物を預かってもらえますか。",
+"ko": "짐을 맡아 주실 수 있어요?"
+},
+{
+"jp": "Wi-Fiのパスワードを教えてください。",
+"ko": "와이파이 비밀번호 알려 주세요."
+},
+{
+"jp": "ゴミの出し方を教えてください。",
+"ko": "쓰레기 버리는 법 알려 주세요."
+},
+{
+"jp": "お湯が出ないんですが。",
+"ko": "뜨거운 물이 안 나오는데요."
+},
+{
+"jp": "部屋のエアコンが壊れているみたいなんです。",
+"ko": "방 에어컨이 고장 난 것 같아요."
+}
+],
+"words": [
+{
+"jp": "鍵",
+"yo": "かぎ",
+"ko": "열쇠"
+},
+{
+"jp": "暗証番号",
+"yo": "あんしょうばんごう",
+"ko": "비밀번호"
+},
+{
+"jp": "分別",
+"yo": "ぶんべつ",
+"ko": "분리수거"
+},
+{
+"jp": "燃えるゴミ",
+"yo": "もえるゴミ",
+"ko": "타는 쓰레기"
+},
+{
+"jp": "燃えないゴミ",
+"yo": "もえないゴミ",
+"ko": "안 타는 쓰레기"
+},
+{
+"jp": "資源ゴミ",
+"yo": "しげんゴミ",
+"ko": "재활용 쓰레기"
+},
+{
+"jp": "お湯",
+"yo": "おゆ",
+"ko": "뜨거운 물"
+},
+{
+"jp": "布団",
+"yo": "ふとん",
+"ko": "이불"
+}
+],
+"tips": [
+"일본은 쓰레기를 타는 것·안 타는 것·캔병페트처럼 나눠 버려요. 숙소 안내문을 먼저 확인하세요.",
+"체크인 전에 도착하면 「荷物を預かってもらえますか」로 짐만 먼저 맡길 수 있는지 물어보세요."
+]
+},
+{
+"id": "food",
+"e": "🍜",
+"t": "식당",
+"d": "자리 안내 → 주문 → 계산 순서로 듣는 말이 거의 같아요.",
+"listen": [
+{
+"jp": "何名様ですか。",
+"ko": "몇 분이세요?"
+},
+{
+"jp": "ただいま満席です。こちらにお名前を書いてお待ちください。",
+"ko": "지금 만석이에요. 여기에 이름 쓰고 기다려 주세요."
+},
+{
+"jp": "お決まりでしたらお呼びください。",
+"ko": "정하시면 불러 주세요."
+},
+{
+"jp": "お飲み物はいかがなさいますか。",
+"ko": "음료는 어떻게 하시겠어요?"
+},
+{
+"jp": "ご注文は以上でよろしいですか。",
+"ko": "주문은 이걸로 다 되셨어요?"
+},
+{
+"jp": "お会計はご一緒でよろしいですか。",
+"ko": "계산은 같이 하시겠어요?"
+}
+],
+"say": [
+{
+"jp": "6人です。",
+"ko": "6명이에요."
+},
+{
+"jp": "おすすめは何ですか。",
+"ko": "추천 메뉴가 뭐예요?"
+},
+{
+"jp": "これを二つください。",
+"ko": "이거 두 개 주세요."
+},
+{
+"jp": "辛くないものはどれですか。",
+"ko": "안 매운 건 어느 거예요?"
+},
+{
+"jp": "取り皿をもらえますか。",
+"ko": "앞접시 주시겠어요?"
+},
+{
+"jp": "お会計お願いします。",
+"ko": "계산해 주세요."
+}
+],
+"words": [
+{
+"jp": "食券",
+"yo": "しょっけん",
+"ko": "식권"
+},
+{
+"jp": "定食",
+"yo": "ていしょく",
+"ko": "정식"
+},
+{
+"jp": "大盛り",
+"yo": "おおもり",
+"ko": "곱빼기"
+},
+{
+"jp": "並",
+"yo": "なみ",
+"ko": "보통"
+},
+{
+"jp": "お冷",
+"yo": "おひや",
+"ko": "찬물"
+},
+{
+"jp": "お通し",
+"yo": "おとおし",
+"ko": "기본 안주"
+},
+{
+"jp": "取り皿",
+"yo": "とりざら",
+"ko": "앞접시"
+},
+{
+"jp": "禁煙席",
+"yo": "きんえんせき",
+"ko": "금연석"
+}
+],
+"tips": [
+"라멘·덮밥집은 입구의 식권 자판기(券売機)에서 먼저 표를 사는 곳이 많아요.",
+"이자카야에서 주문 안 해도 나오는 お通し는 보통 유료 기본 안주예요."
+]
+},
+{
+"id": "konbini",
+"e": "🏪",
+"t": "편의점",
+"d": "계산대에서 묻는 말은 4~5개가 전부예요.",
+"listen": [
+{
+"jp": "温めますか。",
+"ko": "데워 드릴까요?"
+},
+{
+"jp": "袋はご利用ですか。",
+"ko": "봉투 필요하세요?"
+},
+{
+"jp": "お箸はおつけしますか。",
+"ko": "젓가락 드릴까요?"
+},
+{
+"jp": "ポイントカードはお持ちですか。",
+"ko": "포인트카드 있으세요?"
+},
+{
+"jp": "お支払いは何になさいますか。",
+"ko": "결제는 어떻게 하시겠어요?"
+},
+{
+"jp": "画面の確認ボタンを押してください。",
+"ko": "화면의 확인 버튼을 눌러 주세요."
+}
+],
+"say": [
+{
+"jp": "温めてください。",
+"ko": "데워 주세요."
+},
+{
+"jp": "袋はいりません。",
+"ko": "봉투는 필요 없어요."
+},
+{
+"jp": "お箸を二膳ください。",
+"ko": "젓가락 두 벌 주세요."
+},
+{
+"jp": "カードでお願いします。",
+"ko": "카드로 할게요."
+},
+{
+"jp": "レシートは大丈夫です。",
+"ko": "영수증은 괜찮아요."
+}
+],
+"words": [
+{
+"jp": "お箸",
+"yo": "おはし",
+"ko": "젓가락"
+},
+{
+"jp": "〜膳",
+"yo": "〜ぜん",
+"ko": "~벌(젓가락)"
+},
+{
+"jp": "温める",
+"yo": "あたためる",
+"ko": "데우다"
+},
+{
+"jp": "レシート",
+"yo": "レシート",
+"ko": "영수증"
+},
+{
+"jp": "お弁当",
+"yo": "おべんとう",
+"ko": "도시락"
+},
+{
+"jp": "電子レンジ",
+"yo": "でんしレンジ",
+"ko": "전자레인지"
+},
+{
+"jp": "年齢確認",
+"yo": "ねんれいかくにん",
+"ko": "나이 확인"
+}
+],
+"tips": [
+"술을 살 때는 계산대 화면에 나오는 나이 확인 버튼을 직접 눌러요.",
+"「大丈夫です」는 '필요 없어요'라는 뜻으로 거절할 때도 써요."
+]
+},
+{
+"id": "shop",
+"e": "🛍",
+"t": "쇼핑·면세",
+"d": "옷 가게·드럭스토어·기념품 가게에서.",
+"listen": [
+{
+"jp": "何かお探しですか。",
+"ko": "뭐 찾으세요?"
+},
+{
+"jp": "ご試着なさいますか。",
+"ko": "입어 보시겠어요?"
+},
+{
+"jp": "サイズはいかがですか。",
+"ko": "사이즈는 어떠세요?"
+},
+{
+"jp": "プレゼント用ですか。",
+"ko": "선물용이세요?"
+},
+{
+"jp": "免税の手続きにはパスポートが必要です。",
+"ko": "면세 수속에는 여권이 필요해요."
+}
+],
+"say": [
+{
+"jp": "見ているだけです。",
+"ko": "그냥 보는 중이에요."
+},
+{
+"jp": "これの色違いはありますか。",
+"ko": "이거 다른 색 있어요?"
+},
+{
+"jp": "もう少し大きいサイズはありますか。",
+"ko": "조금 더 큰 사이즈 있어요?"
+},
+{
+"jp": "試着してもいいですか。",
+"ko": "입어 봐도 돼요?"
+},
+{
+"jp": "免税できますか。",
+"ko": "면세 돼요?"
+},
+{
+"jp": "プレゼント用に包んでいただけますか。",
+"ko": "선물용으로 포장해 주시겠어요?"
+}
+],
+"words": [
+{
+"jp": "税込",
+"yo": "ぜいこみ",
+"ko": "세금 포함"
+},
+{
+"jp": "税抜",
+"yo": "ぜいぬき",
+"ko": "세금 별도"
+},
+{
+"jp": "免税",
+"yo": "めんぜい",
+"ko": "면세"
+},
+{
+"jp": "試着室",
+"yo": "しちゃくしつ",
+"ko": "탈의실"
+},
+{
+"jp": "色違い",
+"yo": "いろちがい",
+"ko": "다른 색상"
+},
+{
+"jp": "割引",
+"yo": "わりびき",
+"ko": "할인"
+},
+{
+"jp": "お土産",
+"yo": "おみやげ",
+"ko": "기념품·선물"
+}
+],
+"tips": [
+"가격표의 税込는 세금 포함, 税抜는 세금 별도 가격이에요.",
+"2026년 11월부터 면세 방식이 바뀌었어요. 가게에서는 세금 포함 가격으로 내고, 출국할 때 공항 세관(보안검색 전)에서 물건을 확인받은 뒤 돌려받아요. 짐을 부치기 전에 확인받아야 하니 면세품은 꺼내기 쉽게 챙기세요."
+]
+},
+{
+"id": "temple",
+"e": "⛩️",
+"t": "절·신사 (하츠모데)",
+"d": "새해 센소지는 사람이 많아서 줄 안내를 자주 들어요.",
+"listen": [
+{
+"jp": "押さないでください。",
+"ko": "밀지 마세요."
+},
+{
+"jp": "こちらが最後尾です。",
+"ko": "여기가 줄 맨 끝이에요."
+},
+{
+"jp": "立ち止まらないでください。",
+"ko": "멈춰 서지 마세요."
+},
+{
+"jp": "おみくじは一回200円です。",
+"ko": "오미쿠지는 한 번에 200엔이에요."
+}
+],
+"say": [
+{
+"jp": "おみくじはどこで引けますか。",
+"ko": "오미쿠지는 어디서 뽑아요?"
+},
+{
+"jp": "お守りを一つください。",
+"ko": "부적 하나 주세요."
+},
+{
+"jp": "ここで写真を撮ってもいいですか。",
+"ko": "여기서 사진 찍어도 돼요?"
+},
+{
+"jp": "写真を撮っていただけますか。",
+"ko": "사진 좀 찍어 주시겠어요?"
+}
+],
+"words": [
+{
+"jp": "初詣",
+"yo": "はつもうで",
+"ko": "새해 첫 참배"
+},
+{
+"jp": "お賽銭",
+"yo": "おさいせん",
+"ko": "새전(헌금)"
+},
+{
+"jp": "参拝",
+"yo": "さんぱい",
+"ko": "참배"
+},
+{
+"jp": "おみくじ",
+"yo": "おみくじ",
+"ko": "운세 뽑기"
+},
+{
+"jp": "お守り",
+"yo": "おまもり",
+"ko": "부적"
+},
+{
+"jp": "大吉",
+"yo": "だいきち",
+"ko": "대길"
+},
+{
+"jp": "凶",
+"yo": "きょう",
+"ko": "흉"
+},
+{
+"jp": "屋台",
+"yo": "やたい",
+"ko": "노점"
+}
+],
+"tips": [
+"센소지는 절(お寺)이라 박수를 치지 않고 조용히 합장만 해요. 박수(두 번 절·두 번 박수·한 번 절)는 신사(神社)에서 해요.",
+"나쁜 운세가 나오면 경내의 정해진 곳에 묶어 두고 가는 사람이 많아요.",
+"오미쿠지 가격은 절마다 달라요. 위 200엔은 예시예요."
+]
+},
+{
+"id": "way",
+"e": "🗺",
+"t": "길 묻기",
+"d": "방향을 알려 주는 말만 알아들으면 돼요.",
+"listen": [
+{
+"jp": "まっすぐ行ってください。",
+"ko": "쭉 가세요."
+},
+{
+"jp": "二つ目の信号を右に曲がってください。",
+"ko": "두 번째 신호등에서 오른쪽으로 도세요."
+},
+{
+"jp": "突き当たりを左です。",
+"ko": "막다른 곳에서 왼쪽이에요."
+},
+{
+"jp": "歩いて5分くらいです。",
+"ko": "걸어서 5분쯤이에요."
+},
+{
+"jp": "駅の向かいにあります。",
+"ko": "역 맞은편에 있어요."
+}
+],
+"say": [
+{
+"jp": "すみません、浅草寺はどこですか。",
+"ko": "저기요, 센소지는 어디예요?"
+},
+{
+"jp": "ここから遠いですか。",
+"ko": "여기서 멀어요?"
+},
+{
+"jp": "歩いて行けますか。",
+"ko": "걸어갈 수 있어요?"
+},
+{
+"jp": "地図で教えていただけますか。",
+"ko": "지도로 알려 주시겠어요?"
+},
+{
+"jp": "道に迷ったみたいなんです。",
+"ko": "길을 잃은 것 같아요."
+}
+],
+"words": [
+{
+"jp": "まっすぐ",
+"yo": "まっすぐ",
+"ko": "똑바로"
+},
+{
+"jp": "右に曲がる",
+"yo": "みぎにまがる",
+"ko": "오른쪽으로 돌다"
+},
+{
+"jp": "信号",
+"yo": "しんごう",
+"ko": "신호등"
+},
+{
+"jp": "交差点",
+"yo": "こうさてん",
+"ko": "교차로"
+},
+{
+"jp": "角",
+"yo": "かど",
+"ko": "모퉁이"
+},
+{
+"jp": "突き当たり",
+"yo": "つきあたり",
+"ko": "막다른 곳"
+},
+{
+"jp": "向かい",
+"yo": "むかい",
+"ko": "맞은편"
+},
+{
+"jp": "隣",
+"yo": "となり",
+"ko": "옆"
+}
+],
+"tips": [
+"길 설명을 다 못 알아들어도 괜찮아요. 「地図で教えていただけますか」라고 하고 휴대폰 지도를 보여 주세요."
+]
+},
+{
+"id": "taxi",
+"e": "🚕",
+"t": "택시",
+"d": "행선지 → 결제 → 내리기, 세 가지만 하면 돼요.",
+"listen": [
+{
+"jp": "どちらまでですか。",
+"ko": "어디까지 가세요?"
+},
+{
+"jp": "シートベルトをお締めください。",
+"ko": "안전벨트 매 주세요."
+},
+{
+"jp": "この辺でよろしいですか。",
+"ko": "이 근처에서 내리시면 될까요?"
+},
+{
+"jp": "2,500円です。",
+"ko": "2,500엔입니다."
+},
+{
+"jp": "領収書はご入用ですか。",
+"ko": "영수증 필요하세요?"
+}
+],
+"say": [
+{
+"jp": "東京タワーまでお願いします。",
+"ko": "도쿄타워까지 가 주세요."
+},
+{
+"jp": "この住所までお願いします。",
+"ko": "이 주소로 가 주세요."
+},
+{
+"jp": "ここで止めてください。",
+"ko": "여기서 세워 주세요."
+},
+{
+"jp": "カードは使えますか。",
+"ko": "카드 돼요?"
+},
+{
+"jp": "6人ですが、乗れますか。",
+"ko": "6명인데 탈 수 있어요?"
+}
+],
+"words": [
+{
+"jp": "住所",
+"yo": "じゅうしょ",
+"ko": "주소"
+},
+{
+"jp": "空車",
+"yo": "くうしゃ",
+"ko": "빈 차"
+},
+{
+"jp": "止める",
+"yo": "とめる",
+"ko": "세우다"
+},
+{
+"jp": "降りる",
+"yo": "おりる",
+"ko": "내리다"
+},
+{
+"jp": "迎車",
+"yo": "げいしゃ",
+"ko": "호출차"
+}
+],
+"tips": [
+"뒷문은 운전사가 자동으로 열고 닫아요. 직접 닫지 않아도 돼요.",
+"보통 택시는 손님 4명까지라 6명이면 2대가 필요해요."
+]
+},
+{
+"id": "pharmacy",
+"e": "💊",
+"t": "약국·병원",
+"d": "증상과 나이를 말할 수 있으면 대부분 해결돼요.",
+"listen": [
+{
+"jp": "どうされましたか。",
+"ko": "어디가 불편하세요?"
+},
+{
+"jp": "いつからですか。",
+"ko": "언제부터예요?"
+},
+{
+"jp": "熱は何度ですか。",
+"ko": "열은 몇 도예요?"
+},
+{
+"jp": "お子さんは何歳ですか。",
+"ko": "아이는 몇 살이에요?"
+},
+{
+"jp": "アレルギーはありますか。",
+"ko": "알레르기 있어요?"
+},
+{
+"jp": "一日三回、食後に飲んでください。",
+"ko": "하루 세 번, 식후에 드세요."
+}
+],
+"say": [
+{
+"jp": "子どもが昨日の夜から熱を出しています。",
+"ko": "아이가 어젯밤부터 열이 나요."
+},
+{
+"jp": "38度くらいです。",
+"ko": "38도 정도예요."
+},
+{
+"jp": "子ども用の解熱剤はありますか。",
+"ko": "어린이 해열제 있어요?"
+},
+{
+"jp": "頭が痛いです。",
+"ko": "머리가 아파요."
+},
+{
+"jp": "お腹が痛いです。",
+"ko": "배가 아파요."
+},
+{
+"jp": "近くに病院はありますか。",
+"ko": "근처에 병원 있어요?"
+}
+],
+"words": [
+{
+"jp": "薬局",
+"yo": "やっきょく",
+"ko": "약국"
+},
+{
+"jp": "ドラッグストア",
+"yo": "ドラッグストア",
+"ko": "드럭스토어"
+},
+{
+"jp": "解熱剤",
+"yo": "げねつざい",
+"ko": "해열제"
+},
+{
+"jp": "風邪薬",
+"yo": "かぜぐすり",
+"ko": "감기약"
+},
+{
+"jp": "頭痛薬",
+"yo": "ずつうやく",
+"ko": "두통약"
+},
+{
+"jp": "胃薬",
+"yo": "いぐすり",
+"ko": "위장약"
+},
+{
+"jp": "食後",
+"yo": "しょくご",
+"ko": "식후"
+},
+{
+"jp": "咳",
+"yo": "せき",
+"ko": "기침"
+}
+],
+"tips": [
+"증상·나이·몸무게를 메모해서 보여 주면 훨씬 빨라요.",
+"급할 때 일본 번호: 구급차·화재 119, 경찰 110."
+]
+},
+{
+"id": "trouble",
+"e": "🆘",
+"t": "분실·미아·긴급",
+"d": "당황해도 이 문장만 나오면 도움을 받을 수 있어요.",
+"listen": [
+{
+"jp": "いつ、どこでなくしましたか。",
+"ko": "언제 어디서 잃어버렸어요?"
+},
+{
+"jp": "どんな財布ですか。",
+"ko": "어떤 지갑이에요?"
+},
+{
+"jp": "お子さんの服装を教えてください。",
+"ko": "아이 옷차림을 알려 주세요."
+},
+{
+"jp": "お名前と連絡先をお願いします。",
+"ko": "이름과 연락처를 알려 주세요."
+},
+{
+"jp": "見つかったらご連絡します。",
+"ko": "찾으면 연락드릴게요."
+}
+],
+"say": [
+{
+"jp": "財布を落としたみたいなんです。",
+"ko": "지갑을 잃어버린 것 같아요."
+},
+{
+"jp": "姪が迷子になりました。",
+"ko": "조카가 미아가 됐어요."
+},
+{
+"jp": "三十分前に、電車の中でいなくなりました。",
+"ko": "30분 전에 전철 안에서 없어졌어요."
+},
+{
+"jp": "交番はどこですか。",
+"ko": "파출소 어디예요?"
+},
+{
+"jp": "救急車を呼んでください。",
+"ko": "구급차를 불러 주세요."
+}
+],
+"words": [
+{
+"jp": "交番",
+"yo": "こうばん",
+"ko": "파출소"
+},
+{
+"jp": "落とし物",
+"yo": "おとしもの",
+"ko": "분실물"
+},
+{
+"jp": "忘れ物",
+"yo": "わすれもの",
+"ko": "두고 온 물건"
+},
+{
+"jp": "迷子",
+"yo": "まいご",
+"ko": "미아"
+},
+{
+"jp": "服装",
+"yo": "ふくそう",
+"ko": "옷차림"
+},
+{
+"jp": "特徴",
+"yo": "とくちょう",
+"ko": "특징"
+},
+{
+"jp": "警察",
+"yo": "けいさつ",
+"ko": "경찰"
+},
+{
+"jp": "救急車",
+"yo": "きゅうきゅうしゃ",
+"ko": "구급차"
+}
+],
+"tips": [
+"역이나 전철에 두고 온 물건은 역무원(駅員)에게, 길에서 잃어버린 물건은 交番에 물어보세요.",
+"사람 많은 곳에서는 미리 「はぐれたらここに集合」(흩어지면 여기서 모이기) 장소를 정해 두세요."
+]
+},
+{
+"id": "basic",
+"e": "🗣",
+"t": "되묻기·기본 표현",
+"d": "못 알아들었을 때 쓰는 말이 가장 자주 필요해요.",
+"listen": [
+{
+"jp": "少々お待ちください。",
+"ko": "잠시만 기다려 주세요."
+},
+{
+"jp": "かしこまりました。",
+"ko": "알겠습니다."
+},
+{
+"jp": "お待たせしました。",
+"ko": "오래 기다리셨습니다."
+},
+{
+"jp": "こちらへどうぞ。",
+"ko": "이쪽으로 오세요."
+},
+{
+"jp": "よろしいですか。",
+"ko": "괜찮으세요?"
+},
+{
+"jp": "申し訳ございません。",
+"ko": "죄송합니다."
+}
+],
+"say": [
+{
+"jp": "すみません、もう一度お願いします。",
+"ko": "죄송해요, 한 번 더 부탁해요."
+},
+{
+"jp": "ゆっくり話していただけますか。",
+"ko": "천천히 말해 주시겠어요?"
+},
+{
+"jp": "ここに書いていただけますか。",
+"ko": "여기에 써 주시겠어요?"
+},
+{
+"jp": "これは日本語で何と言いますか。",
+"ko": "이건 일본어로 뭐라고 해요?"
+},
+{
+"jp": "日本語はまだ勉強中です。",
+"ko": "일본어는 아직 공부하는 중이에요."
+}
+],
+"words": [
+{
+"jp": "すみません",
+"yo": "すみません",
+"ko": "저기요·죄송해요·고마워요"
+},
+{
+"jp": "結構です",
+"yo": "けっこうです",
+"ko": "괜찮아요(거절)"
+},
+{
+"jp": "大丈夫です",
+"yo": "だいじょうぶです",
+"ko": "괜찮아요"
+},
+{
+"jp": "お願いします",
+"yo": "おねがいします",
+"ko": "부탁해요"
+}
+],
+"tips": [
+"「すみません」 하나로 사람 부르기·사과·감사를 다 할 수 있어요.",
+"「結構です」와 「大丈夫です」는 '필요 없어요'라는 거절로도 써요. 받고 싶으면 「お願いします」라고 하세요."
+]
+}
+];
+
+let LCUR=0, LHIDE=false;
+function drawLearn(){
+  const x=LEARN[LCUR], done=!!S.learned[x.id];
+  const row=(r)=>`<div class="lrow"><div class="tx"><div class="j ja">${esc(r.jp)}</div><div class="k" data-rv>${esc(r.ko)}</div></div><button class="spk" data-say="${esc(r.jp)}">🔊</button></div>`;
+  let h=`<div class="lchips" id="lchips">${LEARN.map((c,i)=>`<button class="lchip ${i===LCUR?'on':''} ${S.learned[c.id]?'done':''}" data-li="${i}">${c.e} ${esc(c.t)}${S.learned[c.id]?' ✓':''}</button>`).join('')}</div>
+  <div class="card ${LHIDE?'hide-k':''}">
+    <div class="lhead"><span class="em">${x.e}</span><div style="flex:1"><h3>${esc(x.t)}</h3><div class="muted">${esc(x.d)}</div></div></div>
+    <div class="row" style="justify-content:space-between;margin-top:8px">
+      <label class="toggle" id="lHide"><span class="sw ${LHIDE?'on':''}"></span>듣기 연습 (뜻 가리기)</label>
+      <button class="btn ${done?'':'ghost'}" style="padding:7px 12px;font-size:13px;${done?'background:var(--green)':''}" id="lDone">${done?'✓ 다 봤어요':'다 봤어요'}</button>
+    </div>
+    <div class="lsec ls"><h4>🎧 이런 말을 들어요</h4>${x.listen.map(row).join('')}</div>
+    <div class="lsec sy"><h4>🗣 이렇게 말해요</h4>${x.say.map(row).join('')}</div>
+    <div class="lsec wd"><h4>📌 꼭 아는 단어 <span class="muted" style="font-weight:400;font-size:12px">· 누르면 발음</span></h4><div class="wgrid">${x.words.map(w=>`<button class="wd-i" data-say="${esc(w.jp)}"><b class="ja">${esc(w.jp)}</b>${w.yo!==w.jp?`<span class="y ja">${esc(w.yo)}</span>`:''}<div class="m">${esc(w.ko)}</div></button>`).join('')}</div></div>
+    <div class="lsec tp"><h4>💡 알아 두면 좋아요</h4><ul>${x.tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>
+    <div class="lnav"><button class="btn ghost" id="lPrev" ${LCUR===0?'disabled style="opacity:.4"':''}>‹ 이전</button><button class="btn" style="background:var(--blue)" id="lNext" ${LCUR===LEARN.length-1?'disabled style="opacity:.4;background:var(--blue)"':''}>다음 ›</button></div>
+  </div>`;
+  const box=$('#learnBox'); box.innerHTML=h;
+  box.querySelectorAll('[data-li]').forEach(b=>b.onclick=()=>{LCUR=+b.dataset.li;drawLearn()});
+  box.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>speak(b.dataset.say));
+  box.querySelectorAll('[data-rv]').forEach(b=>b.onclick=()=>b.classList.toggle('rv'));
+  $('#lHide').onclick=()=>{LHIDE=!LHIDE;drawLearn()};
+  $('#lDone').onclick=()=>{const on=!S.learned[x.id]; if(on)S.learned[x.id]=dkey(new Date()); else delete S.learned[x.id]; logSet('learn',x.id,on); save(); drawLearn(); if(on)toast(x.e+' '+x.t+' 완료!')};
+  $('#lPrev').onclick=()=>{if(LCUR>0){LCUR--;drawLearn();window.scrollTo({top:0,behavior:'smooth'})}};
+  $('#lNext').onclick=()=>{if(LCUR<LEARN.length-1){LCUR++;drawLearn();window.scrollTo({top:0,behavior:'smooth'})}};
+  const on=box.querySelector('.lchip.on'); if(on) on.scrollIntoView({inline:'center',block:'nearest'});
+}
+document.querySelector('nav button[data-p=learn]').addEventListener('click',drawLearn);
+
+/* ================= SONGS ================= */
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function songScore(k){let n=0;(S.songs||[]).forEach(sg=>sg.lines.forEach(l=>{if(l.d===k)n+=2;if(l.kd===k)n+=2}));return n;}
+const SG={open:null, form:null, newSong:false, hideJa:false, hideKo:false, onlyNew:false, prac:null};
+function allLines(sid){const out=[];S.songs.forEach(sg=>{if(sid&&sg.id!==sid)return;sg.lines.forEach(ln=>{if(!SG.onlyNew||!ln.known)out.push({sg,ln})})});return out;}
+function findSong(id){return S.songs.find(x=>x.id===id)}
+function lineForm(sid,ln){
+  const v=ln||{ja:'',yomi:'',ko:'',note:''};
+  return `<div class="fm" id="lineForm">
+    <label>외우고 싶은 구절 (일본어)</label><textarea class="ja-in" id="fJa" placeholder="직접 입력해 주세요">${esc(v.ja)}</textarea>
+    <label>읽는 법 (선택)</label><input class="ja-in" id="fYo" value="${esc(v.yomi)}" placeholder="어려운 한자 읽기">
+    <label>뜻</label><input id="fKo" value="${esc(v.ko)}" placeholder="한국어 뜻">
+    <label>단어·문법 메모 (선택)</label><textarea id="fNt" placeholder="새로 알게 된 단어, 문법 포인트">${esc(v.note)}</textarea>
+    <div class="row" style="margin-top:10px"><button class="btn" style="background:var(--purple);padding:9px 16px" id="fSave">${ln?'수정 저장':'구절 저장'}</button><button class="btn ghost" style="padding:9px 14px" id="fCancel">취소</button></div>
+  </div>`;
+}
+function drawSongs(){
+  const box=$('#songBox'); let h='';
+  const tot=allLines(null).length, all=S.songs.reduce((a,sg)=>a+sg.lines.length,0), kn=S.songs.reduce((a,sg)=>a+sg.lines.filter(l=>l.known).length,0);
+  h+=`<div class="card" style="background:linear-gradient(135deg,#f3eeff,#fff5f8)">
+    <div style="font-size:14px">자주 부르는 <b>가사에서 외우고 싶은 구절</b>을 직접 넣고, 뜻과 단어를 정리해서 외워요.</div>
+    <div class="muted" style="margin-top:4px">가사 ${S.songs.length}곡 · 구절 ${all}개 · 외움 ${kn}개</div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" style="background:var(--purple);padding:9px 14px;font-size:14px" id="sgNew">＋ 새 가사</button>
+      ${all?`<button class="btn ghost" style="padding:9px 14px;font-size:14px" id="sgPracAll">🔀 랜덤으로 외우기</button>`:''}
+    </div>
+    ${SG.newSong?`<div class="fm"><label>곡 제목</label><input id="nTitle" placeholder="곡 제목"><label>가수 (선택)</label><input id="nArtist" placeholder="가수"><div class="row" style="margin-top:10px"><button class="btn" style="background:var(--purple);padding:9px 16px" id="nSave">추가</button><button class="btn ghost" style="padding:9px 14px" id="nCancel">취소</button></div></div>`:''}
+  </div>`;
+  if(all){
+    h+=`<div class="card" style="padding:10px 14px;display:flex;flex-direction:column;gap:8px">
+      <label class="toggle" data-tg="hideJa"><span class="sw ${SG.hideJa?'on':''}"></span>일본어 가리기 (뜻 보고 말해 보기)</label>
+      <label class="toggle" data-tg="hideKo"><span class="sw ${SG.hideKo?'on':''}"></span>뜻 가리기 (일본어 보고 뜻 떠올리기)</label>
+      <label class="toggle" data-tg="onlyNew"><span class="sw ${SG.onlyNew?'on':''}"></span>못 외운 구절만</label>
+      <div class="speed">🐢<input type="range" id="sgRate" min="0.5" max="1.2" step="0.1" value="${rate()}">🐇</div>
+    </div>`;
+  }
+  if(SG.prac){
+    const pool=allLines(SG.prac.sid);
+    if(!pool.length){ h+=`<div class="card result"><div class="emo">🎉</div><p>${SG.onlyNew?'못 외운 구절이 없어요!':'구절이 없어요.'}</p><button class="btn ghost" id="pClose">닫기</button></div>`; }
+    else{
+      if(!SG.prac.cur || !pool.find(x=>x.ln.id===SG.prac.cur)) SG.prac.cur=pool[Math.floor(Math.random()*pool.length)].ln.id;
+      const it=pool.find(x=>x.ln.id===SG.prac.cur);
+      h+=`<div class="pr" id="prCard"><div class="q">${esc(it.ln.ko||'(뜻 없음)')}</div>
+        ${SG.prac.show?`<div class="a ja">${esc(it.ln.ja)}</div>${it.ln.yomi?`<div class="s ja">${esc(it.ln.yomi)}</div>`:''}`:'<div class="s" style="margin-top:14px">일본어로 불러 보고, 탭해서 확인 👆</div>'}
+        <div class="s">🎵 ${esc(it.sg.title)} · 남은 구절 ${pool.length}개</div></div>
+        <div class="fc-btns" style="margin-bottom:8px"><button class="btn again" id="pAgain">😅 다시</button><button class="btn know" id="pKnow">😎 외웠어요</button></div>
+        <div class="row" style="justify-content:center;margin-bottom:14px"><button class="btn ghost" style="font-size:13px;padding:7px 12px" id="pClose">연습 끝내기</button></div>`;
+    }
+  }
+  S.songs.forEach(sg=>{
+    const kn=sg.lines.filter(l=>l.known).length, open=SG.open===sg.id;
+    const lines=sg.lines.filter(l=>!SG.onlyNew||!l.known);
+    h+=`<div class="song-card ${open?'open':''}" data-sid="${sg.id}">
+      <div class="song-head" data-open="${sg.id}"><span class="ic">🎵</span><span class="tt"><b>${esc(sg.title)}</b>${sg.artist?`<small>${esc(sg.artist)}</small>`:''}</span><span class="pg">${kn} / ${sg.lines.length}</span></div>
+      <div class="song-body ${SG.hideJa?'hide-ja':''} ${SG.hideKo?'hide-ko':''}">
+        ${lines.length?lines.map(ln=>`<div class="ln ${ln.known?'known':''}">
+          <div class="tx"><div class="ja-l ja" data-rv>${esc(ln.ja).replace(/\n/g,'<br>')}</div>${ln.yomi?`<div class="yo ja">${esc(ln.yomi)}</div>`:''}${ln.ko?`<div class="ko-l" data-rv>${esc(ln.ko)}</div>`:''}${ln.note?`<div class="nt">${esc(ln.note)}</div>`:''}</div>
+          <div class="acts"><button class="spk" style="width:32px;height:32px;font-size:14px" data-say="${esc(ln.ja)}">🔊</button><button class="mini ${ln.known?'on':''}" data-known="${ln.id}" title="외움">✓</button><button class="mini" data-edit="${ln.id}" title="수정">✎</button><button class="mini" data-del="${ln.id}" title="삭제">🗑</button></div>
+        </div>${SG.form&&SG.form.sid===sg.id&&SG.form.lid===ln.id?lineForm(sg.id,ln):''}`).join(''):`<div class="muted" style="padding:8px 0">${sg.lines.length?'못 외운 구절이 없어요 🎉':'아직 구절이 없어요. 아래에서 추가해 보세요.'}</div>`}
+        ${SG.form&&SG.form.sid===sg.id&&!SG.form.lid?lineForm(sg.id,null):''}
+        <div class="song-tools">
+          <button data-add="${sg.id}">＋ 구절 추가</button>
+          ${sg.lines.length?`<button data-prac="${sg.id}">🔀 이 가사만 연습</button>`:''}
+          <button data-rename="${sg.id}">✎ 제목 수정</button>
+          <button data-delsong="${sg.id}" style="color:var(--red)">🗑 가사 삭제</button>
+        </div>
+      </div></div>`;
+  });
+  h+=`<div class="card" style="margin-top:14px">
+    <b style="font-size:14.5px">💾 백업</b>
+    <div class="muted" style="margin:3px 0 8px">기록은 Firebase에 자동 저장돼서 휴대폰·PC 어디서 열어도 같아요. 만일을 위해 가끔 파일로도 내려받아 두세요. (가사 구절 + 카드 진도 + 달력 기록)</div>
+    <div class="row"><button class="btn ghost" style="font-size:13px;padding:7px 12px" id="bkOut">⬇ 내보내기</button><button class="btn ghost" style="font-size:13px;padding:7px 12px" id="bkIn">⬆ 가져오기</button><input type="file" id="bkFile" accept="application/json,.json" style="display:none"></div>
+  </div>`;
+  box.innerHTML=h;
+  bindSongs();
+}
+function bindSongs(){
+  const box=$('#songBox'), on=(sel,fn)=>box.querySelectorAll(sel).forEach(b=>b.onclick=e=>{e.stopPropagation();fn(b,e)});
+  on('#sgNew',()=>{SG.newSong=!SG.newSong;drawSongs();const t=$('#nTitle');if(t)t.focus()});
+  on('#nCancel',()=>{SG.newSong=false;drawSongs()});
+  on('#nSave',()=>{const t=$('#nTitle').value.trim();if(!t){toast('곡 제목을 넣어 주세요');return}const sg={id:uid(),title:t,artist:$('#nArtist').value.trim(),lines:[]};S.songs.push(sg);SG.newSong=false;SG.open=sg.id;SG.form={sid:sg.id,lid:null};save();drawSongs();const f=$('#fJa');if(f)f.focus()});
+  on('[data-open]',b=>{SG.open=SG.open===b.dataset.open?null:b.dataset.open;SG.form=null;drawSongs()});
+  on('[data-tg]',b=>{SG[b.dataset.tg]=!SG[b.dataset.tg];drawSongs()});
+  on('[data-say]',b=>speak(b.dataset.say));
+  on('[data-rv]',b=>b.classList.toggle('rv'));
+  on('[data-add]',b=>{SG.form={sid:b.dataset.add,lid:null};drawSongs();const f=$('#fJa');if(f){f.focus();f.scrollIntoView({block:'center'})}});
+  on('[data-edit]',b=>{const sg=S.songs.find(s=>s.lines.some(l=>l.id===b.dataset.edit));SG.form={sid:sg.id,lid:b.dataset.edit};drawSongs()});
+  on('#fCancel',()=>{SG.form=null;drawSongs()});
+  on('#fSave',()=>{const ja=$('#fJa').value.trim();if(!ja){toast('일본어 구절을 넣어 주세요');return}
+    const sg=findSong(SG.form.sid), v={ja,yomi:$('#fYo').value.trim(),ko:$('#fKo').value.trim(),note:$('#fNt').value.trim()};
+    if(SG.form.lid){Object.assign(sg.lines.find(l=>l.id===SG.form.lid),v);toast('수정했어요')}
+    else{sg.lines.push({id:uid(),...v,known:0,d:dkey(new Date())});toast('🎵 구절 저장!')}
+    SG.form=null;save();drawSongs()});
+  on('[data-known]',b=>{const sg=S.songs.find(s=>s.lines.some(l=>l.id===b.dataset.known));const ln=sg.lines.find(l=>l.id===b.dataset.known);ln.known=ln.known?0:1;ln.kd=ln.known?dkey(new Date()):undefined;save();drawSongs()});
+  on('[data-del]',b=>{if(!confirm('이 구절을 삭제할까요?'))return;S.songs.forEach(sg=>sg.lines=sg.lines.filter(l=>l.id!==b.dataset.del));save();drawSongs()});
+  on('[data-rename]',b=>{const sg=findSong(b.dataset.rename);const t=prompt('곡 제목',sg.title);if(t&&t.trim()){sg.title=t.trim();const a=prompt('가수 (선택)',sg.artist||'');if(a!==null)sg.artist=a.trim();save();drawSongs()}});
+  on('[data-delsong]',b=>{const sg=findSong(b.dataset.delsong);if(!confirm(`「${sg.title}」와 구절 ${sg.lines.length}개를 모두 삭제할까요?`))return;S.songs=S.songs.filter(s=>s.id!==sg.id);save();drawSongs()});
+  on('#sgPracAll',()=>{SG.prac={sid:null,cur:null,show:false};drawSongs();window.scrollTo({top:0,behavior:'smooth'})});
+  on('[data-prac]',b=>{SG.prac={sid:b.dataset.prac,cur:null,show:false};drawSongs();window.scrollTo({top:0,behavior:'smooth'})});
+  on('#prCard',()=>{SG.prac.show=!SG.prac.show;if(SG.prac.show){const ln=allLines(SG.prac.sid).find(x=>x.ln.id===SG.prac.cur);if(ln)speak(ln.ln.ja)}drawSongs()});
+  const nextP=()=>{const pool=allLines(SG.prac.sid).filter(x=>x.ln.id!==SG.prac.cur);SG.prac.cur=pool.length?pool[Math.floor(Math.random()*pool.length)].ln.id:null;SG.prac.show=false;drawSongs()};
+  on('#pKnow',()=>{const it=allLines(SG.prac.sid).find(x=>x.ln.id===SG.prac.cur);if(it){it.ln.known=1;it.ln.kd=dkey(new Date());save();toast('😎 외웠어요!')}nextP()});
+  on('#pAgain',()=>{const it=allLines(SG.prac.sid).find(x=>x.ln.id===SG.prac.cur);if(it&&it.ln.known){it.ln.known=0;it.ln.kd=undefined;save()}nextP()});
+  on('#pClose',()=>{SG.prac=null;drawSongs()});
+  const r=$('#sgRate'); if(r) r.oninput=()=>{$('#rate').value=r.value;$('#rateV').textContent=r.value+'x'};
+  on('#bkOut',()=>{try{const blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sjpt-backup-'+dkey(new Date())+'.json';document.body.appendChild(a);a.click();a.remove();toast('백업 파일을 내려받았어요')}catch(e){toast('내보내기에 실패했어요')}});
+  on('#bkIn',()=>$('#bkFile').click());
+  const f=$('#bkFile'); if(f) f.onchange=()=>{const file=f.files[0];if(!file)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(typeof d!=='object'||!d)throw 0;if(!confirm('지금 기록을 백업 파일 내용으로 바꿀까요?'))return;S=normalizeS(d);save();drawSongs();drawCheck();buildOrder(false);toast('가져왔어요')}catch(e){toast('백업 파일을 읽지 못했어요')}};rd.readAsText(file)};
+}
+document.querySelector('nav button[data-p=songs]').addEventListener('click',drawSongs);
+
 /* ================= CALENDAR ================= */
 const DOW=['일','월','화','수','목','금','토'];
 let calY, calM, selDay=dkey(new Date());
 {const t=new Date(); calY=t.getFullYear(); calM=t.getMonth();}
 const sessOf=k=>SESSIONS.filter(s=>s.d===k);
-function actScore(k){const l=S.log[k]; if(!l) return 0; return (l.known||[]).length+(l.again||[]).length+(l.quiz||[]).length*5+(l.checks||[]).length*2+Math.floor((l.sec||0)/60)+Math.min(5,Math.floor((l.listen||0)/5))+((l.memo||'').trim()?2:0);}
+function actScore(k){const l=S.log[k]||{}; return (l.known||[]).length+(l.again||[]).length+(l.quiz||[]).length*5+(l.checks||[]).length*2+(l.learn||[]).length*3+Math.floor((l.sec||0)/60)+Math.min(5,Math.floor((l.listen||0)/5))+songScore(k);}
 function actLevel(k){const s=actScore(k); return s===0?0:s<6?1:s<15?2:s<30?3:4;}
 function itemById(id){return id[0]==='c'?{...FIX[+id.slice(1)],kind:'fix'}:{...PH[+id.slice(1)],kind:'ph'}}
 function fmtDay(k){const [y,m,d]=k.split('-').map(Number); const w=new Date(y,m-1,d).getDay(); return `${m}월 ${d}일 (${DOW[w]})`;}
@@ -792,16 +2341,17 @@ function renderCal(){
   const first=new Date(calY,calM,1).getDay(), last=new Date(calY,calM+1,0).getDate();
   let h=DOW.map((d,i)=>`<div class="cal-dow ${i===0?'sun':i===6?'sat':''}">${d}</div>`).join('');
   for(let i=0;i<first;i++) h+='<div class="cal-d empty"></div>';
-  let days=0,sec=0,qz=0,qsum=0,lessons=0;
+  let days=0,sec=0,qz=0,qsum=0,lessons=0,mk=0,ms=0;
   for(let d=1;d<=last;d++){
     const k=`${calY}-${pad(calM+1)}-${pad(d)}`, lv=actLevel(k), ls=sessOf(k).length, l=S.log[k];
     if(lv>0)days++; if(ls)lessons++;
-    if(l){sec+=l.sec||0;(l.quiz||[]).forEach(q=>{qz++;qsum+=q.score})}
+    if(l){sec+=l.sec||0;mk+=(l.known||[]).length;(l.quiz||[]).forEach(q=>{qz++;qsum+=q.score})}
+    (S.songs||[]).forEach(sg=>sg.lines.forEach(x=>{if(x.d===k)ms++}));
     h+=`<button class="cal-d l${lv} ${k===today?'today':''} ${k===selDay?'sel':''} ${k>today?'future':''}" data-k="${k}">${d}${ls?'<span class="lsn">📘</span>':''}</button>`;
   }
   $('#calGrid').innerHTML=h;
   $('#calGrid').querySelectorAll('.cal-d[data-k]').forEach(b=>b.onclick=()=>{selDay=b.dataset.k;renderCal();drawDay();document.getElementById('dayBox').scrollIntoView({behavior:'smooth',block:'start'})});
-  $('#mSum').innerHTML=`<div><b>${days}일</b>공부한 날</div><div><b>${mins(sec)}분</b>루틴 시간</div><div><b>${qz}회</b>퀴즈</div><div><b>${qz?Math.round(qsum/qz)+'점':'-'}</b>평균 점수</div>`;
+  $('#mSum').innerHTML=`<div><b>${days}일</b>공부한 날</div><div><b>${mins(sec)}분</b>루틴 시간</div><div><b>${mk}개</b>외운 카드</div><div><b>${ms}개</b>가사 구절</div>`;
 }
 $('#calPrev').onclick=()=>{calM--; if(calM<0){calM=11;calY--} renderCal()};
 $('#calNext').onclick=()=>{calM++; if(calM>11){calM=0;calY++} renderCal()};
@@ -823,35 +2373,43 @@ function drawDay(){
       ${s.points?`<ul style="margin:4px 0 4px;padding-left:18px;font-size:13.5px">${s.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>`:''}
       <details><summary>교정 표현 ${fx.length}개</summary>${fx.map(itemRow).join('')}</details>
       <details><summary>실전 문장 ${ph.length}개</summary>${ph.map(itemRow).join('')}</details>
-      <div class="row" style="margin-top:9px"><button class="btn" style="background:var(--blue);font-size:13.5px;padding:8px 13px" data-sess="${s.d}" data-deck="fix">🃏 교정 카드로 복습</button><button class="btn ghost" style="font-size:13.5px;padding:8px 13px" data-sess="${s.d}" data-deck="say">🗣 말하기 카드</button></div>
+      <div class="row" style="margin-top:9px"><button class="btn" style="background:var(--blue);font-size:13.5px;padding:8px 13px" data-sess="${s.d}" data-deck="fix">🃏 교정 카드로 복습</button><button class="btn ghost" style="font-size:13.5px;padding:8px 13px" data-sess="${s.d}" data-deck="say">🗣 말하기 카드</button><button class="btn ghost" style="font-size:13.5px;padding:8px 13px" data-notes="${s.d}">📒 노트로 보기</button></div>
     </div>`;
   });
 
   // 공부 기록
-  const has=l&&actScore(k)>0;
+  const has=l&&(actScore(k)-songScore(k))>0;
   if(has){
     const kn=(l.known||[]).map(itemById), ag=(l.again||[]).map(itemById);
     h+=`<div class="blk log"><h4>📊 이 날 한 공부</h4>
       <div class="kv"><div><b>${mins(l.sec)}분</b>⏱ 루틴</div><div><b>${kn.length}</b>😎 외운 카드</div><div><b>${ag.length}</b>😅 다시 볼 카드</div>
-      <div><b>${(l.quiz||[]).length}회</b>🎯 퀴즈</div><div><b>${(l.checks||[]).length}</b>✅ 체크</div><div><b>${l.listen||0}</b>🔊 듣기</div></div>
+      <div><b>${(l.learn||[]).length}</b>📖 학습</div><div><b>${(l.checks||[]).length}</b>✅ 체크</div><div><b>${l.listen||0}</b>🔊 듣기</div></div>
       ${ag.length?`<details open><summary>😅 다시 볼 카드 ${ag.length}개</summary>${ag.map(itemRow).join('')}</details>`:''}
       ${kn.length?`<details><summary>😎 외운 카드 ${kn.length}개</summary>${kn.map(itemRow).join('')}</details>`:''}
       ${(l.quiz||[]).map(q=>`<details ${q.wrong.length?'open':''}><summary>🎯 ${q.time} 퀴즈 · ${q.score}점 (${q.n})</summary>${q.wrong.length?q.wrong.map(w=>`<div class="li"><div class="tx"><span class="ja" style="font-weight:700;color:#14532d">✓ ${esc(w.a)}</span><small>문제: ${esc(w.q)} · 내 답: <span class="ja">${esc(w.p)}</span></small></div><button class="spk" data-say="${esc(w.a)}">🔊</button></div>`).join(''):'<div class="muted" style="padding:4px 0">틀린 문제 없음 🎉</div>'}</details>`).join('')}
+      ${(l.learn||[]).length?`<details open><summary>📖 학습한 상황 ${l.learn.length}개</summary>${l.learn.map(id=>{const c=LEARN.find(z=>z.id===id);return c?`<div class="li"><div class="tx">${c.e} ${esc(c.t)}</div></div>`:''}).join('')}</details>`:''}
       ${(l.checks||[]).length?`<details><summary>✅ 체크한 항목 ${(l.checks||[]).length}개</summary>${l.checks.map(i=>`<div class="li"><div class="tx">${esc(CHECK[i].t)}</div></div>`).join('')}</details>`:''}
     </div>`;
-  } else if(!ss.length){
-    h+=`<div class="muted" style="text-align:center;padding:10px 0 14px">${k>today?'아직 오지 않은 날이에요.':'이 날은 공부 기록이 없어요.'}</div>`;
   }
 
-  // 메모
-  if(k<=today){
-    h+=`<div class="blk memo"><h4>✏ 메모</h4><textarea id="memo" placeholder="오늘 공부한 내용, 새로 알게 된 표현, 다음에 할 것…">${esc((l&&l.memo)||'')}</textarea><div class="muted" style="font-size:12px;margin-top:3px">입력하면 자동으로 저장돼요.</div></div>`;
+  // 가사 구절 (이 날 추가했거나 외운 구절)
+  const sAdd=[], sKnow=[];
+  (S.songs||[]).forEach(sg=>sg.lines.forEach(ln=>{ if(ln.d===k) sAdd.push({sg,ln}); if(ln.kd===k) sKnow.push({sg,ln}); }));
+  if(sAdd.length||sKnow.length){
+    const row=({sg,ln})=>`<div class="li"><div class="tx ja">${esc(ln.ja)}<small>🎵 ${esc(sg.title)}${ln.ko?' · '+esc(ln.ko):''}</small></div><button class="spk" data-say="${esc(ln.ja)}">🔊</button></div>`;
+    h+=`<div class="blk song"><h4>🎵 가사 구절</h4>
+      ${sAdd.length?`<details open><summary>새로 넣은 구절 ${sAdd.length}개</summary>${sAdd.map(row).join('')}</details>`:''}
+      ${sKnow.length?`<details><summary>외운 구절 ${sKnow.length}개</summary>${sKnow.map(row).join('')}</details>`:''}
+    </div>`;
+  }
+  if(!has && !ss.length && !sAdd.length && !sKnow.length){
+    h+=`<div class="muted" style="text-align:center;padding:10px 0 14px">${k>today?'아직 오지 않은 날이에요.':'이 날은 공부 기록이 없어요.'}</div>`;
   }
   $('#dayBox').innerHTML=h;
 
   $('#dayBox').querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>speak(b.dataset.say));
   $('#dayBox').querySelectorAll('[data-sess]').forEach(b=>b.onclick=()=>openSessionCards(b.dataset.sess,b.dataset.deck));
-  const m=$('#memo'); if(m) m.oninput=()=>{ if(!S.log[k]) S.log[k]={sec:0,known:[],again:[],quiz:[],checks:[],listen:0,memo:''}; S.log[k].memo=m.value; clearTimeout(m._t); m._t=setTimeout(()=>{saveRaw();renderCal();renderStats()},500)};
+  $('#dayBox').querySelectorAll('[data-notes]').forEach(b=>b.onclick=()=>{noteDate=b.dataset.notes;document.querySelector('nav button[data-p=notes]').click();drawNotes()});
 }
 
 function openSessionCards(d,dk){
@@ -867,6 +2425,7 @@ document.querySelector('nav button[data-p=home]').addEventListener('click',()=>{
 
 /* ================= INIT ================= */
 renderStats(); renderCal(); drawDay(); tmDraw(); buildOrder(false); drawNotes(); drawCheck();
+initFirebase();
 </script>
 </body>
 </html>
