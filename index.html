@@ -266,6 +266,34 @@ details[open] summary:before{content:"▾ "}
 .lsec.tp li{margin:3px 0}
 .lnav{display:flex;gap:8px;margin-top:12px}
 .lnav button{flex:1}
+/* answer cards */
+.ans-top{display:flex;align-items:center;gap:8px;margin:2px 0 8px}
+.ans-top h3{margin:0;font-size:18px}
+.ans-card{padding:14px 15px}
+.ans-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.ans-q{display:flex;gap:8px;align-items:flex-start;background:#f0f9fd;border-radius:14px;padding:10px 12px}
+.ans-q .j{font-size:16.5px;font-weight:800;line-height:1.55}
+.ans-q .k{font-size:13px;color:var(--muted);margin-top:2px}
+.ans-segs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 8px}
+.ans-segs .seg{margin:0}
+.ans-a{border-radius:14px;padding:12px 13px;background:#fff5f8;border:2px solid #ffd0dc;position:relative}
+.ans-a.lv89{background:#f7f4ff;border-color:#d8ccf7}
+.ans-a .j{font-size:16.5px;font-weight:700;line-height:1.75;color:#1f2041}
+.ans-a .k{font-size:13.2px;color:#6c6f80;line-height:1.6;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(0,0,0,.1)}
+.ans-a.cover .j,.ans-a.cover .k{filter:blur(8px);user-select:none}
+.ans-a .cov{display:none;position:absolute;inset:0;align-items:center;justify-content:center;font-weight:800;color:var(--ink);font-size:14px;cursor:pointer;text-align:center;padding:10px}
+.ans-a.cover .cov{display:flex}
+.ans-a .spk{position:absolute;top:8px;right:8px}
+.ans-a .j{padding-right:40px}
+.ans-exp{margin-top:10px;background:#fffbea;border-radius:12px;padding:9px 12px;font-size:13.5px}
+.ans-exp b{color:#a07800}
+.ans-exp div{margin:3px 0}
+.ans-done{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.ans-done .btn{white-space:nowrap}
+@media (max-width:440px){.ans-dots{margin-left:0;width:100%}}
+.ans-dots{display:flex;gap:4px;margin-left:auto}
+.ans-dots span{white-space:nowrap;font-size:11px;padding:2px 7px;border-radius:10px;background:#f1ecf2;color:var(--muted);font-weight:700}
+.ans-dots span.on{background:var(--green);color:#fff}
 /* lyrics */
 .ly-card{padding:13px 15px}
 .ly-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
@@ -361,12 +389,7 @@ details[open] summary:before{content:"▾ "}
 
 <!-- HOME -->
 <section class="page on" id="home">
-  <div class="stats">
-    <div class="stat" style="--c:var(--pink)"><b id="stKnown">0</b><span>외운 카드</span><div class="bar"><i id="barKnown" style="width:0"></i></div></div>
-    <div class="stat" style="--c:var(--purple)"><b id="stBest">0</b><span>학습한 상황</span><div class="bar"><i id="barBest" style="width:0"></i></div></div>
-    <div class="stat" style="--c:var(--green)"><b id="stCheck">0</b><span>체크리스트</span><div class="bar"><i id="barCheck" style="width:0"></i></div></div>
-    <div class="stat" style="--c:var(--orange)"><b id="stDays">0</b><span>공부한 날</span><div class="bar"><i id="barDays" style="width:0"></i></div></div>
-  </div>
+  <div id="ansBox"></div>
 
   <div class="card">
     <div class="cal-head">
@@ -385,49 +408,6 @@ details[open] summary:before{content:"▾ "}
 
   <div class="card day" id="dayBox"></div>
 
-  <div class="card timer">
-    <div class="row" style="justify-content:space-between;margin-bottom:4px">
-      <span class="pill" style="background:#fff0f4;color:var(--pink)">⏱ 오늘의 40분 루틴</span>
-      <span class="muted" id="tmStep">1 / 4</span>
-    </div>
-    <div class="now" id="tmName">일상·여행 대화로 워밍업</div>
-    <div class="clock" id="tmClock">10:00</div>
-    <div class="tl" id="tmBar">
-      <div style="flex:10;background:#ff9a5c" class="on"><b>10분</b>워밍업</div>
-      <div style="flex:15;background:#7b5cd6"><b>15분</b>의견·문제해결</div>
-      <div style="flex:10;background:#118ab2"><b>10분</b>교정</div>
-      <div style="flex:5;background:#06a77d"><b>5분</b>다시</div>
-    </div>
-    <div class="row" style="justify-content:center">
-      <button class="btn" id="tmStart">▶ 시작</button>
-      <button class="btn ghost" id="tmNext">다음 단계 ⏭</button>
-      <button class="btn ghost" id="tmReset">↺</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3 style="margin:0 0 6px;font-size:16px">📝 SJPT 답변 틀</h3>
-    <ol class="steps">
-      <li><span><b>결론</b>부터 말하기 — <span class="ja">私は〜と思います。</span></span></li>
-      <li><span><b>이유 두 가지</b> — <span class="ja">理由は二つあります。まず〜。それから〜。</span></span></li>
-      <li><span>질문에 있으면 <b>비교·대안</b>까지 — <span class="ja">〜と比べると / 〜はいかがでしょうか。</span></span></li>
-      <li><span>다시 <b>결론</b>으로 마무리 — <span class="ja">ですから、〜と思います。</span></span></li>
-    </ol>
-    <div class="muted" style="margin-top:6px">🔁 막히면 처음부터 다시 말하지 말고, 틀린 곳만 고쳐서 계속 말하기!</div>
-  </div>
-
-  <div class="card">
-    <h3 style="margin:0 0 6px;font-size:16px">⚠ 레벨 테스트에서 놓친 조건</h3>
-    <div class="miss"><span class="q">Q4</span><span>다시 가고 싶은 곳 → <b>다른 여행지와 비교</b>가 빠짐</span></div>
-    <div class="miss"><span class="q">Q6</span><span><b>결항(<span class="ja">欠航</span>)</b>을 지연으로 설명함 · <b>대안 제시</b>가 빠짐</span></div>
-    <div class="miss"><span class="q">Q7</span><span><b>앞으로 현금이 필요 없어질까</b>에 대한 최종 의견이 빠짐</span></div>
-  </div>
-
-  <div class="card" style="background:linear-gradient(135deg,#fff0f4,#fff8e6)">
-    <div class="row" style="justify-content:space-between">
-      <div><b>현재 Lv. 5~6 → 목표 Lv. 7</b><div class="muted">주 5회 × 40분 · 4주마다 미니 모의고사 · 3개월 뒤 재측정</div></div>
-    </div>
-  </div>
 </section>
 
 <!-- FLASHCARD -->
@@ -830,12 +810,12 @@ const KEY='sjpt-review-v1';
 // Firebase는 빈 배열·객체를 지우고, 숫자 키 객체를 배열로 바꿔서 돌려줘요 → 불러올 때 모양을 다시 맞춰요
 const arr=v=>Array.isArray(v)?v.filter(x=>x!==null&&x!==undefined):(v&&typeof v==='object'?Object.values(v):[]);
 function normalizeS(o){
-  o=Object.assign({known:{},best:null,check:{},days:[],log:{},songs:[],learned:{},noteLyrics:{}},o||{});
+  o=Object.assign({known:{},best:null,check:{},days:[],log:{},songs:[],learned:{},noteLyrics:{},ans:{}},o||{});
   if(Array.isArray(o.check)){const c={};o.check.forEach((v,i)=>{if(v)c[i]=v});o.check=c}
-  ['known','learned','log','check','noteLyrics'].forEach(k=>{if(!o[k]||typeof o[k]!=='object')o[k]={}});
+  ['known','learned','log','check','noteLyrics','ans'].forEach(k=>{if(!o[k]||typeof o[k]!=='object')o[k]={}});
   o.days=arr(o.days); o.songs=arr(o.songs);
   o.songs.forEach(sg=>{sg.lines=arr(sg.lines)});
-  Object.keys(o.log).forEach(d=>{const l=o.log[d]||{};['known','again','quiz','checks','learn'].forEach(k=>{l[k]=arr(l[k])});l.quiz.forEach(q=>{q.wrong=arr(q.wrong)});l.sec=l.sec||0;l.listen=l.listen||0;o.log[d]=l});
+  Object.keys(o.log).forEach(d=>{const l=o.log[d]||{};['known','again','quiz','checks','learn','ans'].forEach(k=>{l[k]=arr(l[k])});l.quiz.forEach(q=>{q.wrong=arr(q.wrong)});l.sec=l.sec||0;l.listen=l.listen||0;o.log[d]=l});
   return o;
 }
 function stable(v){if(Array.isArray(v))return '['+v.map(stable).join(',')+']';if(v&&typeof v==='object')return '{'+Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>JSON.stringify(k)+':'+stable(v[k])).join(',')+'}';return JSON.stringify(v===undefined?null:v)}
@@ -862,6 +842,7 @@ function mergeS(r,l){ // 처음 연결할 때만: 두 기록을 합쳐서 어느
   const o=normalizeS(JSON.parse(JSON.stringify(r)));
   Object.keys(l.known).forEach(k=>{if(!(k in o.known))o.known[k]=l.known[k]; else if(l.known[k])o.known[k]=1});
   Object.keys(l.learned).forEach(k=>{if(!o.learned[k])o.learned[k]=l.learned[k]});
+  Object.keys(l.ans||{}).forEach(k=>{if(l.ans[k])o.ans[k]=l.ans[k]});
   Object.keys(l.check).forEach(k=>{if(l.check[k])o.check[k]=l.check[k]});
   o.days=[...new Set([...o.days,...l.days])].sort();
   if(l.best!=null&&(o.best==null||l.best>o.best))o.best=l.best;
@@ -869,7 +850,7 @@ function mergeS(r,l){ // 처음 연결할 때만: 두 기록을 합쳐서 어느
   l.songs.forEach(ls=>{const rs=o.songs.find(x=>x.id===ls.id); if(!rs) o.songs.push(ls); else ls.lines.forEach(ln=>{if(!rs.lines.some(x=>x.id===ln.id)) rs.lines.push(ln)})});
   Object.keys(l.noteLyrics||{}).forEach(k=>{ if((l.noteLyrics[k]||'').length>(o.noteLyrics[k]||'').length) o.noteLyrics[k]=l.noteLyrics[k]; });
   return o; }
-function refreshAll(){ try{ renderStats(); renderCal(); drawDay(); drawCheck();
+function refreshAll(){ try{ renderStats(); drawAns(); renderCal(); drawDay(); drawCheck();
   const on=document.querySelector('section.page.on'); const id=on&&on.id;
   if(id==='learn') drawLearn();
   if(id==='songs' && !SG.form && !SG.newSong && !SG.lyEdit) drawSongs();
@@ -979,6 +960,7 @@ const CTR={
   '日':{base:'にち',t:{1:'いちにち',2:'ふつか',3:'みっか',4:'よっか',5:'いつか',6:'むいか',7:'なのか',8:'ようか',9:'ここのか',10:'とおか',14:'じゅうよっか',20:'はつか',24:'にじゅうよっか'},whole:true},
   '月':{base:'がつ',t:{4:'しがつ',7:'しちがつ',9:'くがつ'},whole:true,max:12},
   '号室':{base:'ごうしつ',t:{}},
+  '曲':{base:'きょく',t:{1:'いっきょく',4:'よんきょく',6:'ろっきょく',7:'ななきょく',8:'はっきょく',9:'きゅうきょく',10:'じゅっきょく'}},
 };
 const CTR_KEYS=Object.keys(CTR).sort((a,b)=>b.length-a.length);
 function ctrKana(n,c){
@@ -1033,6 +1015,7 @@ document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
 /* ================= STATS ================= */
 function totalCards(){return FIX.length+PH.length}
 function renderStats(){
+  if(!document.getElementById('stKnown')) return;
   const kn=Object.values(S.known).filter(Boolean).length, tot=totalCards();
   $('#stKnown').textContent=kn+' / '+tot; $('#barKnown').style.width=(kn/tot*100)+'%';
   const lc=LEARN.filter(x=>S.learned&&S.learned[x.id]).length; $('#stBest').textContent=lc+' / '+LEARN.length; $('#barBest').style.width=(lc/LEARN.length*100)+'%';
@@ -1040,16 +1023,6 @@ function renderStats(){
   $('#stCheck').textContent=ck+' / '+CHECK.length; $('#barCheck').style.width=(ck/CHECK.length*100)+'%';
   const dk=new Set(Object.keys(S.log)); (S.songs||[]).forEach(sg=>sg.lines.forEach(l=>{if(l.d)dk.add(l.d);if(l.kd)dk.add(l.kd)})); const ad=[...dk].filter(k=>actLevel(k)>0).length; $('#stDays').textContent=ad+'일'; $('#barDays').style.width=Math.min(100,ad/20*100)+'%';
 }
-
-/* ================= TIMER ================= */
-const STEPS=[{n:'일상·여행 대화로 워밍업',m:10},{n:'레벨 7용 의견 설명·문제 해결',m:15},{n:'문법·어휘 교정 (노트·카드)',m:10},{n:'고친 표현으로 다시 말하기',m:5}];
-let tm={i:0,left:600,run:false,h:null};
-function tmDraw(){const m=Math.floor(tm.left/60),s=tm.left%60;$('#tmClock').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');$('#tmName').textContent=STEPS[tm.i].n;$('#tmStep').textContent=(tm.i+1)+' / 4';document.querySelectorAll('#tmBar div').forEach((d,k)=>d.classList.toggle('on',k<=tm.i));$('#tmStart').textContent=tm.run?'⏸ 일시정지':'▶ 시작'}
-function beep(){try{const c=new (window.AudioContext||window.webkitAudioContext)();[0,.25,.5].forEach(t=>{const o=c.createOscillator(),g=c.createGain();o.frequency.value=880;o.connect(g);g.connect(c.destination);g.gain.setValueAtTime(.2,c.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+t+.2);o.start(c.currentTime+t);o.stop(c.currentTime+t+.2)})}catch(e){}}
-function tmGo(i){tm.i=i;tm.left=STEPS[i].m*60;tmDraw()}
-$('#tmStart').onclick=()=>{tm.run=!tm.run;clearInterval(tm.h);if(!tm.run)save();if(tm.run){tm.h=setInterval(()=>{tm.left--;const l=L();l.sec++;if(l.sec%15===0)saveRaw();if(tm.left<=0){beep();if(tm.i<3){tmGo(tm.i+1);toast('다음 단계: '+STEPS[tm.i].n)}else{tm.run=false;clearInterval(tm.h);tm.left=0;toast('오늘 40분 완료! お疲れ様でした 🎉')}}tmDraw()},1000)}tmDraw()};
-$('#tmNext').onclick=()=>{if(tm.i<3)tmGo(tm.i+1)};
-$('#tmReset').onclick=()=>{tm.run=false;clearInterval(tm.h);tmGo(0)};
 
 /* ================= FLASHCARDS ================= */
 let deck='fix', onlyNew=false, order=[], pos=0;
@@ -1214,6 +1187,53 @@ function drawCheck(){
     if(Object.values(S.check).filter(Boolean).length===CHECK.length)toast('🎉 체크리스트 완주! すごいです！')});
 }
 $('#ckReset').onclick=()=>{if(!confirmBox('체크를 모두 해제할까요?'))return;S.check={};save();drawCheck()};
+
+/* ================= 답변 카드 (SJPT 모범 답변) =================
+   a: 67s = Lv 6-7 짧게(약 20초) / 67l = Lv 6-7 길게(약 1분) / 89s = Lv 8-9 짧게 / 89l = Lv 8-9 길게 */
+const ANSWERS = [{"id": "s1", "d": "2026-11-18", "tag": "🙋 자기소개", "t": "사는 곳", "q": "どこに住んでいますか。どんなところですか。", "qk": "어디에 살고 있어요? 어떤 곳이에요?", "mine": "경기도 용인시에 살고 있음, 서울 접근성이 좋고 살기 좋은 도시", "miss": "지명은 가타카나로: キョンギド・ヨンインシ / 살기 좋은 도시는 「住みやすい街」", "a": {"67s": ["キョンギドのヨンインシに住んでいます。ソウルに近いので、とても便利です。住みやすい街だと思います。", "경기도 용인시에 살고 있어요. 서울에 가까워서 아주 편리해요. 살기 좋은 도시라고 생각해요."], "67l": ["キョンギドのヨンインシに住んでいます。ヨンインはソウルのすぐ南にあるので、電車やバスで1時間ほどで行けます。それに、自然も多くて静かなので、住みやすい街だと思います。仕事が終わってから、近くのジムにもよく行っています。", "경기도 용인시에 살고 있어요. 용인은 서울 바로 남쪽에 있어서 전철이나 버스로 1시간 정도면 갈 수 있어요. 게다가 자연도 많고 조용해서 살기 좋은 도시라고 생각해요. 일이 끝나고 근처 헬스장에도 자주 가요."], "89s": ["キョンギドのヨンインシに住んでいます。ソウルへの通勤圏でありながら緑も多くて、暮らしやすい街ですね。", "경기도 용인시에 살고 있어요. 서울 통근권이면서도 녹지가 많아서 살기 좋은 도시예요."], "89l": ["キョンギドのヨンインシに住んでいます。ソウルに比べると家賃も比較的安いですし、緑も多いので、生活環境はいいと思います。ただ、通勤の時間帯は道路がかなり混むので、その点は少し不便ですね。最近は大規模な半導体産業団地が造成されつつあり、街の雰囲気も変わってきています。住むだけの街から、働く場所としても魅力のある街になっていくのではないかと期待しています。", "경기도 용인시에 살고 있어요. 서울에 비하면 집세도 비교적 싸고 녹지도 많아서 생활 환경은 좋다고 생각해요. 다만 출퇴근 시간대에는 도로가 꽤 막혀서 그 점은 조금 불편해요. 요즘은 대규모 반도체 산업단지가 조성되고 있어서 도시 분위기도 바뀌고 있어요. 사는 곳에서 일하는 곳으로서도 매력 있는 도시가 되어 가지 않을까 기대하고 있어요."]}, "exp": [["〜ので / 〜し", "이유를 덧붙여 문장을 이어요"], ["それに", "내용을 더할 때"], ["〜に比べると", "비교할 때 (Lv 8)"], ["ただ、〜", "좋은 점 뒤에 아쉬운 점 (Lv 8)"], ["〜でありながら", "~이면서도 — 두 문장을 하나로 압축"], ["通勤圏(つうきんけん)", "통근권"], ["ベッドタウン", "베드타운, 위성도시 (일본식 영어)"], ["〜つつある", "~하고 있는 중이다 (변화)"]]}, {"id": "s2", "d": "2026-11-18", "tag": "🙋 자기소개", "t": "취미", "q": "趣味は何ですか。", "qk": "취미가 뭐예요?", "mine": "혼코노에서 일본 노래 부르기, 곡당 결제라 보통 10~15곡 충전, 헬스장 건너편 단골 노래방, 헬스 가기 전 또는 금요일엔 헬스 후", "miss": "혼코노 = 「ヒトカラ」(一人カラオケ) / 사실만 나열하지 말고 느낌·효과를 한 줄 붙이기", "a": {"67s": ["私の趣味は、一人でコインカラオケに行って、日本の歌を歌うことです。ジムの向かいによく行くお店があるので、ジムの前や後に寄っています。", "제 취미는 혼자 코인노래방에 가서 일본 노래를 부르는 거예요. 헬스장 건너편에 자주 가는 가게가 있어서 헬스 전이나 후에 들러요."], "67l": ["私の趣味は、一人でコインカラオケに行って、日本の歌を歌うことです。1曲ずつ支払えるので、たいてい10曲から15曲ぐらいチャージします。ジムの向かいによく行くカラオケがあるので、ジムに行く前や、金曜日はジムの後に行って歌っています。日本の歌を歌うと、発音の練習にもなるので楽しいです。", "제 취미는 혼자 코인노래방에 가서 일본 노래를 부르는 거예요. 한 곡씩 결제할 수 있어서 보통 10곡에서 15곡 정도 충전해요. 헬스장 건너편에 자주 가는 노래방이 있어서 헬스 가기 전이나, 금요일에는 헬스 후에 가서 불러요. 일본 노래를 부르면 발음 연습도 돼서 즐거워요."], "89s": ["趣味はヒトカラです。ジムの向かいに行きつけの店があるので、ジムの前後に寄って、10曲ぐらい思いっきり歌っています。", "취미는 히토카라예요. 헬스장 건너편에 단골 가게가 있어서 헬스 전후에 들러 10곡 정도 마음껏 불러요."], "89l": ["趣味はヒトカラです。韓国のコインカラオケは1曲単位で払えるので、いつも10〜15曲分ぐらいチャージしています。ちょうどジムの向かいに行きつけの店があって、ジムの前にさっと寄ったり、金曜日は運動の後に思いっきり歌ったりしています。体を動かした後に大声で歌うと、一週間の疲れが吹き飛ぶんですよ。", "취미는 히토카라예요. 한국 코인노래방은 곡 단위로 결제할 수 있어서 늘 10~15곡 정도 충전해요. 마침 헬스장 건너편에 단골 가게가 있어서 헬스 전에 잠깐 들르거나, 금요일에는 운동 후에 마음껏 부르곤 해요. 몸을 움직인 뒤에 큰 소리로 노래하면 일주일 피로가 싹 날아가요."]}, "exp": [["ヒトカラ", "혼코노 (一人カラオケ의 줄임말)"], ["〜曲分チャージする", "~곡만큼 충전하다"], ["向かい(むかい)", "건너편, 맞은편"], ["行きつけの店", "단골 가게"], ["さっと寄る", "잠깐 들르다"], ["〜たり、〜たりしています", "~하기도 하고 ~하기도 해요"], ["思いっきり", "마음껏"], ["疲れが吹き飛ぶ", "피로가 싹 날아가다"]]}, {"id": "q1", "d": "2026-11-12", "tag": "✈️ 경험", "q": "最近、旅行に行ったことがありますか。どこに行って、何をしましたか。その旅行で一番印象に残っていることは何ですか。", "qk": "최근에 여행 간 적 있어요? 어디서 뭘 했고, 가장 인상에 남은 건 뭐예요?", "mine": "올해 3월 도쿄 전시회에 참가하면서 겸사겸사 여행, 봄이라 벚꽃이 아름다웠던 게 기억에 남음", "miss": "美しいでした → 美しかったです", "a": {"67s": ["今年の3月に東京へ行きました。展示会に参加しながら、空いた時間に観光もしました。ちょうど桜が咲いていて、とてもきれいだったのが一番印象に残っています。", "올해 3월에 도쿄에 갔어요. 전시회에 참가하면서 빈 시간에 관광도 했어요. 마침 벚꽃이 피어 있어서 정말 예뻤던 게 가장 인상에 남아 있어요."], "67l": ["今年の3月に、仕事で東京へ行きました。展示会に参加するためでしたが、旅行がてら、空いた時間には街を歩いて回りました。ちょうど春の初めで、あちこちで桜が咲いていました。仕事の合間に見た桜は本当にきれいで、今でもよく覚えています。忙しい出張でしたが、少しリフレッシュできた旅でした。", "올해 3월에 일 때문에 도쿄에 갔어요. 전시회 참가가 목적이었지만, 여행도 겸해서 빈 시간에는 거리를 걸어 다녔어요. 마침 초봄이라 여기저기 벚꽃이 피어 있었어요. 일하는 틈틈이 본 벚꽃이 정말 예뻐서 지금도 잘 기억나요. 바쁜 출장이었지만 조금은 리프레시할 수 있었던 여행이었어요."], "89s": ["今年の3月、展示会への参加を兼ねて東京を訪れました。仕事の合間に見た満開の桜が、何よりも印象に残っています。", "올해 3월, 전시회 참가를 겸해 도쿄를 방문했어요. 일하는 사이에 본 만개한 벚꽃이 무엇보다 인상에 남아 있어요."], "89l": ["今年の3月に、展示会への参加を兼ねて東京を訪れました。日中は展示会を見て回りましたが、夕方には少し時間ができたので、近くの公園まで足を延ばしてみました。ちょうど桜が満開で、ライトアップされた花びらが風に舞う様子は、まるで絵のようでした。慌ただしいスケジュールの中だったからこそ、あの静かな時間が特別に感じられたのだと思います。仕事で行った旅でしたが、心に残る春の思い出になりました。", "올해 3월에 전시회 참가를 겸해 도쿄를 방문했어요. 낮에는 전시회를 둘러봤지만, 저녁에 조금 시간이 생겨서 근처 공원까지 발걸음을 옮겨 봤어요. 마침 벚꽃이 만개해서, 조명을 받은 꽃잎이 바람에 흩날리는 모습이 마치 그림 같았어요. 바쁜 일정 속이었기에 그 조용한 시간이 더 특별하게 느껴졌던 것 같아요. 일로 간 여행이었지만 마음에 남는 봄의 추억이 됐어요."]}, "t": "최근 여행"}, {"id": "q2", "d": "2026-11-12", "tag": "💬 의견", "q": "海外旅行に行くとき、旅行会社のツアーに参加するのと、自分で計画を立てて旅行するのとでは、どちらが好きですか。その理由も説明してください。", "qk": "해외여행 갈 때 여행사 투어와 직접 계획하는 여행 중 어느 쪽이 좋아요? 이유도 설명해 주세요.", "mine": "자유여행 선호 — 일정을 자유롭게 바꿀 수 있고, 비용 면에서도 경제적", "miss": "予定を気軽に → 自由に変更する / 変更するのができる → 変更することができる", "a": {"67s": ["私は自分で計画を立てて旅行するほうが好きです。予定を自由に変えられますし、費用も安く済むからです。", "저는 직접 계획을 세워서 여행하는 쪽이 좋아요. 일정을 자유롭게 바꿀 수 있고, 비용도 싸게 들기 때문이에요."], "67l": ["私は旅行会社のツアーより、自分で計画を立てて旅行するほうが好きです。理由は二つあります。まず、その日の天気や気分に合わせて、予定を自由に変更できるからです。それから、ツアーより費用を抑えられることが多いので、経済的だと思います。もちろんツアーは楽ですが、私は自分のペースで回れる旅のほうが楽しいです。", "저는 여행사 투어보다 직접 계획을 세워서 여행하는 쪽이 좋아요. 이유는 두 가지예요. 먼저, 그날 날씨나 기분에 맞춰 일정을 자유롭게 바꿀 수 있기 때문이에요. 그리고 투어보다 비용을 줄일 수 있는 경우가 많아서 경제적이라고 생각해요. 물론 투어는 편하지만, 저는 제 페이스대로 다닐 수 있는 여행이 더 즐거워요."], "89s": ["断然、自分で計画を立てる派です。予定を柔軟に組み替えられるうえ、費用も抑えられるからです。", "단연 직접 계획을 세우는 쪽이에요. 일정을 유연하게 바꿀 수 있는 데다 비용도 줄일 수 있으니까요."], "89l": ["どちらにも良さはありますが、私は自分で計画を立てて旅行するほうが性に合っています。まず、現地で気になる場所を見つけたら、その場で予定を組み替えられる自由さが魅力です。また、交通手段や宿を自分で比較して選べるので、ツアーより費用を抑えられることも少なくありません。一方で、言葉に不安がある国や、移動が複雑な地域では、ツアーのほうが安心だと思います。ですから、行き先によって使い分けるのが一番賢いやり方だと考えています。", "양쪽 다 장점이 있지만, 저는 직접 계획을 세워 여행하는 쪽이 성격에 맞아요. 먼저, 현지에서 궁금한 곳을 발견하면 그 자리에서 일정을 바꿀 수 있는 자유로움이 매력이에요. 또 교통수단이나 숙소를 직접 비교해서 고를 수 있어서, 투어보다 비용을 줄일 수 있는 경우도 적지 않아요. 한편 말이 불안한 나라나 이동이 복잡한 지역에서는 투어가 더 안심이라고 생각해요. 그래서 여행지에 따라 골라 쓰는 게 가장 현명한 방법이라고 생각해요."]}, "t": "투어 vs 자유여행"}, {"id": "q3", "d": "2026-11-12", "tag": "🆘 롤플레이", "q": "日本のホテルに泊まっているとき、夜中にエアコンが故障してしまいました。部屋がとても暑くて眠れません。フロントに電話して、状況を説明し、対応をお願いしてください。", "qk": "일본 호텔에 묵는 중 한밤중에 에어컨이 고장 났어요. 방이 너무 더워서 잠을 못 자요. 프런트에 전화해서 상황을 설명하고 조치를 부탁하세요.", "mine": "309호인데 갑자기 에어컨에서 더운 바람이 나와 곤란하다, 해결해 줄 수 있냐", "miss": "309番の部屋 → 309号室の者ですが / 直接に解決 → すぐに確認していただけますか", "a": {"67s": ["もしもし、309号室の者ですが、エアコンが壊れているみたいなんです。部屋が暑くて眠れないので、すぐに見ていただけますか。", "여보세요, 309호인데요, 에어컨이 고장 난 것 같아요. 방이 더워서 잠을 못 자니까 바로 봐 주실 수 있을까요?"], "67l": ["もしもし、夜分にすみません。309号室に泊まっているキムです。さっきから急にエアコンが動かなくなって、部屋がとても暑いんです。リモコンで何度か電源を入れ直してみたんですが、反応がありません。このままだと眠れそうにないので、すぐに確認していただけますか。もし直らないようでしたら、別の部屋に替えていただくことはできますか。", "여보세요, 밤늦게 죄송해요. 309호에 묵고 있는 김인데요. 아까부터 갑자기 에어컨이 작동을 안 해서 방이 너무 더워요. 리모컨으로 몇 번 전원을 다시 켜 봤는데 반응이 없어요. 이대로면 잠을 못 잘 것 같아서 바로 확인해 주실 수 있을까요? 혹시 안 고쳐지면 다른 방으로 바꿔 주실 수 있나요?"], "89s": ["夜分に恐れ入ります。309号室のキムですが、エアコンが故障しているようで、室温が下がらず困っております。至急ご確認いただけますでしょうか。", "밤늦게 죄송합니다. 309호 김인데요, 에어컨이 고장 난 것 같아 실내 온도가 내려가지 않아 곤란한 상황입니다. 급히 확인해 주실 수 있을까요?"], "89l": ["夜分遅くに申し訳ございません。309号室に宿泊しているキムと申します。実は30分ほど前から、エアコンから冷たい風が出なくなってしまいまして、部屋の中がかなり蒸し暑い状態です。リモコンの電池も確認し、電源も入れ直してみたのですが、改善しませんでした。明日は朝早くから予定があるため、できれば今夜中に対応していただけると大変助かります。修理が難しいようでしたら、お手数ですが、別のお部屋をご用意いただくことは可能でしょうか。", "밤늦게 정말 죄송합니다. 309호에 묵고 있는 김이라고 합니다. 실은 30분쯤 전부터 에어컨에서 찬바람이 나오지 않아서 방 안이 꽤 후텁지근한 상태예요. 리모컨 배터리도 확인하고 전원도 다시 켜 봤는데 나아지지 않았어요. 내일 아침 일찍부터 일정이 있어서, 가능하면 오늘 밤 안에 조치해 주시면 정말 감사하겠습니다. 수리가 어려우시면 번거로우시겠지만 다른 방을 준비해 주실 수 있을까요?"]}, "t": "호텔 에어컨 고장"}, {"id": "q4", "d": "2026-11-12", "tag": "✈️ 경험", "q": "今まで訪れた国や都市の中で、もう一度行ってみたい場所はどこですか。その場所の魅力と、ほかの旅行先との違いについて説明してください。", "qk": "지금까지 가 본 나라나 도시 중 다시 가 보고 싶은 곳은 어디예요? 그곳의 매력과 다른 여행지와의 차이를 설명해 주세요.", "mine": "20년 전 대학 2학년 때 야마구치 홈스테이, 주소만 적은 종이로 집을 찾아간 경험, 레코드 가게에서 들은 노래에 감동", "miss": "ホームステイさん → ホストファミリー / レコードさん → レコード店 / ⚠ 다른 여행지와의 비교가 빠짐", "a": {"67s": ["もう一度行きたいのは山口県です。大学生のときにホームステイをした、初めての日本だからです。東京のような大都市と違って、静かで人が温かいところが魅力です。", "다시 가고 싶은 곳은 야마구치현이에요. 대학생 때 홈스테이를 했던, 처음 가 본 일본이거든요. 도쿄 같은 대도시와 달리 조용하고 사람들이 따뜻한 게 매력이에요."], "67l": ["私がもう一度行ってみたいのは、山口県です。20年前、大学2年生のときにホームステイで行った、初めての日本でした。ホストファミリーの家の住所だけを紙に書いて、一人で探して行ったことを今でも覚えています。山口は東京のような大都市と違って、町が静かで、人がとても温かいです。今度はホストファミリーにもう一度会って、お礼を言いたいです。", "제가 다시 가 보고 싶은 곳은 야마구치현이에요. 20년 전 대학교 2학년 때 홈스테이로 간, 처음 가 본 일본이었어요. 호스트 가족 집 주소만 종이에 적어서 혼자 찾아갔던 게 지금도 기억나요. 야마구치는 도쿄 같은 대도시와 달리 동네가 조용하고 사람들이 정말 따뜻해요. 다음에는 호스트 가족을 다시 만나서 감사 인사를 하고 싶어요."], "89s": ["学生時代にホームステイをした山口県に、もう一度行ってみたいです。都会にはない穏やかな空気と、人の温かさが忘れられません。", "학생 때 홈스테이를 했던 야마구치현에 다시 가 보고 싶어요. 도시에는 없는 평온한 분위기와 사람들의 따뜻함을 잊을 수가 없어요."], "89l": ["もう一度訪れたいのは、20年前、大学2年生のときにホームステイで滞在した山口県です。初めての日本で、ホストファミリーの住所を書いたメモだけを頼りに、一人で家を探し歩いたのは今でも大切な経験です。東京や大阪のような大都市は便利で刺激的ですが、山口には時間がゆっくり流れているような穏やかさがあります。それに、見知らぬ学生を家族のように迎えてくれた人の温かさは、ほかの旅先ではなかなか味わえないものでした。今度は自分の力で日本語を話して、あの頃のお礼をきちんと伝えたいと思っています。", "다시 방문하고 싶은 곳은 20년 전 대학교 2학년 때 홈스테이로 머물렀던 야마구치현이에요. 처음 간 일본에서, 호스트 가족 주소를 적은 메모 하나만 믿고 혼자 집을 찾아다녔던 건 지금도 소중한 경험이에요. 도쿄나 오사카 같은 대도시는 편리하고 자극적이지만, 야마구치에는 시간이 천천히 흐르는 듯한 평온함이 있어요. 게다가 낯선 학생을 가족처럼 맞아 준 사람들의 따뜻함은 다른 여행지에서는 좀처럼 느끼기 힘든 것이었어요. 다음에는 제 힘으로 일본어를 해서 그때의 감사 인사를 제대로 전하고 싶어요."]}, "t": "다시 가고 싶은 곳"}, {"id": "q5", "d": "2026-11-12", "tag": "💼 업무", "q": "あなたは会社で新しい設備を導入することを提案しています。しかし、上司は費用が高すぎるという理由で反対しています。あなたなら、どのように上司を説得しますか。", "qk": "회사에 새 설비 도입을 제안했는데 상사가 비용이 너무 비싸다며 반대해요. 당신이라면 상사를 어떻게 설득하겠어요?", "mine": "처음엔 비용 부담이지만 2~3년 뒤를 생각하면 불량률이 낮아지고 생산량이 늘어 이익이 더 큼", "miss": "不良率も低くして → 不良率を下げて / 生産量を増える → 生産量を増やす", "a": {"67s": ["確かに最初は費用がかかりますが、2、3年後には不良率が下がって、生産量も増えるはずです。長い目で見れば、利益のほうが大きいと思います。", "확실히 처음에는 비용이 들지만, 2~3년 뒤에는 불량률이 낮아지고 생산량도 늘 거예요. 길게 보면 이익이 더 크다고 생각해요."], "67l": ["部長のおっしゃるとおり、新しい設備は初期費用がかなりかかります。でも、今の設備は古くて、不良品が多く出ています。新しい設備を導入すれば、不良率を下げて、生産量を増やすことができます。そうすれば、2、3年後には導入費用以上の利益が出ると思います。まずは見積もりと効果をまとめた資料を作りますので、一度ご検討いただけないでしょうか。", "부장님 말씀대로 새 설비는 초기 비용이 꽤 들어요. 하지만 지금 설비는 낡아서 불량품이 많이 나오고 있어요. 새 설비를 도입하면 불량률을 낮추고 생산량을 늘릴 수 있어요. 그러면 2~3년 뒤에는 도입 비용 이상의 이익이 날 거라고 생각해요. 우선 견적과 효과를 정리한 자료를 만들 테니 한번 검토해 주실 수 있을까요?"], "89s": ["ご懸念はもっともですが、不良率の改善と生産効率の向上を考えれば、3年ほどで投資額は回収できる見込みです。", "걱정하시는 건 당연하지만, 불량률 개선과 생산 효율 향상을 생각하면 3년 정도면 투자액을 회수할 수 있을 전망이에요."], "89l": ["費用面でのご心配は、もっともだと思います。確かに導入時の負担は小さくありません。ただ、現在の設備では不良率が高く、その分の手直しや廃棄にかかるコストが毎月発生しています。新しい設備を導入すれば、不良率を大幅に下げられるうえ、生産量も増やせるため、試算では3年ほどで投資額を回収できる見込みです。さらに、品質が安定すれば、取引先からの信頼にもつながります。具体的な数字をまとめた資料をご用意しますので、改めてご検討いただけないでしょうか。", "비용 면에서 걱정하시는 건 당연하다고 생각해요. 확실히 도입 때 부담이 작지 않아요. 다만 지금 설비로는 불량률이 높아서, 그만큼 재작업이나 폐기에 드는 비용이 매달 발생하고 있어요. 새 설비를 도입하면 불량률을 크게 낮출 수 있는 데다 생산량도 늘릴 수 있어서, 계산해 보면 3년 정도면 투자액을 회수할 수 있을 전망이에요. 게다가 품질이 안정되면 거래처의 신뢰로도 이어져요. 구체적인 숫자를 정리한 자료를 준비할 테니 다시 한번 검토해 주실 수 있을까요?"]}, "t": "설비 도입 설득"}, {"id": "q6", "d": "2026-11-12", "tag": "💼 업무", "q": "日本の取引先と明日の午前10時に重要な会議をする予定です。しかし、突然飛行機が欠航になり、間に合わなくなりました。取引先に電話して、事情を説明し、代わりの方法を提案してください。", "qk": "내일 오전 10시에 일본 거래처와 중요한 회의가 있는데 갑자기 비행기가 결항돼서 못 가게 됐어요. 거래처에 전화해서 사정을 설명하고 대안을 제안하세요.", "mine": "비행기가 늦게 도착해서 1시간 반쯤 늦을 것 같다, 택시를 예약해서 최대한 빨리 가겠다", "miss": "⚠ 결항(欠航)인데 지연으로 설명함 / ⚠ 대안(일정 변경·온라인 참석) 제시가 빠짐", "a": {"67s": ["いつもお世話になっております。キムです。申し訳ありませんが、飛行機が欠航になってしまい、明日の会議に間に合いません。オンラインで参加させていただけないでしょうか。", "늘 신세 지고 있습니다. 김입니다. 죄송하지만 비행기가 결항돼서 내일 회의에 못 맞추게 됐어요. 온라인으로 참석해도 될까요?"], "67l": ["お世話になっております。韓国のキムです。実は、乗る予定だった飛行機が突然欠航になってしまいました。明日の10時の会議に間に合わなくなってしまい、本当に申し訳ありません。そこで、ご提案なのですが、明日の会議はオンラインで参加させていただけないでしょうか。もし直接お会いしたほうがよろしければ、会議を午後か、明後日に変更していただくことは可能でしょうか。", "신세 지고 있습니다. 한국의 김입니다. 실은 타기로 한 비행기가 갑자기 결항됐어요. 내일 10시 회의에 못 맞추게 돼서 정말 죄송합니다. 그래서 제안드리고 싶은데, 내일 회의는 온라인으로 참석해도 될까요? 혹시 직접 만나는 게 좋으시면 회의를 오후나 모레로 바꿔 주실 수 있을까요?"], "89s": ["大変申し訳ございません。搭乗予定の便が欠航となり、明朝の会議に伺えなくなりました。オンラインでのご参加か、日程の変更をご検討いただけますでしょうか。", "정말 죄송합니다. 탑승 예정이던 편이 결항돼서 내일 아침 회의에 찾아뵐 수 없게 됐어요. 온라인 참석이나 일정 변경을 검토해 주실 수 있을까요?"], "89l": ["いつも大変お世話になっております。韓国のキムでございます。急なご連絡で恐縮ですが、本日搭乗予定だった便が、悪天候のため欠航となってしまいました。そのため、明日午前10時のお打ち合わせに伺うことが難しくなりました。せっかくお時間をいただいていたのに、誠に申し訳ございません。代わりの案として、予定どおりの時間にオンラインで参加させていただくか、あるいは、明後日以降の振替便でお伺いし、日程を改めていただく形はいかがでしょうか。資料は本日中にメールでお送りいたします。", "늘 정말 신세 지고 있습니다. 한국의 김입니다. 갑작스러운 연락이라 죄송하지만, 오늘 탑승 예정이던 편이 악천후로 결항됐어요. 그래서 내일 오전 10시 미팅에 찾아뵙기가 어려워졌습니다. 모처럼 시간을 내 주셨는데 정말 죄송합니다. 대안으로, 예정된 시간에 온라인으로 참석하거나, 모레 이후의 대체 편으로 찾아뵙고 일정을 다시 잡는 방식은 어떨까요? 자료는 오늘 중으로 메일로 보내 드리겠습니다."]}, "t": "결항 전화"}, {"id": "q7", "d": "2026-11-12", "tag": "💬 의견", "q": "最近、現金を使わずにスマートフォンやクレジットカードで支払う人が増えています。キャッシュレス社会のメリットとデメリットは何だと思いますか。また、今後、現金は必要なくなると思いますか。", "qk": "요즘 현금 대신 스마트폰이나 신용카드로 결제하는 사람이 늘고 있어요. 캐시리스 사회의 장단점은 뭐라고 생각해요? 그리고 앞으로 현금이 필요 없어질 거라고 생각해요?", "mine": "카드 한 장으로 어디서든 해결되어 편리하지만, 돈을 쓰는 실감이 안 나서 과소비하게 됨, 현금이면 절약하기 쉬움", "miss": "感覚が感じられない → 実感が湧かない / ⚠ 현금이 앞으로 필요 없어질지에 대한 최종 의견이 빠짐", "a": {"67s": ["キャッシュレスは便利ですが、お金を使っている実感がわかなくて、使いすぎてしまうことがあります。でも、現金はまだしばらく必要だと思います。", "캐시리스는 편리하지만 돈을 쓰고 있다는 실감이 안 나서 너무 많이 써 버릴 때가 있어요. 그래도 현금은 아직 당분간 필요하다고 생각해요."], "67l": ["キャッシュレスのいいところは、カード一枚やスマートフォンだけで、どこでも簡単に支払いができることです。でも、私の場合は、お金を使っている実感がわかなくて、思った以上に使ってしまうことがあります。現金なら、財布の中身が減るのが目に見えるので、節約しやすいです。それに、お年寄りや災害のときのことを考えると、現金はすぐにはなくならないと思います。", "캐시리스의 좋은 점은 카드 한 장이나 스마트폰만으로 어디서든 간단히 결제할 수 있다는 거예요. 하지만 제 경우에는 돈을 쓰고 있다는 실감이 안 나서 생각보다 많이 써 버릴 때가 있어요. 현금이면 지갑 속 돈이 줄어드는 게 눈에 보여서 절약하기 쉬워요. 게다가 어르신들이나 재해 때를 생각하면 현금은 금방 없어지지 않을 거라고 생각해요."], "89s": ["支払いが手軽になる反面、出費の実感が薄れやすいのが難点です。とはいえ、災害時などを考えると、現金が完全になくなることはないでしょう。", "결제가 간편해지는 반면, 지출의 실감이 옅어지기 쉬운 게 단점이에요. 그렇다고 해도 재해 때 등을 생각하면 현금이 완전히 없어지지는 않을 거예요."], "89l": ["キャッシュレス化の一番のメリットは、やはり手軽さです。財布を持たずに出かけられますし、支払いの記録も自動的に残ります。一方で、デメリットもあります。私自身、カードで払うとお金を使っている実感が湧きにくく、気づいたら予算をオーバーしていた、ということがよくあります。また、停電や通信障害が起きると、全く支払いができなくなるリスクもあります。ですから、今後キャッシュレスはさらに広がると思いますが、現金が完全に必要なくなることはないと考えています。", "캐시리스화의 가장 큰 장점은 역시 간편함이에요. 지갑 없이 외출할 수 있고, 결제 기록도 자동으로 남아요. 한편 단점도 있어요. 저도 카드로 결제하면 돈을 쓰고 있다는 실감이 잘 안 나서, 정신 차려 보면 예산을 넘겨 있던 적이 자주 있어요. 또 정전이나 통신 장애가 생기면 아예 결제를 못 하게 될 위험도 있어요. 그래서 앞으로 캐시리스는 더 넓어지겠지만, 현금이 완전히 필요 없어지지는 않을 거라고 생각해요."]}, "t": "캐시리스"}, {"id": "q8", "d": "2026-11-12", "tag": "💼 업무", "q": "あなたはチームリーダーです。ある社員が何度も締め切りを守らず、ほかの社員にも迷惑がかかっています。しかし、その社員は仕事に対して非常に熱心です。あなたならどう対応しますか。", "qk": "당신은 팀장이에요. 한 직원이 여러 번 마감을 안 지켜서 다른 직원에게도 피해가 가요. 하지만 그 직원은 일에 매우 열심이에요. 당신이라면 어떻게 대응하겠어요?", "mine": "올해 신입사원이 손님에게 친절하고 열심이지만 일의 우선순위를 못 정함 → 처음엔 가르치고 나중엔 스스로 하게 함", "miss": "新入りの下の人 → 新入社員・部下 / 仕事の順番 → 優先順位 / 熱心的に → 熱心に", "a": {"67s": ["まず本人と話して、なぜ締め切りに遅れるのか聞きます。そして、仕事の優先順位のつけ方を一緒に考えて、少しずつ自分でできるようにしたいです。", "먼저 본인과 이야기해서 왜 마감에 늦는지 물어볼 거예요. 그리고 일의 우선순위 정하는 법을 같이 생각해서 조금씩 스스로 할 수 있게 하고 싶어요."], "67l": ["その社員は仕事に熱心なので、まずそこは認めてあげたいです。でも、締め切りを守らないと、ほかの社員に迷惑がかかります。ですから、まず一対一で話して、なぜ遅れてしまうのか理由を聞きます。もし優先順位をつけるのが苦手なら、最初は私が一緒に計画を立てて、慣れてきたら自分でできるようにします。そうすれば、本人の熱心さも生かせると思います。", "그 직원은 일에 열심이니까 먼저 그 점은 인정해 주고 싶어요. 하지만 마감을 안 지키면 다른 직원에게 피해가 가요. 그래서 먼저 일대일로 이야기해서 왜 늦어지는지 이유를 물어볼 거예요. 만약 우선순위 정하는 걸 어려워하면 처음엔 제가 같이 계획을 세우고, 익숙해지면 스스로 할 수 있게 하겠어요. 그러면 본인의 열정도 살릴 수 있을 거예요."], "89s": ["やる気は大きな長所なので、頭ごなしに叱るのではなく、まず原因を一緒に整理します。そのうえで、優先順位のつけ方を具体的に教えます。", "의욕은 큰 장점이니까 무작정 혼내는 게 아니라 먼저 원인을 같이 정리할 거예요. 그다음에 우선순위 정하는 법을 구체적으로 가르쳐 주겠어요."], "89l": ["仕事に対する熱意は、何物にも代えがたい長所だと思います。ですから、頭ごなしに注意するのではなく、まずは一対一で時間を取り、締め切りに遅れてしまう原因を一緒に整理したいです。熱心な人ほど一つひとつの作業に時間をかけすぎて、全体の優先順位を見失いがちです。そこで、最初のうちは毎朝その日のタスクを一緒に確認し、何から手をつけるべきかを具体的に示します。そして、少しずつ任せる範囲を広げていけば、本人の自信にもつながり、チーム全体の負担も減らせると考えています。", "일에 대한 열정은 무엇과도 바꿀 수 없는 장점이라고 생각해요. 그래서 무작정 주의를 주기보다는 먼저 일대일로 시간을 내서, 마감에 늦어지는 원인을 함께 정리하고 싶어요. 열심인 사람일수록 작업 하나하나에 시간을 너무 들여서 전체 우선순위를 놓치기 쉬워요. 그래서 처음에는 매일 아침 그날 할 일을 같이 확인하고, 무엇부터 손대야 할지 구체적으로 알려 줄 거예요. 그리고 조금씩 맡기는 범위를 넓혀 가면 본인의 자신감으로도 이어지고, 팀 전체의 부담도 줄일 수 있다고 생각해요."]}, "t": "팀장 대응"}, {"id": "q9", "d": "2026-11-12", "tag": "💬 의견", "q": "最近、AIの技術が急速に発展しています。将来、多くの仕事がなくなると言われていますが、あなたはどう思いますか。良い影響と悪い影響を挙げながら説明してください。", "qk": "요즘 AI 기술이 빠르게 발전하고 있어요. 앞으로 많은 일자리가 없어진다고 하는데 어떻게 생각해요? 좋은 영향과 나쁜 영향을 들어 설명해 주세요.", "mine": "AI를 어떻게 잘 쓰느냐가 할 수 있는 일을 늘리는 방법, AI가 틀릴 수 있다는 점도 알고 준비하면 더 풍요로운 생활이 가능", "miss": "仕事を増える → できる仕事を増やす / 間違いしやすい → 間違えることもある / 考えずにはいられない(의미 오용) → しっかり考える必要がある", "a": {"67s": ["AIで減る仕事もあると思いますが、AIをうまく使える人には、新しいチャンスが増えると思います。大切なのは、どう使うかだと思います。", "AI 때문에 줄어드는 일도 있겠지만, AI를 잘 쓸 수 있는 사람에게는 새로운 기회가 늘어날 거라고 생각해요. 중요한 건 어떻게 쓰느냐라고 생각해요."], "67l": ["AIのおかげで、仕事はとても便利になりました。ですから、単純な作業はこれから減っていくと思います。でも、AIは間違えることもあるので、最後は人間が確認する必要があります。私は、AIに仕事を奪われるかどうかより、AIをどう使うかが大切だと思います。AIの得意なことと苦手なことを知って上手に使えば、もっと豊かな生活ができると思います。", "AI 덕분에 일이 정말 편리해졌어요. 그래서 단순한 작업은 앞으로 줄어들 거라고 생각해요. 하지만 AI는 틀릴 때도 있어서 마지막에는 사람이 확인해야 해요. 저는 AI에게 일을 빼앗기느냐보다 AI를 어떻게 쓰느냐가 중요하다고 생각해요. AI가 잘하는 것과 못하는 것을 알고 잘 쓰면 더 풍요롭게 생활할 수 있을 거예요."], "89s": ["単純作業は確かに減るでしょうが、AIを使いこなす人の価値はむしろ高まると思います。問われるのは、いかに活用するかです。", "단순 작업은 확실히 줄겠지만, AI를 잘 다루는 사람의 가치는 오히려 높아질 거라고 생각해요. 중요한 건 얼마나 잘 활용하느냐예요."], "89l": ["AIの発展によって、データ入力や簡単な翻訳のような定型的な仕事が減っていくのは避けられないと思います。特に、若い世代の雇用への影響は、社会全体で真剣に考える必要があるでしょう。しかし一方で、AIは間違った情報をもっともらしく出すこともあるため、最終的な判断や責任は人間が担わなければなりません。私自身、仕事でAIを使っていますが、どう質問するか、出てきた答えをどう確かめるかで、成果が大きく変わると実感しています。ですから、AIに仕事を奪われると恐れるよりも、いかに効果的に活用するかを学ぶことが大切だと考えています。", "AI 발전으로 데이터 입력이나 간단한 번역 같은 정형화된 일이 줄어드는 건 피할 수 없다고 생각해요. 특히 젊은 세대의 고용에 미치는 영향은 사회 전체가 진지하게 생각해야 할 거예요. 하지만 한편으로 AI는 틀린 정보를 그럴듯하게 내놓기도 해서, 최종 판단과 책임은 사람이 져야 해요. 저도 일에서 AI를 쓰고 있는데, 어떻게 질문하고 나온 답을 어떻게 확인하느냐에 따라 결과가 크게 달라진다는 걸 실감하고 있어요. 그래서 AI에게 일을 빼앗길까 두려워하기보다는, 얼마나 효과적으로 활용할지를 배우는 게 중요하다고 생각해요."]}, "t": "AI와 일자리"}, {"id": "q10", "d": "2026-11-12", "tag": "💬 의견", "q": "仕事を選ぶとき、給料が高いことと、自分がやりたい仕事ができることでは、どちらが重要だと思いますか。給料は高いけれどストレスが多い仕事と、給料は普通でも働きやすい仕事なら、どちらを選びますか。", "qk": "일을 고를 때 급여가 높은 것과 하고 싶은 일을 하는 것 중 어느 쪽이 중요해요? 급여는 높지만 스트레스가 많은 일과, 급여는 보통이지만 일하기 편한 일 중 어느 쪽을 고르겠어요?", "mine": "급여도 중요하지만 스트레스를 참으며 일하면 효율이 떨어짐, 잘하고 즐길 수 있는 일, 미래에 어떻게 작용할지를 생각", "miss": "卵がまずか鶏がまずか(상황에 안 맞음) / 効率も低くなる → 効率も下がる / 自分のモティブ → 価値観や目標 / 発展さ → 将来性", "a": {"67s": ["給料も大切ですが、私はやりたい仕事ができることのほうが大事だと思います。ストレスが多いと効率も下がるので、働きやすい仕事を選びます。", "급여도 중요하지만 저는 하고 싶은 일을 할 수 있는 게 더 중요하다고 생각해요. 스트레스가 많으면 효율도 떨어지니까 일하기 편한 쪽을 고를 거예요."], "67l": ["給料が高いことも、もちろん大切です。でも、ストレスを我慢しながら働くと、集中できなくて、効率も下がってしまいます。ですから、私は給料が普通でも、働きやすくて、自分がやりたい仕事を選びます。楽しく働ける仕事なら、もっと成長できると思います。それに、長く続けられることも大事だと思います。", "급여가 높은 것도 물론 중요해요. 하지만 스트레스를 참으면서 일하면 집중이 안 되고 효율도 떨어져 버려요. 그래서 저는 급여가 보통이어도 일하기 편하고 제가 하고 싶은 일을 고를 거예요. 즐겁게 일할 수 있는 일이라면 더 성장할 수 있다고 생각해요. 게다가 오래 계속할 수 있다는 것도 중요하다고 생각해요."], "89s": ["給料よりも、長く続けられて成長できる環境を重視します。ストレスで消耗しては、結局いい仕事はできないと思うからです。", "급여보다 오래 다닐 수 있고 성장할 수 있는 환경을 중시해요. 스트레스로 지쳐 버리면 결국 좋은 일을 할 수 없다고 생각하거든요."], "89l": ["正直に言うと、どちらも大切で、簡単に決められる問題ではありません。給料が高ければ生活に余裕ができますし、将来への不安も減ります。ただ、強いストレスを抱えながら働き続けると、集中力が落ち、心身ともに消耗してしまいます。それでは、結局いい仕事はできないと思います。ですから私は、給料が普通でも、働きやすく、自分の価値観に合った仕事を選びたいです。長く続けられる環境の中でこそ、本当の意味で成長でき、将来的にキャリアの選択肢も広がると考えています。", "솔직히 말하면 둘 다 중요해서 쉽게 정할 수 있는 문제가 아니에요. 급여가 높으면 생활에 여유가 생기고 미래에 대한 불안도 줄어요. 다만 강한 스트레스를 안고 계속 일하면 집중력이 떨어지고 몸과 마음이 다 지쳐 버려요. 그러면 결국 좋은 일을 할 수 없다고 생각해요. 그래서 저는 급여가 보통이어도 일하기 편하고 제 가치관에 맞는 일을 고르고 싶어요. 오래 다닐 수 있는 환경 안에서야말로 진짜 의미로 성장할 수 있고, 앞으로 커리어의 선택지도 넓어진다고 생각해요."]}, "t": "급여 vs 보람"}];
+const AN={i:0, lv:'67', len:'s', cover:true, ko:true};
+function ansKey(c,v){return c.id+'|'+v}
+function drawAns(){
+  const box=document.getElementById('ansBox'); if(!box) return;
+  const c=ANSWERS[AN.i], v=AN.lv+AN.len, [ja,ko]=c.a[v], done=!!S.ans[ansKey(c,v)];
+  const all=ANSWERS.length*4, dn=Object.keys(S.ans).filter(k=>S.ans[k]).length;
+  const [y,m,d]=c.d.split('-').map(Number);
+  let h=`<div class="ans-top"><img class="t-cat" src="${HERO.think}" alt=""><h3>답변 카드</h3><span class="muted" style="margin-left:auto">말할 수 있는 답변 ${dn} / ${all}</span></div>
+  <div class="lchips" id="ansChips">${ANSWERS.map((x,k)=>{const n=['67s','67l','89s','89l'].filter(z=>S.ans[ansKey(x,z)]).length;return `<button class="lchip ${k===AN.i?'on':''} ${n===4?'done':''}" data-ai="${k}">${esc(x.t)}${n?` <span style="font-size:11px;opacity:.8">${n}/4</span>`:''}</button>`}).join('')}</div>
+  <div class="card ans-card">
+    <div class="ans-meta"><span class="pill" style="background:#fff3e6;color:var(--orange)">${esc(c.tag)}</span><span class="muted" style="font-size:12px">📅 ${m}/${d} 연습</span></div>
+    <div class="ans-q"><div style="flex:1"><div class="j ja">${esc(c.q)}</div><div class="k">${esc(c.qk)}</div></div><button class="spk" data-say="${esc(c.q)}">🔊</button></div>
+    <details style="background:#fafafa"><summary>🗣 내가 실제로 말한 내용</summary><div style="font-size:13.5px;margin-top:5px">${esc(c.mine)}</div>${c.miss?`<div style="font-size:12.8px;color:#8a1c3a;margin-top:5px">✏️ ${esc(c.miss)}</div>`:''}</details>
+    <div class="ans-segs">
+      <div class="seg" style="margin:0"><button data-lv="67" class="${AN.lv==='67'?'on':''}">Lv 6-7</button><button data-lv="89" class="${AN.lv==='89'?'on':''}">Lv 8-9</button></div>
+      <div class="seg" style="margin:0"><button data-len="s" class="${AN.len==='s'?'on':''}">⏱ 짧게</button><button data-len="l" class="${AN.len==='l'?'on':''}">🕐 길게</button></div>
+    </div>
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <label class="toggle" id="ansCov"><span class="sw ${AN.cover?'on':''}"></span>먼저 말해 보기 (답 가리기)</label>
+      <span class="muted" style="font-size:12px">${AN.len==='s'?'약 20초 분량':'약 1분 분량'}</span>
+    </div>
+    <div class="ans-a ${AN.lv==='89'?'lv89':''} ${AN.cover?'cover':''}" id="ansA">
+      <div class="cov" id="ansReveal">🎙 질문을 듣고 먼저 소리 내어 답해 보세요<br>다 말했으면 탭해서 확인 👆</div>
+      <button class="spk" data-say="${esc(ja)}">🔊</button>
+      <div class="j ja">${esc(ja)}</div>
+      <div class="k">${esc(ko)}</div>
+    </div>
+    ${c.exp?`<div class="ans-exp"><b>📌 점수 올리는 표현</b>${c.exp.map(e=>`<div><span class="ja" style="font-weight:700">${esc(e[0])}</span> — ${esc(e[1])}</div>`).join('')}</div>`:''}
+    <div class="ans-done">
+      <button class="btn ${done?'':'ghost'}" style="padding:8px 13px;font-size:13.5px;${done?'background:var(--green)':''}" id="ansDone">${done?'✓ 말할 수 있어요':'말할 수 있어요'}</button>
+      <div class="ans-dots">${[['67s','6-7 짧게'],['67l','6-7 길게'],['89s','8-9 짧게'],['89l','8-9 길게']].map(([z,lb])=>`<span class="${S.ans[ansKey(c,z)]?'on':''}">${lb}</span>`).join('')}</div>
+    </div>
+  </div>`;
+  box.innerHTML=h;
+  box.querySelectorAll('[data-ai]').forEach(b=>b.onclick=()=>{AN.i=+b.dataset.ai;AN.cover=true;drawAns()});
+  box.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{AN.lv=b.dataset.lv;AN.cover=true;drawAns()});
+  box.querySelectorAll('[data-len]').forEach(b=>b.onclick=()=>{AN.len=b.dataset.len;AN.cover=true;drawAns()});
+  box.querySelectorAll('[data-say]').forEach(b=>b.onclick=e=>{e.stopPropagation();speak(b.dataset.say)});
+  $('#ansCov').onclick=()=>{AN.cover=!AN.cover;drawAns()};
+  $('#ansReveal').onclick=()=>{AN.cover=false;drawAns();speak(ja)};
+  $('#ansDone').onclick=()=>{const k=ansKey(c,v),on=!S.ans[k]; if(on)S.ans[k]=dkey(new Date()); else delete S.ans[k]; logSet('ans',k,on); save(); drawAns(); if(on) toast('🎤 '+c.t+' 완료!')};
+  const on=box.querySelector('#ansChips .lchip.on'); if(on) on.scrollIntoView({inline:'center',block:'nearest'});
+}
 
 /* ================= LEARN (상황별 학습) ================= */
 const LEARN = [
@@ -2558,7 +2578,7 @@ const DOW=['일','월','화','수','목','금','토'];
 let calY, calM, selDay=dkey(new Date());
 {const t=new Date(); calY=t.getFullYear(); calM=t.getMonth();}
 const sessOf=k=>SESSIONS.filter(s=>s.d===k);
-function actScore(k){const l=S.log[k]||{}; return (l.known||[]).length+(l.again||[]).length+(l.quiz||[]).length*5+(l.checks||[]).length*2+(l.learn||[]).length*3+Math.floor((l.sec||0)/60)+Math.min(5,Math.floor((l.listen||0)/5))+songScore(k);}
+function actScore(k){const l=S.log[k]||{}; return (l.known||[]).length+(l.again||[]).length+(l.quiz||[]).length*5+(l.checks||[]).length*2+(l.learn||[]).length*3+(l.ans||[]).length*3+Math.floor((l.sec||0)/60)+Math.min(5,Math.floor((l.listen||0)/5))+songScore(k);}
 function actLevel(k){const s=actScore(k); return s===0?0:s<6?1:s<15?2:s<30?3:4;}
 function itemById(id){return id[0]==='c'?{...FIX[+id.slice(1)],kind:'fix'}:{...PH[+id.slice(1)],kind:'ph'}}
 function fmtDay(k){const [y,m,d]=k.split('-').map(Number); const w=new Date(y,m-1,d).getDay(); return `${m}월 ${d}일 (${DOW[w]})`;}
@@ -2616,6 +2636,7 @@ function drawDay(){
       ${ag.length?`<details open><summary>😅 다시 볼 카드 ${ag.length}개</summary>${ag.map(itemRow).join('')}</details>`:''}
       ${kn.length?`<details><summary>😎 외운 카드 ${kn.length}개</summary>${kn.map(itemRow).join('')}</details>`:''}
       ${(l.quiz||[]).map(q=>`<details ${q.wrong.length?'open':''}><summary>🎯 ${q.time} 퀴즈 · ${q.score}점 (${q.n})</summary>${q.wrong.length?q.wrong.map(w=>`<div class="li"><div class="tx"><span class="ja" style="font-weight:700;color:#14532d">✓ ${esc(w.a)}</span><small>문제: ${esc(w.q)} · 내 답: <span class="ja">${esc(w.p)}</span></small></div><button class="spk" data-say="${esc(w.a)}">🔊</button></div>`).join(''):'<div class="muted" style="padding:4px 0">틀린 문제 없음 🎉</div>'}</details>`).join('')}
+      ${(l.ans||[]).length?`<details open><summary>🎤 말할 수 있게 된 답변 ${l.ans.length}개</summary>${l.ans.map(key=>{const [qid,v]=key.split('|');const c=ANSWERS.find(z=>z.id===qid);return c?`<div class="li"><div class="tx">${esc(c.t)} <small>${v.startsWith('67')?'Lv 6-7':'Lv 8-9'} · ${v.endsWith('s')?'짧게':'길게'}</small></div></div>`:''}).join('')}</details>`:''}
       ${(l.learn||[]).length?`<details open><summary>📖 학습한 상황 ${l.learn.length}개</summary>${l.learn.map(id=>{const c=LEARN.find(z=>z.id===id);return c?`<div class="li"><div class="tx">${c.e} ${esc(c.t)}</div></div>`:''}).join('')}</details>`:''}
       ${(l.checks||[]).length?`<details><summary>✅ 체크한 항목 ${(l.checks||[]).length}개</summary>${l.checks.map(i=>`<div class="li"><div class="tx">${esc(CHECK[i].t)}</div></div>`).join('')}</details>`:''}
     </div>`;
@@ -2650,7 +2671,7 @@ function openSessionCards(d,dk){
   document.querySelector('nav button[data-p=cards]').click();
 }
 $('#sessClear').onclick=()=>{sessFilter=null;$('#sessChip').classList.remove('on');buildOrder(false)};
-document.querySelector('nav button[data-p=home]').addEventListener('click',()=>{renderCal();drawDay()});
+document.querySelector('nav button[data-p=home]').addEventListener('click',()=>{drawAns();renderCal();drawDay()});
 
 /* ================= HEADER CAT ================= */
 const CAT_SAY=[
@@ -2684,7 +2705,7 @@ function initHero(){
 }
 
 /* ================= INIT ================= */
-renderStats(); renderCal(); drawDay(); tmDraw(); buildOrder(false); drawNotes(); drawCheck();
+renderStats(); drawAns(); renderCal(); drawDay(); buildOrder(false); drawNotes(); drawCheck();
 initHero();
 initFirebase();
 </script>
